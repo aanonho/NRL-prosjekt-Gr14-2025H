@@ -1,0 +1,95 @@
+﻿@* 
+    @model WebApplication1.Models.ObstacleData
+
+<div>
+    <h1>Overview</h1>
+    <p>Thank you for registering an obstacle:</p>
+
+    <p>
+        @Model.ObstacleName
+    </p>
+
+    <p>
+        @Model.ObstacleHeight
+    </p>
+
+    <p>
+        @Model.ObstacleDescription
+    </p>
+
+    <p>
+        @Model.ObstacleLatitude 
+
+    </p>
+
+    <p>
+        @Model.ObstacleLongitude
+    </p>
+</div>  *@
+
+
+@model WebApplication1.Models.ObstacleData
+
+<div class="container mt-5">
+    <div class="card shadow-sm rounded">
+        <div class="card-header bg-success text-white">
+            <h2 class="mb-0">Obstacle Overview</h2>
+        </div>
+        <div class="card-body">
+            <p class="lead">Thank you for registering an obstacle. Here are the details:</p>
+
+            <dl class="row">
+                <dt class="col-sm-3">Name</dt>
+                <dd class="col-sm-9">@Model.ObstacleName</dd>
+
+                <dt class="col-sm-3">Height</dt>
+                <dd class="col-sm-9">@Model.ObstacleHeight m</dd>
+
+                <dt class="col-sm-3">Description</dt>
+                <dd class="col-sm-9">@Model.ObstacleDescription</dd>
+
+                <dt class="col-sm-3">Latitude</dt>
+                <dd class="col-sm-9">@Model.ObstacleLatitude</dd>
+
+                <dt class="col-sm-3">Longitude</dt>
+                <dd class="col-sm-9">@Model.ObstacleLongitude</dd>
+            </dl>
+
+            <div id="map" class="my-4" style="height:400px; width:100%; border:2px solid #ccc; border-radius:8px;"></div>
+
+            <a asp-action="DataForm" class="btn btn-success">Register another obstacle</a>
+        </div>
+    </div>
+</div>
+
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin="" />
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var lat = @Model.ObstacleLatitude;
+        var lng = @Model.ObstacleLongitude;
+
+        var map = L.map('map').setView([lat, lng], 14);
+
+        // Legg til OSM-fliser
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Legg til markør på valgt posisjon
+        L.marker([lat, lng])
+            .addTo(map)
+            .bindPopup("<b>@Model.ObstacleName</b><br/>Height: @Model.ObstacleHeight m")
+            .openPopup();
+    });
+</script>
+*

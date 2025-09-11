@@ -1,0 +1,142 @@
+﻿@model WebApplication1.Models.ObstacleData
+
+@{
+    ViewData["Title"] = "Obstacle Registration";
+}
+
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin="" />
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
+
+<style>
+    #map {
+        height: 400px;
+        width: 100%;
+        margin-bottom: 20px;
+        border: 2px solid #ccc;
+        border-radius: 8px;
+    }
+</style>
+
+<div class="container mt-4">
+    <h1 class="mb-4">Obstacle Registration Form</h1>
+
+    <!-- Dropdown for selecting shape -->
+    <div class="mb-3">
+        <label for="shapeSelect" class="form-label">Select shape to add:</label>
+        <select id="shapeSelect" class="form-select">
+            <option value="marker">Marker</option>
+            <option value="circle">Circle</option>
+            <option value="line">Line</option>
+        </select>
+    </div>
+
+    <!-- Kart -->
+    <div id="map"></div>
+
+
+    <form asp-action="DataForm" method="post" class="row g-3">
+        <div class="col-md-6">
+            <label asp-for="ObstacleName" class="form-label">Obstacle Name</label>
+            <input asp-for="ObstacleName" class="form-control" />
+        </div>
+
+        <div class="col-md-6">
+            <label asp-for="ObstacleHeight" class="form-label">Obstacle Height</label>
+            <input asp-for="ObstacleHeight" class="form-control" />
+        </div>
+
+        <div class="col-12">
+            <label asp-for="ObstacleDescription" class="form-label">Obstacle Description</label>
+            <textarea asp-for="ObstacleDescription" class="form-control"></textarea>
+        </div>
+
+        <div class="col-md-6">
+            <label for="Latitude" class="form-label">Latitude</label>
+            <input type="text" asp-for="ObstacleLatitude" class="form-control" id="Latitude" readonly />
+        </div>
+
+        <div class="col-md-6">
+            <label for="Longitude" class="form-label">Longitude</label>
+            <input type="text" asp-for="ObstacleLongitude" class="form-control" id="Longitude" readonly />
+        </div>
+
+        <!-- Skjulte felter for koordinater -->
+        <input type="hidden" asp-for="ObstacleLatitude" id="Latitude" />
+        <input type="hidden" asp-for="ObstacleLongitude" id="Longitude" />
+
+        <div class="col-12">
+            <button type="submit" class="btn btn-success">Submit Data</button>
+        </div>
+    </form>
+</div>
+
+<script>
+
+    // Initialiser kartet
+    var map = L.map('map').setView([58.1467, 7.9956], 12); // Kristiansand
+
+    // Legg til OpenStreetMap fliser
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    var marker;
+    var circle; 
+    var line;
+    var latlngsLine = [];
+
+    map.on('click', function(e) {
+        var shape = document.getElementById('shapeSelect').value;
+
+
+        // Sett koordinater i skjema uavhengig av form
+        document.getElementById('Latitude').value = e.latlng.lat.toFixed(5);
+        document.getElementById('Longitude').value = e.latlng.lng.toFixed(5);
+
+        if(shape === 'marker') {
+            if(marker) map.removeLayer(marker); 
+            marker = L.marker(e.latlng).addTo(map);
+
+            //klikk for å fjerne markør
+            marker.on('click', function() {
+                map.removeLayer(marker);
+                marker = null;
+            });
+        }
+        else if(shape === 'circle') {
+            if(circle) map.removeLayer(circle); 
+            circle = L.circle(e.latlng, {
+                color:'red',
+                fillColor:'#f03',
+                fillOpacity:0.5,
+                radius:300
+            }).addTo(map);
+
+            //klikk for å fjerne sirkel
+            circle.on('click', function() {
+                map.removeLayer(circle);
+                circle = null;
+            });
+        }
+        else if(shape === 'line') {
+            if(line) map.removeLayer(line); 
+            latlngsLine.push([e.latlng.lat, e.latlng.lng]);
+            line= L.polyline(latlngsLine, {color:'black'}).addTo(map);
+
+            //klikk for å fjerne linje
+            line.on('click', function() {
+                map.removeLayer(line);
+                line = null;
+                latlngsLine = [];
+            });
+        }
+    });
+</script>
