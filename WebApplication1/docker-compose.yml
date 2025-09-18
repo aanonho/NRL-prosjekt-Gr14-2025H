@@ -1,21 +1,18 @@
-version: "3.9"
-
 services:
-  webapplication1:
-    image: ${DOCKER_REGISTRY-}webapplication1
+  web:
     build:
       context: .
-      dockerfile: WebApplication1/Dockerfile
+      dockerfile: WebApplication1/WebApplication1/WebApplication1/Dockerfile
     ports:
-      - "5000:8080"
-    environment: 
-      - ASPNETCORE_ENVIRONMENT=Development 
-      - ConnectionStrings__DefaultConnection=server=mariadbcontainer;port=3306;database=mysql;user=root;password=051192;
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_URLS=http://+:8080
+      - ASPNETCORE_ENVIRONMENT=Development
+      # Overstyrer appsettings i containeren:
+      - ConnectionStrings__DefaultConnection=server=mariadbcontainer;port=3306;database=nrl;user=nrl;password=nrlpass
     networks:
-      - appnet 
-
+      - appnet
+    depends_on: []
 networks:
   appnet:
     external: true
-    name: appnet
-

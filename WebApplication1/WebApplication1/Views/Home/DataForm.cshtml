@@ -1,142 +1,355 @@
 ﻿@model WebApplication1.Models.ObstacleData
-
 @{
-    ViewData["Title"] = "Obstacle Registration";
+    ViewData["Title"] = "Register Obstacle";
 }
 
-<!-- Leaflet CSS -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-      crossorigin="" />
-
-<!-- Leaflet JS -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-        crossorigin=""></script>
+<!-- Leaflet + Leaflet.Draw -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css" />
 
 <style>
     #map {
-        height: 400px;
-        width: 100%;
-        margin-bottom: 20px;
-        border: 2px solid #ccc;
-        border-radius: 8px;
+        height: 520px;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+    }
+
+    .leaflet-container {
+        font: inherit;
+    }
+
+    .toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .5rem;
+        align-items: center;
+        margin-bottom: .5rem;
+    }
+
+        .toolbar button {
+            padding: .5rem .9rem;
+            font-size: 1rem;
+        }
+
+    .muted {
+        color: #6c757d;
+    }
+
+    @@media (min-width: 800px) {
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
     }
 </style>
 
-<div class="container mt-4">
-    <h1 class="mb-4">Obstacle Registration Form</h1>
+<h2 class="mb-3">Register Obstacle</h2>
 
-    <!-- Dropdown for selecting shape -->
-    <div class="mb-3">
-        <label for="shapeSelect" class="form-label">Select shape to add:</label>
-        <select id="shapeSelect" class="form-select">
-            <option value="marker">Marker</option>
-            <option value="circle">Circle</option>
-            <option value="line">Line</option>
-        </select>
+<form asp-action="DataForm" method="post" novalidate>
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div id="map"></div>
+    <div class="toolbar">
+        <button type="button" id="btnStart" class="btn btn-primary">Start GPS</button>
+        <button type="button" id="btnStop" class="btn btn-outline-secondary">Stopp GPS</button>
+        <button type="button" id="btnCenter" class="btn btn-outline-secondary">Sentrer på markør</button>
+        <button type="button" id="btnMe" class="btn btn-outline-secondary">Sentrer på meg</button>
+        <span id="geo-status" class="muted"></span>
     </div>
 
-    <!-- Kart -->
-    <div id="map"></div>
-
-
-    <form asp-action="DataForm" method="post" class="row g-3">
-        <div class="col-md-6">
-            <label asp-for="ObstacleName" class="form-label">Obstacle Name</label>
+    <div class="form-grid">
+        <div>
+            <label asp-for="ObstacleName" class="form-label">Navn</label>
             <input asp-for="ObstacleName" class="form-control" />
+            <span asp-validation-for="ObstacleName" class="text-danger"></span>
         </div>
 
-        <div class="col-md-6">
-            <label asp-for="ObstacleHeight" class="form-label">Obstacle Height</label>
-            <input asp-for="ObstacleHeight" class="form-control" />
+        <div>
+            <label asp-for="ObstacleHeight" class="form-label">Høyde (m)</label>
+            <input asp-for="ObstacleHeight" type="number" step="any" class="form-control" />
+            <span asp-validation-for="ObstacleHeight" class="text-danger"></span>
         </div>
 
-        <div class="col-12">
-            <label asp-for="ObstacleDescription" class="form-label">Obstacle Description</label>
-            <textarea asp-for="ObstacleDescription" class="form-control"></textarea>
+        <div style="grid-column:1/-1">
+            <label asp-for="ObstacleDescription" class="form-label">Beskrivelse</label>
+            <textarea asp-for="ObstacleDescription" class="form-control" rows="3"></textarea>
+            <span asp-validation-for="ObstacleDescription" class="text-danger"></span>
         </div>
 
-        <div class="col-md-6">
-            <label for="Latitude" class="form-label">Latitude</label>
-            <input type="text" asp-for="ObstacleLatitude" class="form-control" id="Latitude" readonly />
+        <div>
+            <label asp-for="ObstacleLatitude" class="form-label">Latitude</label>
+            <input asp-for="ObstacleLatitude" class="form-control" inputmode="decimal" />
+            <span asp-validation-for="ObstacleLatitude" class="text-danger"></span>
         </div>
 
-        <div class="col-md-6">
-            <label for="Longitude" class="form-label">Longitude</label>
-            <input type="text" asp-for="ObstacleLongitude" class="form-control" id="Longitude" readonly />
+        <div>
+            <label asp-for="ObstacleLongitude" class="form-label">Longitude</label>
+            <input asp-for="ObstacleLongitude" class="form-control" inputmode="decimal" />
+            <span asp-validation-for="ObstacleLongitude" class="text-danger"></span>
         </div>
+    </div>
 
-        <!-- Skjulte felter for koordinater -->
-        <input type="hidden" asp-for="ObstacleLatitude" id="Latitude" />
-        <input type="hidden" asp-for="ObstacleLongitude" id="Longitude" />
+    <!-- Skjult: rapportørens GPS (US3) -->
+    <input type="hidden" asp-for="ReporterLatitude" />
+    <input type="hidden" asp-for="ReporterLongitude" />
+    <input type="hidden" asp-for="ReporterAccuracy" />
 
-        <div class="col-12">
-            <button type="submit" class="btn btn-success">Submit Data</button>
-        </div>
-    </form>
-</div>
+    <!-- Skjult: formfelter -->
+    <input type="hidden" asp-for="ObstacleType" />
+    <input type="hidden" asp-for="ObstacleRadius" />
+    <input type="hidden" asp-for="ObstacleLineCoords" />
 
-<script>
+    <div class="mt-3">
+        <button type="submit" class="btn btn-success btn-lg" style="min-width:200px">Submit Data</button>
+    </div>
+</form>
 
-    // Initialiser kartet
-    var map = L.map('map').setView([58.1467, 7.9956], 12); // Kristiansand
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
+    <script>
+        (function () {
+          const latInput = document.getElementById('ObstacleLatitude');
+          const lonInput = document.getElementById('ObstacleLongitude');
+          const repLat   = document.getElementById('ReporterLatitude');
+          const repLon   = document.getElementById('ReporterLongitude');
+          const repAcc   = document.getElementById('ReporterAccuracy');
+          const typeIn   = document.getElementById('ObstacleType');
+          const radIn    = document.getElementById('ObstacleRadius');
+          const lineIn   = document.getElementById('ObstacleLineCoords');
+          const statusEl = document.getElementById('geo-status');
 
-    // Legg til OpenStreetMap fliser
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
+          const btnStart = document.getElementById('btnStart');
+          const btnStop  = document.getElementById('btnStop');
+          const btnCenter= document.getElementById('btnCenter');
+          const btnMe    = document.getElementById('btnMe');
 
-    var marker;
-    var circle; 
-    var line;
-    var latlngsLine = [];
+          const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+                        (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+          const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+          const AUTO_START = !(isIOS && isSafari);
 
-    map.on('click', function(e) {
-        var shape = document.getElementById('shapeSelect').value;
+          const TARGET_ACCURACY_M = 50;
+          const QUICK_TIMEOUT_MS  = 3000;
+          const WATCH_TIMEOUT_MS  = 10000;
+          const DEFAULT_VIEW      = { lat: 64.5, lon: 11.5, zoom: 5 };
 
+          let map, fg, drawControl, accuracyCircle, watchId=null, lastBest=null;
 
-        // Sett koordinater i skjema uavhengig av form
-        document.getElementById('Latitude').value = e.latlng.lat.toFixed(5);
-        document.getElementById('Longitude').value = e.latlng.lng.toFixed(5);
+          function setStatus(msg){ if(statusEl) statusEl.textContent = msg || ''; }
+          function toNum(x){ return parseFloat((x||'').toString().replace(',', '.')); }
+          function parseLatLon(){
+            const lat = toNum(latInput?.value), lon = toNum(lonInput?.value);
+            return { lat, lon, ok: Number.isFinite(lat) && Number.isFinite(lon) };
+          }
 
-        if(shape === 'marker') {
-            if(marker) map.removeLayer(marker); 
-            marker = L.marker(e.latlng).addTo(map);
+          function initMap(lat, lon, zoom){
+            if(!map){
+              map = L.map('map');
+              L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OSM' }).addTo(map);
+              fg = new L.FeatureGroup().addTo(map);
 
-            //klikk for å fjerne markør
-            marker.on('click', function() {
-                map.removeLayer(marker);
-                marker = null;
-            });
-        }
-        else if(shape === 'circle') {
-            if(circle) map.removeLayer(circle); 
-            circle = L.circle(e.latlng, {
-                color:'red',
-                fillColor:'#f03',
-                fillOpacity:0.5,
-                radius:300
-            }).addTo(map);
+              drawControl = new L.Control.Draw({
+                draw: {
+                  polygon: false,
+                  rectangle: false,
+                  circlemarker: false,
+                  marker: true,
+                  circle: true,
+                  polyline: true
+                },
+                edit: { featureGroup: fg, remove: true }
+              });
+              map.addControl(drawControl);
 
-            //klikk for å fjerne sirkel
-            circle.on('click', function() {
-                map.removeLayer(circle);
-                circle = null;
-            });
-        }
-        else if(shape === 'line') {
-            if(line) map.removeLayer(line); 
-            latlngsLine.push([e.latlng.lat, e.latlng.lng]);
-            line= L.polyline(latlngsLine, {color:'black'}).addTo(map);
+              map.on(L.Draw.Event.CREATED, e => {
+                fg.clearLayers();
+                const layer = e.layer;
+                fg.addLayer(layer);
+                syncFromLayer(layer, e.layerType);
+              });
 
-            //klikk for å fjerne linje
-            line.on('click', function() {
-                map.removeLayer(line);
-                line = null;
-                latlngsLine = [];
-            });
-        }
-    });
-</script>
+              map.on(L.Draw.Event.EDITED, e => {
+                e.layers.eachLayer(layer => {
+                  // finn type ut fra layer-instans
+                  let t = "marker";
+                  if (layer instanceof L.Circle) t = "circle";
+                  else if (layer instanceof L.Polyline && !(layer instanceof L.Polygon)) t = "polyline";
+                  syncFromLayer(layer, t);
+                });
+              });
+
+              map.on(L.Draw.Event.DELETED, () => {
+                // Tøm formfelter relatert til form
+                if (typeIn) typeIn.value = "";
+                if (radIn)  radIn.value  = "";
+                if (lineIn) lineIn.value = "";
+              });
+            }
+            map.setView([lat, lon], zoom ?? 15);
+          }
+
+          function showAccuracy(lat, lon, meters){
+            if(!Number.isFinite(meters)) return;
+            if(accuracyCircle){
+              accuracyCircle.setLatLng([lat, lon]);
+              accuracyCircle.setRadius(Math.max(1, meters));
+            } else {
+              accuracyCircle = L.circle([lat, lon], { radius: Math.max(1, meters) }).addTo(map);
+            }
+          }
+
+          function syncFromLayer(layer, layerType){
+            // Skriv type
+            if (typeIn) typeIn.value = layerType;
+
+            // Skriv felter basert på form
+            if (layerType === "marker") {
+              const p = layer.getLatLng();
+              latInput.value = p.lat.toFixed(7);
+              lonInput.value = p.lng.toFixed(7);
+              if (radIn)  radIn.value = "";
+              if (lineIn) lineIn.value = "";
+            }
+            else if (layerType === "circle") {
+              const p = layer.getLatLng();
+              const r = layer.getRadius();
+              latInput.value = p.lat.toFixed(7);
+              lonInput.value = p.lng.toFixed(7);
+              if (radIn)  radIn.value  = Math.round(r).toString();   // meter
+              if (lineIn) lineIn.value = "";
+            }
+            else if (layerType === "polyline") {
+              const coords = layer.getLatLngs().map(ll => [ +ll.lat.toFixed(7), +ll.lng.toFixed(7) ]);
+              if (lineIn) lineIn.value = JSON.stringify(coords);
+              // Sett posisjon til senter av linjens bounding box (for DB-kravet om lat/lon)
+              const center = layer.getBounds().getCenter();
+              latInput.value = center.lat.toFixed(7);
+              lonInput.value = center.lng.toFixed(7);
+              if (radIn) radIn.value = "";
+            }
+          }
+
+          function stopWatch(){
+            if(watchId!=null){ navigator.geolocation.clearWatch(watchId); watchId=null; }
+          }
+
+          function quickFirstFixThenWatch(){
+            if(!navigator.geolocation){
+              setStatus('Geolokasjon støttes ikke av nettleseren.');
+              const p = parseLatLon(); const init = p.ok ? {lat:p.lat, lon:p.lon, zoom:15} : DEFAULT_VIEW;
+              initMap(init.lat, init.lon, init.zoom);
+              return;
+            }
+            setStatus('Henter posisjon…');
+            navigator.geolocation.getCurrentPosition(
+              pos => {
+                const { latitude, longitude, accuracy } = pos.coords;
+                const lat = +latitude.toFixed(7), lon = +longitude.toFixed(7);
+                initMap(lat, lon, 16); showAccuracy(lat, lon, accuracy);
+                if(!latInput.value) latInput.value = lat.toString();
+                if(!lonInput.value) lonInput.value = lon.toString();
+                if(repLat) repLat.value = lat.toString();
+                if(repLon) repLon.value = lon.toString();
+                if(repAcc) repAcc.value = Math.round(accuracy).toString();
+                setStatus(`Foreløpig posisjon – ±${Math.round(accuracy)} m`);
+
+                // legg inn en default markør for rask bruk
+                const m = L.marker([lat, lon], { draggable:true });
+                m.on('dragend', () => syncFromLayer(m, "marker"));
+                fg.clearLayers(); fg.addLayer(m);
+                syncFromLayer(m, "marker");
+
+                startWatch();
+              },
+              err => {
+                setStatus('Kunne ikke hente posisjon – klikk/drag eller tegn i kartet.');
+                const p = parseLatLon(); const init = p.ok ? {lat:p.lat, lon:p.lon, zoom:15} : DEFAULT_VIEW;
+                initMap(init.lat, init.lon, init.zoom);
+              },
+              { enableHighAccuracy:true, timeout:QUICK_TIMEOUT_MS, maximumAge:20000 }
+            );
+          }
+
+          function startWatch(){
+            lastBest=null; stopWatch();
+            watchId = navigator.geolocation.watchPosition(
+              pos => {
+                const { latitude, longitude, accuracy } = pos.coords;
+                const lat = +latitude.toFixed(7), lon = +longitude.toFixed(7);
+                const acc = Math.round(accuracy);
+                if(!lastBest || acc < lastBest.acc) lastBest = { lat, lon, acc };
+
+                initMap(lat, lon, map ? map.getZoom() : 16);
+                showAccuracy(lat, lon, acc);
+
+                // forbedre feltene bare hvis bedre nøyaktighet
+                if(!latInput.value || (repAcc && (!repAcc.value || acc < +repAcc.value))){
+                  latInput.value = lat.toString();
+                  lonInput.value = lon.toString();
+                  if(repLat) repLat.value = lat.toString();
+                  if(repLon) repLon.value = lon.toString();
+                  if(repAcc) repAcc.value = acc.toString();
+
+                  // hvis brukeren ikke har tegnet noe annet enn en markør, hold markør på posisjon
+                  if (fg && fg.getLayers().length === 1 && fg.getLayers()[0] instanceof L.Marker) {
+                    const m = fg.getLayers()[0];
+                    m.setLatLng([lat, lon]);
+                    syncFromLayer(m, "marker");
+                  }
+                }
+
+                setStatus(`Posisjon: ±${acc} m`);
+                if(acc <= TARGET_ACCURACY_M){ stopWatch(); setStatus(`Posisjon låst – ±${acc} m (god)`); }
+              },
+              err => { stopWatch(); setStatus('Stopper GPS – fikk ikke mer nøyaktig posisjon.'); },
+              { enableHighAccuracy:true, timeout:WATCH_TIMEOUT_MS, maximumAge:0 }
+            );
+
+            setTimeout(() => {
+              if(watchId==null) return;
+              stopWatch();
+              if(lastBest){
+                initMap(lastBest.lat, lastBest.lon, map ? map.getZoom() : 16);
+                showAccuracy(lastBest.lat, lastBest.lon, lastBest.acc);
+                setStatus(`Posisjon låst – ±${lastBest.acc} m`);
+                if(!latInput.value){ latInput.value = lastBest.lat.toString(); lonInput.value = lastBest.lon.toString(); }
+                if(repLat) repLat.value = lastBest.lat.toString();
+                if(repLon) repLon.value = lastBest.lon.toString();
+                if(repAcc) repAcc.value = lastBest.acc.toString();
+              }
+            }, WATCH_TIMEOUT_MS + 500);
+          }
+
+          // Inputs → pan/marker
+          latInput.addEventListener('change', () => {
+            const p = parseLatLon();
+            if(map && p.ok) map.panTo([p.lat, p.lon]);
+          });
+          lonInput.addEventListener('change', () => {
+            const p = parseLatLon();
+            if(map && p.ok) map.panTo([p.lat, p.lon]);
+          });
+
+          // Knapper
+          btnStart.addEventListener('click', quickFirstFixThenWatch);
+          btnStop.addEventListener('click', () => { stopWatch(); setStatus('GPS stoppet.'); });
+          btnCenter.addEventListener('click', () => { const p = parseLatLon(); if(map && p.ok) map.setView([p.lat, p.lon], map.getZoom()); });
+          btnMe.addEventListener('click', () => { if(lastBest && map) map.setView([lastBest.lat, lastBest.lon], map.getZoom()); });
+
+          // Init kart
+          const p = parseLatLon(); const init = p.ok ? { lat:p.lat, lon:p.lon, zoom:15 } : DEFAULT_VIEW;
+          initMap(init.lat, init.lon, init.zoom);
+
+          // Auto-start på laptop/ikke-iOS; iOS krever brukertrykk
+          if (AUTO_START) { quickFirstFixThenWatch(); }
+          else { setStatus('Trykk "Start GPS" for å hente posisjon. (iOS/Safari)'); }
+
+          // Rydd watch
+          window.addEventListener('beforeunload', stopWatch);
+        })();
+    </script>
+}

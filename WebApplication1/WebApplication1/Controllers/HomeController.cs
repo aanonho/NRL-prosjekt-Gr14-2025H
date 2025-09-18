@@ -1,87 +1,82 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using WebApplication1.Models;
 using MySqlConnector;
+using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        //public HomeController(ILogger<HomeController> logger)
-        //{
-        //    _logger = logger;
-        //}
-
         private readonly string _connectionString;
 
         public HomeController(IConfiguration config)
         {
-            _connectionString = config.GetConnectionString("DefaultConnection")!;
+            _connectionString =
+                config.GetConnectionString("Default") ??
+                config.GetConnectionString("DefaultConnection") ??
+                throw new InvalidOperationException("Mangler connection string.");
         }
 
-        //public async Task<IActionResult> Index()
-        //{
-        //    try
-        //    {
-        //        await using var conn = new MySqlConnection(_connectionString);
-        //        await conn.OpenAsync();
-        //        return Content("Conncected to MariaDB Successfully!");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Content("Failed to connect to MariDB: " + ex.Message);
-        //    }
-        //}
+        public IActionResult Index() => View();
+        public IActionResult ContactUs() => View();
+        public IActionResult Privacy() => View();
 
+        // Hvis du har "User.cshtml"
+        public IActionResult UserPage() => View("User");
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error() =>
+            View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+
+        // DB-helse: /Home/DbCheck
         [HttpGet]
-        public ViewResult UserForm()
+        public async Task<IActionResult> DbCheck()
         {
-            return View();
+            try
+            {
+                await using var conn = new MySqlConnection(_connectionString);
+                await conn.OpenAsync();
+                await using var cmd = new MySqlCommand("SELECT NOW();", conn);
+                var now = (DateTime?)await cmd.ExecuteScalarAsync();
+                return Content($"DB OK – server time: {now:O}");
+            }
+            catch (Exception ex)
+            {
+                return Content("DB FEIL: " + ex.Message);
+            }
         }
+
+        // ---- Skjema for hinderregistrering ----
+        [HttpGet]
+        public ActionResult DataForm() => View();
 
         [HttpPost]
-        public ViewResult UserForm(Userdata userData)
-        {
-            return View("RegistrationOverview", userData);
-        }
-        public IActionResult User()
-        {
-            return View();
-        }
-        public IActionResult ContactUs()
-        {
-            return View();
-        }
-        public IActionResult Index()
-        {
-            return View();
-        }
-
-        //Blir kalt etter at vi trykkr p� "Register Obstacle" lenken i Index viewet 
-        [HttpGet]
-        public ActionResult DataForm()
-        {
-            return View();
-        }
-
-        //Blir kalt etter at vi trykkr p� "Submit Data" lenken i viewet 
-        [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult DataForm(ObstacleData obstacleData)
         {
+            if (!ModelState.IsValid) return View(obstacleData);
+
+            if (obstacleData.ReporterLatitude.HasValue &&
+                obstacleData.ReporterLongitude.HasValue &&
+                obstacleData.CapturedAt == null)
+            {
+                obstacleData.CapturedAt = DateTime.UtcNow;
+            }
+
+            // (Lagring kan legges inn senere)
             return View("ObstacleRegistrationOverview", obstacleData);
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
+        // ---- UserForm (om du bruker den) ----
+        [HttpGet]
+        public ViewResult UserForm() => View();
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ViewResult UserForm(UserData userData)
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            if (!ModelState.IsValid) return View(userData);
+            return View("RegistrationOverview", userData);
         }
     }
 }

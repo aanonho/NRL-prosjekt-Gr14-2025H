@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\mytri\\Desktop\\Visual Studio 2022\\WebApplication1\\WebApplication1\\WebApplication1.csproj": {}
+    "C:\\Users\\Marie\\documents\\skole\\nrl\\NRL-prosjekt-Gr14-2025H\\WebApplication1\\WebApplication1\\WebApplication1.csproj": {}
   },
   "projects": {
-    "C:\\Users\\mytri\\Desktop\\Visual Studio 2022\\WebApplication1\\WebApplication1\\WebApplication1.csproj": {
+    "C:\\Users\\Marie\\documents\\skole\\nrl\\NRL-prosjekt-Gr14-2025H\\WebApplication1\\WebApplication1\\WebApplication1.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\mytri\\Desktop\\Visual Studio 2022\\WebApplication1\\WebApplication1\\WebApplication1.csproj",
+        "projectUniqueName": "C:\\Users\\Marie\\documents\\skole\\nrl\\NRL-prosjekt-Gr14-2025H\\WebApplication1\\WebApplication1\\WebApplication1.csproj",
         "projectName": "WebApplication1",
-        "projectPath": "C:\\Users\\mytri\\Desktop\\Visual Studio 2022\\WebApplication1\\WebApplication1\\WebApplication1.csproj",
-        "packagesPath": "C:\\Users\\mytri\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\mytri\\Desktop\\Visual Studio 2022\\WebApplication1\\WebApplication1\\obj\\",
+        "projectPath": "C:\\Users\\Marie\\documents\\skole\\nrl\\NRL-prosjekt-Gr14-2025H\\WebApplication1\\WebApplication1\\WebApplication1.csproj",
+        "packagesPath": "C:\\Users\\Marie\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Marie\\documents\\skole\\nrl\\NRL-prosjekt-Gr14-2025H\\WebApplication1\\WebApplication1\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\mytri\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Marie\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -26,7 +26,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -51,6 +50,12 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "dependencies": {
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.9, )"
+            },
             "Microsoft.VisualStudio.Azure.Containers.Tools.Targets": {
               "target": "Package",
               "version": "[1.22.1, )"
@@ -58,6 +63,10 @@
             "MySqlConnector": {
               "target": "Package",
               "version": "[2.4.0, )"
+            },
+            "Pomelo.EntityFrameworkCore.MySql": {
+              "target": "Package",
+              "version": "[9.0.0, )"
             }
           },
           "imports": [

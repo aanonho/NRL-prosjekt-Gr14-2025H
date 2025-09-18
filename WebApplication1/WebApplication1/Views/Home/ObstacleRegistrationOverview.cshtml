@@ -1,95 +1,71 @@
-﻿@* 
-    @model WebApplication1.Models.ObstacleData
+﻿@model WebApplication1.Models.ObstacleData
+@{
+    ViewData["Title"] = "Obstacle Overview";
+}
 
-<div>
-    <h1>Overview</h1>
-    <p>Thank you for registering an obstacle:</p>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+    #mapOverview {
+        height: 320px;
+        border-radius: 10px;
+        margin-top: 1rem;
+    }</style>
 
-    <p>
-        @Model.ObstacleName
-    </p>
+<h2>Obstacle Overview</h2>
+<ul>
+    <li><strong>Name:</strong> @Model.ObstacleName</li>
+    <li><strong>Height:</strong> @Model.ObstacleHeight m</li>
+    <li><strong>Description:</strong> @Model.ObstacleDescription</li>
+    <li><strong>Lat:</strong> @Model.ObstacleLatitude</li>
+    <li><strong>Lon:</strong> @Model.ObstacleLongitude</li>
+    @if (!string.IsNullOrWhiteSpace(Model.ObstacleType))
+    {
+        <li><strong>Type:</strong> @Model.ObstacleType</li>
+    }
+    @if (Model.ObstacleType == "circle" && Model.ObstacleRadius.HasValue)
+    {
+        <li><strong>Radius:</strong> @Model.ObstacleRadius m</li>
+    }
+    @if (Model.ObstacleType == "polyline" && !string.IsNullOrWhiteSpace(Model.ObstacleLineCoords))
+    {
+        <li><strong>Line points:</strong> @Model.ObstacleLineCoords</li>
+    }
+    @if (Model.ReporterLatitude.HasValue && Model.ReporterLongitude.HasValue)
+    {
+        <li><strong>Captured from device:</strong> @Model.ReporterLatitude, @Model.ReporterLongitude (@Model.ReporterAccuracy m)</li>
+        <li><strong>Captured at (UTC):</strong> @Model.CapturedAt</li>
+    }
+</ul>
 
-    <p>
-        @Model.ObstacleHeight
-    </p>
+<div id="mapOverview"></div>
 
-    <p>
-        @Model.ObstacleDescription
-    </p>
+@section Scripts {
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        (function(){
+          const lat = @Model.ObstacleLatitude.ToString(System.Globalization.CultureInfo.InvariantCulture);
+          const lon = @Model.ObstacleLongitude.ToString(System.Globalization.CultureInfo.InvariantCulture);
+          const type = "@(Model.ObstacleType ?? "")";
+          const radius = @(Model.ObstacleRadius.HasValue? Model.ObstacleRadius.Value.ToString(System.Globalization.CultureInfo.InvariantCulture) : "null");
+          const lineJson = `@(Model.ObstacleLineCoords ?? "")`;
 
-    <p>
-        @Model.ObstacleLatitude 
+          const map = L.map('mapOverview').setView([lat, lon], 15);
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OSM' }).addTo(map);
 
-    </p>
-
-    <p>
-        @Model.ObstacleLongitude
-    </p>
-</div>  *@
-
-
-@model WebApplication1.Models.ObstacleData
-
-<div class="container mt-5">
-    <div class="card shadow-sm rounded">
-        <div class="card-header bg-success text-white">
-            <h2 class="mb-0">Obstacle Overview</h2>
-        </div>
-        <div class="card-body">
-            <p class="lead">Thank you for registering an obstacle. Here are the details:</p>
-
-            <dl class="row">
-                <dt class="col-sm-3">Name</dt>
-                <dd class="col-sm-9">@Model.ObstacleName</dd>
-
-                <dt class="col-sm-3">Height</dt>
-                <dd class="col-sm-9">@Model.ObstacleHeight m</dd>
-
-                <dt class="col-sm-3">Description</dt>
-                <dd class="col-sm-9">@Model.ObstacleDescription</dd>
-
-                <dt class="col-sm-3">Latitude</dt>
-                <dd class="col-sm-9">@Model.ObstacleLatitude</dd>
-
-                <dt class="col-sm-3">Longitude</dt>
-                <dd class="col-sm-9">@Model.ObstacleLongitude</dd>
-            </dl>
-
-            <div id="map" class="my-4" style="height:400px; width:100%; border:2px solid #ccc; border-radius:8px;"></div>
-
-            <a asp-action="DataForm" class="btn btn-success">Register another obstacle</a>
-        </div>
-    </div>
-</div>
-
-<!-- Leaflet CSS -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-      crossorigin="" />
-
-<!-- Leaflet JS -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-        crossorigin=""></script>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        var lat = @Model.ObstacleLatitude;
-        var lng = @Model.ObstacleLongitude;
-
-        var map = L.map('map').setView([lat, lng], 14);
-
-        // Legg til OSM-fliser
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '&copy; OpenStreetMap contributors'
-        }).addTo(map);
-
-        // Legg til markør på valgt posisjon
-        L.marker([lat, lng])
-            .addTo(map)
-            .bindPopup("<b>@Model.ObstacleName</b><br/>Height: @Model.ObstacleHeight m")
-            .openPopup();
-    });
-</script>
-*
+          try {
+            if (type === "circle" && radius != null) {
+              L.circle([lat, lon], { radius: Number(radius) }).addTo(map);
+            } else if (type === "polyline" && lineJson.length > 0) {
+              const coords = JSON.parse(lineJson); // [[lat,lon], ...]
+              const line = L.polyline(coords.map(p => [p[0], p[1]])).addTo(map);
+              map.fitBounds(line.getBounds(), { padding: [20,20] });
+            } else {
+              L.marker([lat, lon]).addTo(map);
+            }
+          } catch (e) {
+            console.warn("Failed to render shape, falling back to marker", e);
+            L.marker([lat, lon]).addTo(map);
+          }
+        })();
+    </script>
+}

@@ -11,7 +11,12 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1" />
+	<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.9">
+	  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  <PrivateAssets>all</PrivateAssets>
+	</PackageReference>
     <PackageReference Include="MySqlConnector" Version="2.4.0" />
+	<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0" />
   </ItemGroup>
 
   <ItemGroup>

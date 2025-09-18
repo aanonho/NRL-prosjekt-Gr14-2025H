@@ -1,0 +1,35 @@
+services:
+  db:
+    image: mariadb:10.11
+    environment:
+      MYSQL_DATABASE: nrl
+      MYSQL_USER: nrl
+      MYSQL_PASSWORD: nrlpass
+      MYSQL_ROOT_PASSWORD: rootpass
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-prootpass"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    volumes:
+      - mysqldata:/var/lib/mysql
+
+  web:
+    build:
+      context: WebApplication1/WebApplication1
+      dockerfile: Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_URLS: http://+:8080
+      ASPNETCORE_ENVIRONMENT: Development
+      # Overstyrer appsettings i container:
+      ConnectionStrings__DefaultConnection: server=db;port=3306;database=nrl;user=nrl;password=nrlpass
+    ports:
+      - "8080:8080"
+
+volumes:
+  mysqldata: {}
