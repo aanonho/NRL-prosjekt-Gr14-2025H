@@ -1,0 +1,27 @@
+﻿@model WebApplication1.Models.UserData
+
+@{
+    ViewData["Title"] = "Registration Confirmation";
+}
+
+<div class="container mx-auto px-4 mt-8">
+    <div class="max-w-3xl mx-auto bg-white shadow-md rounded-lg p-6">
+        <h1 class="text-2xl sm:text-3xl font-bold mb-4 text-center text-gray-800">
+            Thank you for registering!
+        </h1>
+        <h2 class="text-xl font-semibold mb-4 text-gray-700 text-center">Submitted Data</h2>
+
+        <div class="space-y-3">
+            <p><span class="font-medium text-gray-700">Name:</span> @Model.Name</p>
+            <p><span class="font-medium text-gray-700">Email:</span> @Model.Email</p>
+            <p><span class="font-medium text-gray-700">Phone:</span> @Model.Phone</p>
+            <p><span class="font-medium text-gray-700">Address:</span> @Model.Address</p>
+        </div>
+
+        <div class="mt-6 text-center">
+            <a asp-action="UserForm" class="inline-block bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded font-semibold">
+                Register Another User
+            </a>
+        </div>
+    </div>
+</div>
