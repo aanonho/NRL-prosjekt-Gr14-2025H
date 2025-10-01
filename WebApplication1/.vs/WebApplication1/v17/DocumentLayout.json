@@ -1,5 +1,6 @@
 {
   "Version": 1,
+<<<<<<< HEAD
   "WorkspaceRootPath": "C:\\Users\\mytri\\Desktop\\Visual Studio 2022\\WebApplication1\\",
   "Documents": [
     {
@@ -13,6 +14,13 @@
     {
       "AbsoluteMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|c:\\users\\mytri\\desktop\\visual studio 2022\\webapplication1\\webapplication1\\views\\home\\obstacleregistrationoverview.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\views\\home\\obstacleregistrationoverview.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+=======
+  "WorkspaceRootPath": "C:\\Users\\mytri\\Desktop\\Visual Studio 2022\\WebApplication1\\WebApplication1\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\mytri\\Desktop\\Visual Studio 2022\\WebApplication1\\WebApplication1\\Program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+>>>>>>> master
     }
   ],
   "DocumentGroupContainers": [
@@ -31,6 +39,7 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+<<<<<<< HEAD
               "Title": "HomeController.cs",
               "DocumentMoniker": "C:\\Users\\mytri\\Desktop\\Visual Studio 2022\\WebApplication1\\WebApplication1\\Controllers\\HomeController.cs",
               "RelativeDocumentMoniker": "WebApplication1\\Controllers\\HomeController.cs",
@@ -65,6 +74,16 @@
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAFwAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-09-11T13:34:42.24Z",
+=======
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\mytri\\Desktop\\Visual Studio 2022\\WebApplication1\\WebApplication1\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "C:\\Users\\mytri\\Desktop\\Visual Studio 2022\\WebApplication1\\WebApplication1\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-15T09:28:04.096Z",
+>>>>>>> master
               "EditorCaption": ""
             }
           ]

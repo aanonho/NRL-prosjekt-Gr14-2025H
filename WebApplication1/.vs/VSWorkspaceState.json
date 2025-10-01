@@ -1,6 +1,7 @@
 {
   "ExpandedNodes": [
     "",
+<<<<<<< HEAD
     "\\WebApplication1",
     "\\WebApplication1\\Controllers",
     "\\WebApplication1\\Models",
@@ -8,5 +9,13 @@
     "\\WebApplication1\\Views\\Home"
   ],
   "SelectedNode": "\\WebApplication1\\Program.cs",
+=======
+    "\\Controllers",
+    "\\Models",
+    "\\Views",
+    "\\Views\\Home"
+  ],
+  "SelectedNode": "\\Program.cs",
+>>>>>>> master
   "PreviewInSolutionExplorer": false
 }

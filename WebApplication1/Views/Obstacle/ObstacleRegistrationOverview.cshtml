@@ -1,0 +1,86 @@
+﻿@model WebApplication1.Models.ObstacleData
+
+<div class="container mx-auto px-4 mt-6">
+    <div class="bg-white shadow-md rounded-lg overflow-hidden">
+        <!-- Header -->
+        <div class="bg-green-500 text-white px-4 py-3">
+            <h2 class="text-xl sm:text-2xl font-bold">Obstacle Overview</h2>
+        </div>
+
+        <!-- Body -->
+        <div class="p-4">
+            <p class="mb-4 text-gray-700">Thank you for registering an obstacle. Here are the details:</p>
+
+            <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-gray-800">
+                <div>
+                    <dt class="font-medium">Name</dt>
+                    <dd>@Model.ObstacleName</dd>
+                </div>
+
+                <div>
+                    <dt class="font-medium">Height</dt>
+                    <dd>@Model.ObstacleHeight m</dd>
+                </div>
+
+                <div>
+                    <dt class="font-medium">Description</dt>
+                    <dd>@Model.ObstacleDescription</dd>
+                </div>
+
+                <div>
+                    <dt class="font-medium">Latitude</dt>
+                    <dd>@Model.ObstacleLatitude</dd>
+                </div>
+
+                <div>
+                    <dt class="font-medium">Longitude</dt>
+                    <dd>@Model.ObstacleLongitude</dd>
+                </div>
+
+                <div>
+                    <dt class="font-medium">Submitted</dt>
+                    <dd>@Model.ObstacleRegistrationTime.ToLocalTime().ToString("dd.MM.yyyy HH:mm:ss")</dd>
+                </div>
+            </dl>
+
+            <!-- Kart -->
+            <div id="map" class="w-full h-96 sm:h-80 mt-6 rounded border-2 border-gray-300"></div>
+
+            <!-- Knapper -->
+            <div class="mt-6">
+                <a asp-action="DataForm" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded inline-block">
+                    Register another obstacle
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin="" />
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var lat = @(Model.ObstacleLatitude.HasValue? Model.ObstacleLatitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture) : "0");
+        var lng = @(Model.ObstacleLongitude.HasValue? Model.ObstacleLongitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture) : "0");
+
+        var map = L.map('map').setView([lat, lng], 14);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        L.marker([lat, lng])
+            .addTo(map)
+            .bindPopup("<b>@Model.ObstacleName</b><br/>Height: @Model.ObstacleHeight m")
+            .openPopup();
+    });
+</script>
