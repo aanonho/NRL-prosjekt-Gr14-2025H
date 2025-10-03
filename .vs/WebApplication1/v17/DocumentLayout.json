@@ -1,53 +1,53 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\mytri\\Desktop\\Visual Studio 2022\\WebApplication1\\",
+  "WorkspaceRootPath": "C:\\Users\\mytri\\Desktop\\WebApplication1 (kopi 01.10.25)\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|c:\\users\\mytri\\desktop\\visual studio 2022\\webapplication1\\webapplication1\\models\\obstacledata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|c:\\users\\mytri\\desktop\\webapplication1 (kopi 01.10.25)\\webapplication1\\models\\obstacledata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\models\\obstacledata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|c:\\users\\mytri\\desktop\\visual studio 2022\\webapplication1\\webapplication1\\views\\user\\userform.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|c:\\users\\mytri\\desktop\\webapplication1 (kopi 01.10.25)\\webapplication1\\views\\user\\userform.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\views\\user\\userform.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|c:\\users\\mytri\\desktop\\visual studio 2022\\webapplication1\\webapplication1\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|c:\\users\\mytri\\desktop\\webapplication1 (kopi 01.10.25)\\webapplication1\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|c:\\users\\mytri\\desktop\\visual studio 2022\\webapplication1\\webapplication1\\views\\obstacle\\obstacleregistrationoverview.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|c:\\users\\mytri\\desktop\\webapplication1 (kopi 01.10.25)\\webapplication1\\views\\obstacle\\obstacleregistrationoverview.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\views\\obstacle\\obstacleregistrationoverview.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|c:\\users\\mytri\\desktop\\visual studio 2022\\webapplication1\\webapplication1\\views\\obstacle\\dataform.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|c:\\users\\mytri\\desktop\\webapplication1 (kopi 01.10.25)\\webapplication1\\views\\obstacle\\dataform.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\views\\obstacle\\dataform.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|c:\\users\\mytri\\desktop\\visual studio 2022\\webapplication1\\webapplication1\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|c:\\users\\mytri\\desktop\\webapplication1 (kopi 01.10.25)\\webapplication1\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|c:\\users\\mytri\\desktop\\visual studio 2022\\webapplication1\\webapplication1\\models\\errorviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|c:\\users\\mytri\\desktop\\webapplication1 (kopi 01.10.25)\\webapplication1\\models\\errorviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\models\\errorviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|c:\\users\\mytri\\desktop\\visual studio 2022\\webapplication1\\webapplication1\\controllers\\obstaclecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|c:\\users\\mytri\\desktop\\webapplication1 (kopi 01.10.25)\\webapplication1\\controllers\\obstaclecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\controllers\\obstaclecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|c:\\users\\mytri\\desktop\\visual studio 2022\\webapplication1\\webapplication1\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|c:\\users\\mytri\\desktop\\webapplication1 (kopi 01.10.25)\\webapplication1\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|c:\\users\\mytri\\desktop\\visual studio 2022\\webapplication1\\webapplication1\\wwwroot\\css\\input.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "AbsoluteMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|c:\\users\\mytri\\desktop\\webapplication1 (kopi 01.10.25)\\webapplication1\\wwwroot\\css\\input.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
       "RelativeMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\wwwroot\\css\\input.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|c:\\users\\mytri\\desktop\\visual studio 2022\\webapplication1\\webapplication1\\tailwind.config.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "AbsoluteMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|c:\\users\\mytri\\desktop\\webapplication1 (kopi 01.10.25)\\webapplication1\\tailwind.config.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
       "RelativeMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\tailwind.config.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|c:\\users\\mytri\\desktop\\visual studio 2022\\webapplication1\\webapplication1\\wwwroot\\css\\output.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "AbsoluteMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|c:\\users\\mytri\\desktop\\webapplication1 (kopi 01.10.25)\\webapplication1\\wwwroot\\css\\output.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
       "RelativeMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\wwwroot\\css\\output.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
     }
   ],
@@ -58,12 +58,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 3,
           "Children": [
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
@@ -72,37 +68,35 @@
               "$type": "Document",
               "DocumentIndex": 8,
               "Title": "HomeController.cs",
-              "DocumentMoniker": "C:\\Users\\mytri\\Desktop\\Visual Studio 2022\\WebApplication1\\WebApplication1\\Controllers\\HomeController.cs",
+              "DocumentMoniker": "C:\\Users\\mytri\\Desktop\\WebApplication1 (kopi 01.10.25)\\WebApplication1\\Controllers\\HomeController.cs",
               "RelativeDocumentMoniker": "WebApplication1\\Controllers\\HomeController.cs",
-              "ToolTip": "C:\\Users\\mytri\\Desktop\\Visual Studio 2022\\WebApplication1\\WebApplication1\\Controllers\\HomeController.cs",
+              "ToolTip": "C:\\Users\\mytri\\Desktop\\WebApplication1 (kopi 01.10.25)\\WebApplication1\\Controllers\\HomeController.cs",
               "RelativeToolTip": "WebApplication1\\Controllers\\HomeController.cs",
               "ViewState": "AgIAABoAAAAAAAAAAAAgwAsAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-27T11:35:22.471Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-27T11:35:22.471Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 6,
               "Title": "ErrorViewModel.cs",
-              "DocumentMoniker": "C:\\Users\\mytri\\Desktop\\Visual Studio 2022\\WebApplication1\\WebApplication1\\Models\\ErrorViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\mytri\\Desktop\\WebApplication1 (kopi 01.10.25)\\WebApplication1\\Models\\ErrorViewModel.cs",
               "RelativeDocumentMoniker": "WebApplication1\\Models\\ErrorViewModel.cs",
-              "ToolTip": "C:\\Users\\mytri\\Desktop\\Visual Studio 2022\\WebApplication1\\WebApplication1\\Models\\ErrorViewModel.cs",
+              "ToolTip": "C:\\Users\\mytri\\Desktop\\WebApplication1 (kopi 01.10.25)\\WebApplication1\\Models\\ErrorViewModel.cs",
               "RelativeToolTip": "WebApplication1\\Models\\ErrorViewModel.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-27T11:35:24.077Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-27T11:35:24.077Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "ObstacleData.cs",
-              "DocumentMoniker": "C:\\Users\\mytri\\Desktop\\Visual Studio 2022\\WebApplication1\\WebApplication1\\Models\\ObstacleData.cs",
+              "DocumentMoniker": "C:\\Users\\mytri\\Desktop\\WebApplication1 (kopi 01.10.25)\\WebApplication1\\Models\\ObstacleData.cs",
               "RelativeDocumentMoniker": "WebApplication1\\Models\\ObstacleData.cs",
-              "ToolTip": "C:\\Users\\mytri\\Desktop\\Visual Studio 2022\\WebApplication1\\WebApplication1\\Models\\ObstacleData.cs",
+              "ToolTip": "C:\\Users\\mytri\\Desktop\\WebApplication1 (kopi 01.10.25)\\WebApplication1\\Models\\ObstacleData.cs",
               "RelativeToolTip": "WebApplication1\\Models\\ObstacleData.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAuwBgAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAA2AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-18T10:08:08.031Z",
               "EditorCaption": ""
@@ -111,87 +105,81 @@
               "$type": "Document",
               "DocumentIndex": 1,
               "Title": "UserForm.cshtml",
-              "DocumentMoniker": "C:\\Users\\mytri\\Desktop\\Visual Studio 2022\\WebApplication1\\WebApplication1\\Views\\User\\UserForm.cshtml",
+              "DocumentMoniker": "C:\\Users\\mytri\\Desktop\\WebApplication1 (kopi 01.10.25)\\WebApplication1\\Views\\User\\UserForm.cshtml",
               "RelativeDocumentMoniker": "WebApplication1\\Views\\User\\UserForm.cshtml",
-              "ToolTip": "C:\\Users\\mytri\\Desktop\\Visual Studio 2022\\WebApplication1\\WebApplication1\\Views\\User\\UserForm.cshtml",
+              "ToolTip": "C:\\Users\\mytri\\Desktop\\WebApplication1 (kopi 01.10.25)\\WebApplication1\\Views\\User\\UserForm.cshtml",
               "RelativeToolTip": "WebApplication1\\Views\\User\\UserForm.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAADAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-18T09:43:15.862Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-18T09:43:15.862Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 7,
               "Title": "ObstacleController.cs",
-              "DocumentMoniker": "C:\\Users\\mytri\\Desktop\\Visual Studio 2022\\WebApplication1\\WebApplication1\\Controllers\\ObstacleController.cs",
+              "DocumentMoniker": "C:\\Users\\mytri\\Desktop\\WebApplication1 (kopi 01.10.25)\\WebApplication1\\Controllers\\ObstacleController.cs",
               "RelativeDocumentMoniker": "WebApplication1\\Controllers\\ObstacleController.cs",
-              "ToolTip": "C:\\Users\\mytri\\Desktop\\Visual Studio 2022\\WebApplication1\\WebApplication1\\Controllers\\ObstacleController.cs",
+              "ToolTip": "C:\\Users\\mytri\\Desktop\\WebApplication1 (kopi 01.10.25)\\WebApplication1\\Controllers\\ObstacleController.cs",
               "RelativeToolTip": "WebApplication1\\Controllers\\ObstacleController.cs",
               "ViewState": "AgIAAAMAAAAAAAAAAAAAABgAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-18T09:36:29.131Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-18T09:36:29.131Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
               "Title": "ObstacleRegistrationOverview.cshtml",
-              "DocumentMoniker": "C:\\Users\\mytri\\Desktop\\Visual Studio 2022\\WebApplication1\\WebApplication1\\Views\\Obstacle\\ObstacleRegistrationOverview.cshtml",
+              "DocumentMoniker": "C:\\Users\\mytri\\Desktop\\WebApplication1 (kopi 01.10.25)\\WebApplication1\\Views\\Obstacle\\ObstacleRegistrationOverview.cshtml",
               "RelativeDocumentMoniker": "WebApplication1\\Views\\Obstacle\\ObstacleRegistrationOverview.cshtml",
-              "ToolTip": "C:\\Users\\mytri\\Desktop\\Visual Studio 2022\\WebApplication1\\WebApplication1\\Views\\Obstacle\\ObstacleRegistrationOverview.cshtml",
+              "ToolTip": "C:\\Users\\mytri\\Desktop\\WebApplication1 (kopi 01.10.25)\\WebApplication1\\Views\\Obstacle\\ObstacleRegistrationOverview.cshtml",
               "RelativeToolTip": "WebApplication1\\Views\\Obstacle\\ObstacleRegistrationOverview.cshtml",
               "ViewState": "AgIAAEUAAAAAAAAAAAAAAEUAAAA9AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-18T09:10:07.968Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-18T09:10:07.968Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
               "Title": "DataForm.cshtml",
-              "DocumentMoniker": "C:\\Users\\mytri\\Desktop\\Visual Studio 2022\\WebApplication1\\WebApplication1\\Views\\Obstacle\\DataForm.cshtml",
+              "DocumentMoniker": "C:\\Users\\mytri\\Desktop\\WebApplication1 (kopi 01.10.25)\\WebApplication1\\Views\\Obstacle\\DataForm.cshtml",
               "RelativeDocumentMoniker": "WebApplication1\\Views\\Obstacle\\DataForm.cshtml",
-              "ToolTip": "C:\\Users\\mytri\\Desktop\\Visual Studio 2022\\WebApplication1\\WebApplication1\\Views\\Obstacle\\DataForm.cshtml",
+              "ToolTip": "C:\\Users\\mytri\\Desktop\\WebApplication1 (kopi 01.10.25)\\WebApplication1\\Views\\Obstacle\\DataForm.cshtml",
               "RelativeToolTip": "WebApplication1\\Views\\Obstacle\\DataForm.cshtml",
               "ViewState": "AgIAAHsAAAAAAAAAAAAAABMAAAAjAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-18T09:08:00.575Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-18T09:08:00.575Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 5,
               "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Users\\mytri\\Desktop\\Visual Studio 2022\\WebApplication1\\WebApplication1\\Views\\Home\\Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\mytri\\Desktop\\WebApplication1 (kopi 01.10.25)\\WebApplication1\\Views\\Home\\Index.cshtml",
               "RelativeDocumentMoniker": "WebApplication1\\Views\\Home\\Index.cshtml",
-              "ToolTip": "C:\\Users\\mytri\\Desktop\\Visual Studio 2022\\WebApplication1\\WebApplication1\\Views\\Home\\Index.cshtml",
+              "ToolTip": "C:\\Users\\mytri\\Desktop\\WebApplication1 (kopi 01.10.25)\\WebApplication1\\Views\\Home\\Index.cshtml",
               "RelativeToolTip": "WebApplication1\\Views\\Home\\Index.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-18T08:58:46.577Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-18T08:58:46.577Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
               "Title": "_Layout.cshtml",
-              "DocumentMoniker": "C:\\Users\\mytri\\Desktop\\Visual Studio 2022\\WebApplication1\\WebApplication1\\Views\\Shared\\_Layout.cshtml",
+              "DocumentMoniker": "C:\\Users\\mytri\\Desktop\\WebApplication1 (kopi 01.10.25)\\WebApplication1\\Views\\Shared\\_Layout.cshtml",
               "RelativeDocumentMoniker": "WebApplication1\\Views\\Shared\\_Layout.cshtml",
-              "ToolTip": "C:\\Users\\mytri\\Desktop\\Visual Studio 2022\\WebApplication1\\WebApplication1\\Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "C:\\Users\\mytri\\Desktop\\WebApplication1 (kopi 01.10.25)\\WebApplication1\\Views\\Shared\\_Layout.cshtml",
               "RelativeToolTip": "WebApplication1\\Views\\Shared\\_Layout.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAEUAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-18T08:56:32.91Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-18T08:56:32.91Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 9,
               "Title": "input.css",
-              "DocumentMoniker": "C:\\Users\\mytri\\Desktop\\Visual Studio 2022\\WebApplication1\\WebApplication1\\wwwroot\\css\\input.css",
+              "DocumentMoniker": "C:\\Users\\mytri\\Desktop\\WebApplication1 (kopi 01.10.25)\\WebApplication1\\wwwroot\\css\\input.css",
               "RelativeDocumentMoniker": "WebApplication1\\wwwroot\\css\\input.css",
-              "ToolTip": "C:\\Users\\mytri\\Desktop\\Visual Studio 2022\\WebApplication1\\WebApplication1\\wwwroot\\css\\input.css",
+              "ToolTip": "C:\\Users\\mytri\\Desktop\\WebApplication1 (kopi 01.10.25)\\WebApplication1\\wwwroot\\css\\input.css",
               "RelativeToolTip": "WebApplication1\\wwwroot\\css\\input.css",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
@@ -201,9 +189,9 @@
               "$type": "Document",
               "DocumentIndex": 10,
               "Title": "tailwind.config.js",
-              "DocumentMoniker": "C:\\Users\\mytri\\Desktop\\Visual Studio 2022\\WebApplication1\\WebApplication1\\tailwind.config.js",
+              "DocumentMoniker": "C:\\Users\\mytri\\Desktop\\WebApplication1 (kopi 01.10.25)\\WebApplication1\\tailwind.config.js",
               "RelativeDocumentMoniker": "WebApplication1\\tailwind.config.js",
-              "ToolTip": "C:\\Users\\mytri\\Desktop\\Visual Studio 2022\\WebApplication1\\WebApplication1\\tailwind.config.js",
+              "ToolTip": "C:\\Users\\mytri\\Desktop\\WebApplication1 (kopi 01.10.25)\\WebApplication1\\tailwind.config.js",
               "RelativeToolTip": "WebApplication1\\tailwind.config.js",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
@@ -213,9 +201,9 @@
               "$type": "Document",
               "DocumentIndex": 11,
               "Title": "output.css",
-              "DocumentMoniker": "C:\\Users\\mytri\\Desktop\\Visual Studio 2022\\WebApplication1\\WebApplication1\\wwwroot\\css\\output.css",
+              "DocumentMoniker": "C:\\Users\\mytri\\Desktop\\WebApplication1 (kopi 01.10.25)\\WebApplication1\\wwwroot\\css\\output.css",
               "RelativeDocumentMoniker": "WebApplication1\\wwwroot\\css\\output.css",
-              "ToolTip": "C:\\Users\\mytri\\Desktop\\Visual Studio 2022\\WebApplication1\\WebApplication1\\wwwroot\\css\\output.css",
+              "ToolTip": "C:\\Users\\mytri\\Desktop\\WebApplication1 (kopi 01.10.25)\\WebApplication1\\wwwroot\\css\\output.css",
               "RelativeToolTip": "WebApplication1\\wwwroot\\css\\output.css",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",

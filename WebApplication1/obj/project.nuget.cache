@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Aci0lsh5Pl4=",
+  "dgSpecHash": "PJI6FvpbPbw=",
   "success": true,
-  "projectFilePath": "C:\\Users\\mytri\\Desktop\\Visual Studio 2022\\WebApplication1\\WebApplication1\\WebApplication1.csproj",
+  "projectFilePath": "C:\\Users\\mytri\\Desktop\\WebApplication1 (kopi 01.10.25)\\WebApplication1\\WebApplication1.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\mytri\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\8.0.2\\microsoft.extensions.dependencyinjection.abstractions.8.0.2.nupkg.sha512",
     "C:\\Users\\mytri\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\8.0.2\\microsoft.extensions.logging.abstractions.8.0.2.nupkg.sha512",

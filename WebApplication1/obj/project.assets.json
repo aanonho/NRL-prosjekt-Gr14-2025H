@@ -292,11 +292,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\mytri\\Desktop\\Visual Studio 2022\\WebApplication1\\WebApplication1\\WebApplication1.csproj",
+      "projectUniqueName": "C:\\Users\\mytri\\Desktop\\WebApplication1 (kopi 01.10.25)\\WebApplication1\\WebApplication1.csproj",
       "projectName": "WebApplication1",
-      "projectPath": "C:\\Users\\mytri\\Desktop\\Visual Studio 2022\\WebApplication1\\WebApplication1\\WebApplication1.csproj",
+      "projectPath": "C:\\Users\\mytri\\Desktop\\WebApplication1 (kopi 01.10.25)\\WebApplication1\\WebApplication1.csproj",
       "packagesPath": "C:\\Users\\mytri\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\mytri\\Desktop\\Visual Studio 2022\\WebApplication1\\WebApplication1\\obj\\",
+      "outputPath": "C:\\Users\\mytri\\Desktop\\WebApplication1 (kopi 01.10.25)\\WebApplication1\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
