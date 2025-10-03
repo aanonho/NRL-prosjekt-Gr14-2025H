@@ -1,21 +1,35 @@
-version: "3.9"
-
 services:
+  db:
+    image: mariadb:10.11
+    environment:
+      MYSQL_DATABASE: nrl
+      MYSQL_USER: nrl
+      MYSQL_PASSWORD: nrlpass
+      MYSQL_ROOT_PASSWORD: rootpass
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-prootpass"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    volumes:
+      - mysqldata:/var/lib/mysql
+
   webapplication1:
-    image: ${DOCKER_REGISTRY-}webapplication1
     build:
       context: .
       dockerfile: WebApplication1/Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_URLS: http://+:8080
+      ASPNETCORE_ENVIRONMENT: Development
+      # Important: use the service name "db" inside the Compose network
+      ConnectionStrings__DefaultConnection: server=db;port=3306;database=nrl;user=nrl;password=nrlpass
     ports:
-      - "5000:8080"
-    environment: 
-      - ASPNETCORE_ENVIRONMENT=Development 
-      - ConnectionStrings__DefaultConnection=server=mariadbcontainer;port=3306;database=mysql;user=root;password=051192;
-    networks:
-      - appnet 
+      - "8080:8080"
 
-networks:
-  appnet:
-    external: true
-    name: appnet
-
+volumes:
+  mysqldata: {}
