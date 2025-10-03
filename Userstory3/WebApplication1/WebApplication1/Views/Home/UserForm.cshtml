@@ -1,0 +1,30 @@
+﻿@model WebApplication1.Models.UserData
+
+<h1>User Registration Form</h1>
+<form asp-action="UserForm" method="post">
+    @Html.AntiForgeryToken()
+    <div>
+        <label asp-for="Name">Name:</label>
+        <input asp-for="Name" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="Email">Email:</label>
+        <input asp-for="Email" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="Phone">Phone:</label>
+        <input asp-for="Phone" />
+        <span asp-validation-for="Phone" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="Address">Address:</label>
+        <input asp-for="Address" />
+        <span asp-validation-for="Address" class="text-danger"></span>
+    </div>
+    <button type="submit">Submit Data</button>
+</form>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

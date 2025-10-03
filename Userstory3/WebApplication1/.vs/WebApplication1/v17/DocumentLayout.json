@@ -1,0 +1,278 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\helle\\2025-IS-202\\Semesterprosjekt\\NRL-prosjekt-Gr14-2025H\\Userstory3\\WebApplication1\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{BB3072AA-C22B-4087-A5E8-7B16CD6496B4}|Kartverket.UnitTests\\Kartverket.UnitTests.csproj|c:\\users\\helle\\2025-is-202\\semesterprosjekt\\nrl-prosjekt-gr14-2025h\\userstory3\\webapplication1\\kartverket.unittests\\homecontrollerunittests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BB3072AA-C22B-4087-A5E8-7B16CD6496B4}|Kartverket.UnitTests\\Kartverket.UnitTests.csproj|solutionrelative:kartverket.unittests\\homecontrollerunittests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|c:\\users\\helle\\2025-is-202\\semesterprosjekt\\nrl-prosjekt-gr14-2025h\\userstory3\\webapplication1\\webapplication1\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|c:\\users\\helle\\2025-is-202\\semesterprosjekt\\nrl-prosjekt-gr14-2025h\\userstory3\\webapplication1\\webapplication1\\webapplication1.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\webapplication1.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|c:\\users\\helle\\2025-is-202\\semesterprosjekt\\nrl-prosjekt-gr14-2025h\\userstory3\\webapplication1\\webapplication1\\views\\home\\obstacleregistrationoverview.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\views\\home\\obstacleregistrationoverview.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|c:\\users\\helle\\2025-is-202\\semesterprosjekt\\nrl-prosjekt-gr14-2025h\\userstory3\\webapplication1\\webapplication1\\views\\home\\dataform.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\views\\home\\dataform.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|c:\\users\\helle\\2025-is-202\\semesterprosjekt\\nrl-prosjekt-gr14-2025h\\userstory3\\webapplication1\\webapplication1\\models\\obstacledata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\models\\obstacledata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|c:\\users\\helle\\2025-is-202\\semesterprosjekt\\nrl-prosjekt-gr14-2025h\\userstory3\\webapplication1\\webapplication1\\views\\home\\userform.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\views\\home\\userform.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|c:\\users\\helle\\2025-is-202\\semesterprosjekt\\nrl-prosjekt-gr14-2025h\\userstory3\\webapplication1\\webapplication1\\models\\userdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\models\\userdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|c:\\users\\helle\\2025-is-202\\semesterprosjekt\\nrl-prosjekt-gr14-2025h\\userstory3\\webapplication1\\webapplication1\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|c:\\users\\helle\\2025-is-202\\semesterprosjekt\\nrl-prosjekt-gr14-2025h\\userstory3\\webapplication1\\webapplication1\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|c:\\users\\helle\\2025-is-202\\semesterprosjekt\\nrl-prosjekt-gr14-2025h\\userstory3\\webapplication1\\webapplication1\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|c:\\users\\helle\\2025-is-202\\semesterprosjekt\\nrl-prosjekt-gr14-2025h\\userstory3\\webapplication1\\webapplication1\\dockerfile||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\dockerfile||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|c:\\users\\helle\\2025-is-202\\semesterprosjekt\\nrl-prosjekt-gr14-2025h\\userstory3\\webapplication1\\webapplication1\\views\\home\\registrationoverview.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\views\\home\\registrationoverview.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|c:\\users\\helle\\2025-is-202\\semesterprosjekt\\nrl-prosjekt-gr14-2025h\\userstory3\\webapplication1\\webapplication1\\data\\appdbcontextfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\data\\appdbcontextfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|c:\\users\\helle\\2025-is-202\\semesterprosjekt\\nrl-prosjekt-gr14-2025h\\userstory3\\webapplication1\\webapplication1\\webapplication1.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|",
+      "RelativeMoniker": "D:0:0:{A4F75B14-340C-49CE-9308-A08B6EF60743}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\webapplication1.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "HomeControllerUnitTests.cs",
+              "DocumentMoniker": "C:\\Users\\helle\\2025-IS-202\\Semesterprosjekt\\NRL-prosjekt-Gr14-2025H\\Userstory3\\WebApplication1\\Kartverket.UnitTests\\HomeControllerUnitTests.cs",
+              "RelativeDocumentMoniker": "Kartverket.UnitTests\\HomeControllerUnitTests.cs",
+              "ToolTip": "C:\\Users\\helle\\2025-IS-202\\Semesterprosjekt\\NRL-prosjekt-Gr14-2025H\\Userstory3\\WebApplication1\\Kartverket.UnitTests\\HomeControllerUnitTests.cs",
+              "RelativeToolTip": "Kartverket.UnitTests\\HomeControllerUnitTests.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-02T11:27:14.199Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "ObstacleRegistrationOverview.cshtml",
+              "DocumentMoniker": "C:\\Users\\helle\\2025-IS-202\\Semesterprosjekt\\NRL-prosjekt-Gr14-2025H\\Userstory3\\WebApplication1\\WebApplication1\\Views\\Home\\ObstacleRegistrationOverview.cshtml",
+              "RelativeDocumentMoniker": "WebApplication1\\Views\\Home\\ObstacleRegistrationOverview.cshtml",
+              "ToolTip": "C:\\Users\\helle\\2025-IS-202\\Semesterprosjekt\\NRL-prosjekt-Gr14-2025H\\Userstory3\\WebApplication1\\WebApplication1\\Views\\Home\\ObstacleRegistrationOverview.cshtml",
+              "RelativeToolTip": "WebApplication1\\Views\\Home\\ObstacleRegistrationOverview.cshtml",
+              "ViewState": "AgIAADIAAAAAAAAAAAAwwEcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-09-17T13:45:00.622Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "AppDbContextFactory.cs",
+              "DocumentMoniker": "C:\\Users\\helle\\2025-IS-202\\Semesterprosjekt\\NRL-prosjekt-Gr14-2025H\\Userstory3\\WebApplication1\\WebApplication1\\Data\\AppDbContextFactory.cs",
+              "RelativeDocumentMoniker": "WebApplication1\\Data\\AppDbContextFactory.cs",
+              "ToolTip": "C:\\Users\\helle\\2025-IS-202\\Semesterprosjekt\\NRL-prosjekt-Gr14-2025H\\Userstory3\\WebApplication1\\WebApplication1\\Data\\AppDbContextFactory.cs",
+              "RelativeToolTip": "WebApplication1\\Data\\AppDbContextFactory.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-16T15:38:12.501Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "ObstacleData.cs",
+              "DocumentMoniker": "C:\\Users\\helle\\2025-IS-202\\Semesterprosjekt\\NRL-prosjekt-Gr14-2025H\\Userstory3\\WebApplication1\\WebApplication1\\Models\\ObstacleData.cs",
+              "RelativeDocumentMoniker": "WebApplication1\\Models\\ObstacleData.cs",
+              "ToolTip": "C:\\Users\\helle\\2025-IS-202\\Semesterprosjekt\\NRL-prosjekt-Gr14-2025H\\Userstory3\\WebApplication1\\WebApplication1\\Models\\ObstacleData.cs",
+              "RelativeToolTip": "WebApplication1\\Models\\ObstacleData.cs",
+              "ViewState": "AgIAABQAAAAAAAAAAAAwwCkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-16T15:17:18.439Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "AppDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\helle\\2025-IS-202\\Semesterprosjekt\\NRL-prosjekt-Gr14-2025H\\Userstory3\\WebApplication1\\WebApplication1\\Data\\AppDbContext.cs",
+              "RelativeDocumentMoniker": "WebApplication1\\Data\\AppDbContext.cs",
+              "ToolTip": "C:\\Users\\helle\\2025-IS-202\\Semesterprosjekt\\NRL-prosjekt-Gr14-2025H\\Userstory3\\WebApplication1\\WebApplication1\\Data\\AppDbContext.cs",
+              "RelativeToolTip": "WebApplication1\\Data\\AppDbContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-16T15:07:50.194Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "WebApplication1.csproj",
+              "DocumentMoniker": "C:\\Users\\helle\\2025-IS-202\\Semesterprosjekt\\NRL-prosjekt-Gr14-2025H\\Userstory3\\WebApplication1\\WebApplication1\\WebApplication1.csproj",
+              "RelativeDocumentMoniker": "WebApplication1\\WebApplication1.csproj",
+              "ToolTip": "C:\\Users\\helle\\2025-IS-202\\Semesterprosjekt\\NRL-prosjekt-Gr14-2025H\\Userstory3\\WebApplication1\\WebApplication1\\WebApplication1.csproj",
+              "RelativeToolTip": "WebApplication1\\WebApplication1.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-09-16T14:35:48.471Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "WebApplication1",
+              "DocumentMoniker": "C:\\Users\\helle\\2025-IS-202\\Semesterprosjekt\\NRL-prosjekt-Gr14-2025H\\Userstory3\\WebApplication1\\WebApplication1\\WebApplication1.csproj",
+              "RelativeDocumentMoniker": "WebApplication1\\WebApplication1.csproj",
+              "ToolTip": "C:\\Users\\helle\\2025-IS-202\\Semesterprosjekt\\NRL-prosjekt-Gr14-2025H\\Userstory3\\WebApplication1\\WebApplication1\\WebApplication1.csproj",
+              "RelativeToolTip": "WebApplication1\\WebApplication1.csproj",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-09-16T14:28:34.512Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "HomeController.cs",
+              "DocumentMoniker": "C:\\Users\\helle\\2025-IS-202\\Semesterprosjekt\\NRL-prosjekt-Gr14-2025H\\Userstory3\\WebApplication1\\WebApplication1\\Controllers\\HomeController.cs",
+              "RelativeDocumentMoniker": "WebApplication1\\Controllers\\HomeController.cs",
+              "ToolTip": "C:\\Users\\helle\\2025-IS-202\\Semesterprosjekt\\NRL-prosjekt-Gr14-2025H\\Userstory3\\WebApplication1\\WebApplication1\\Controllers\\HomeController.cs",
+              "RelativeToolTip": "WebApplication1\\Controllers\\HomeController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-11T13:42:23.491Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "Dockerfile",
+              "DocumentMoniker": "C:\\Users\\helle\\2025-IS-202\\Semesterprosjekt\\NRL-prosjekt-Gr14-2025H\\Userstory3\\WebApplication1\\WebApplication1\\Dockerfile",
+              "RelativeDocumentMoniker": "WebApplication1\\Dockerfile",
+              "ToolTip": "C:\\Users\\helle\\2025-IS-202\\Semesterprosjekt\\NRL-prosjekt-Gr14-2025H\\Userstory3\\WebApplication1\\WebApplication1\\Dockerfile",
+              "RelativeToolTip": "WebApplication1\\Dockerfile",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2025-09-17T11:37:42.042Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "UserData.cs",
+              "DocumentMoniker": "C:\\Users\\helle\\2025-IS-202\\Semesterprosjekt\\NRL-prosjekt-Gr14-2025H\\Userstory3\\WebApplication1\\WebApplication1\\Models\\UserData.cs",
+              "RelativeDocumentMoniker": "WebApplication1\\Models\\UserData.cs",
+              "ToolTip": "C:\\Users\\helle\\2025-IS-202\\Semesterprosjekt\\NRL-prosjekt-Gr14-2025H\\Userstory3\\WebApplication1\\WebApplication1\\Models\\UserData.cs",
+              "RelativeToolTip": "WebApplication1\\Models\\UserData.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-17T12:49:19.353Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\helle\\2025-IS-202\\Semesterprosjekt\\NRL-prosjekt-Gr14-2025H\\Userstory3\\WebApplication1\\WebApplication1\\Program.cs",
+              "RelativeDocumentMoniker": "WebApplication1\\Program.cs",
+              "ToolTip": "C:\\Users\\helle\\2025-IS-202\\Semesterprosjekt\\NRL-prosjekt-Gr14-2025H\\Userstory3\\WebApplication1\\WebApplication1\\Program.cs",
+              "RelativeToolTip": "WebApplication1\\Program.cs",
+              "ViewState": "AgIAAB8AAAAAAAAAAAAwwC4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-16T14:16:47.733Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\helle\\2025-IS-202\\Semesterprosjekt\\NRL-prosjekt-Gr14-2025H\\Userstory3\\WebApplication1\\WebApplication1\\appsettings.json",
+              "RelativeDocumentMoniker": "WebApplication1\\appsettings.json",
+              "ToolTip": "C:\\Users\\helle\\2025-IS-202\\Semesterprosjekt\\NRL-prosjekt-Gr14-2025H\\Userstory3\\WebApplication1\\WebApplication1\\appsettings.json",
+              "RelativeToolTip": "WebApplication1\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-09-16T14:12:41.959Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "DataForm.cshtml",
+              "DocumentMoniker": "C:\\Users\\helle\\2025-IS-202\\Semesterprosjekt\\NRL-prosjekt-Gr14-2025H\\Userstory3\\WebApplication1\\WebApplication1\\Views\\Home\\DataForm.cshtml",
+              "RelativeDocumentMoniker": "WebApplication1\\Views\\Home\\DataForm.cshtml",
+              "ToolTip": "C:\\Users\\helle\\2025-IS-202\\Semesterprosjekt\\NRL-prosjekt-Gr14-2025H\\Userstory3\\WebApplication1\\WebApplication1\\Views\\Home\\DataForm.cshtml",
+              "RelativeToolTip": "WebApplication1\\Views\\Home\\DataForm.cshtml",
+              "ViewState": "AgIAAE4BAAAAAAAAAAAwwGMBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-09-11T13:29:02.487Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "UserForm.cshtml",
+              "DocumentMoniker": "C:\\Users\\helle\\2025-IS-202\\Semesterprosjekt\\NRL-prosjekt-Gr14-2025H\\Userstory3\\WebApplication1\\WebApplication1\\Views\\Home\\UserForm.cshtml",
+              "RelativeDocumentMoniker": "WebApplication1\\Views\\Home\\UserForm.cshtml",
+              "ToolTip": "C:\\Users\\helle\\2025-IS-202\\Semesterprosjekt\\NRL-prosjekt-Gr14-2025H\\Userstory3\\WebApplication1\\WebApplication1\\Views\\Home\\UserForm.cshtml",
+              "RelativeToolTip": "WebApplication1\\Views\\Home\\UserForm.cshtml",
+              "ViewState": "AgIAAAcAAAAAAAAAAIBJwB4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-09-17T13:00:50.757Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "RegistrationOverview.cshtml",
+              "DocumentMoniker": "C:\\Users\\helle\\2025-IS-202\\Semesterprosjekt\\NRL-prosjekt-Gr14-2025H\\Userstory3\\WebApplication1\\WebApplication1\\Views\\Home\\RegistrationOverview.cshtml",
+              "RelativeDocumentMoniker": "WebApplication1\\Views\\Home\\RegistrationOverview.cshtml",
+              "ToolTip": "C:\\Users\\helle\\2025-IS-202\\Semesterprosjekt\\NRL-prosjekt-Gr14-2025H\\Userstory3\\WebApplication1\\WebApplication1\\Views\\Home\\RegistrationOverview.cshtml",
+              "RelativeToolTip": "WebApplication1\\Views\\Home\\RegistrationOverview.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-09-17T13:01:08.269Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
