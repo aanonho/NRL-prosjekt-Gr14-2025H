@@ -1,4 +1,6 @@
-﻿@model WebApplication1.Models.ObstacleData
+﻿<!-- Skjema for hinderregistrering med Leaflet-kart.
+     Lat/Lng fra kartklikk eller nettleserens geolokasjon (auto-sentrering ved tillatelse). -->
+@model WebApplication1.Models.ObstacleData
 
 @{
     ViewData["Title"] = "Obstacle Registration";
@@ -133,4 +135,49 @@
             });
         }
     });
+</script>
+<script>
+    (function () {
+      // These are the existing inputs your form already has
+      const latInput = document.getElementById('ObstacleLatitude');
+      const lngInput = document.getElementById('ObstacleLongitude');
+
+      function applyPosition(lat, lng) {
+        // Fill the form fields (keep 6 decimals; leave everything else as-is)
+        if (latInput) latInput.value = Number(lat).toFixed(6);
+        if (lngInput) lngInput.value = Number(lng).toFixed(6);
+
+        // If your page already has 'map' and 'marker' from your current Leaflet code,
+        // update them without touching any other logic.
+        try {
+          if (typeof map !== 'undefined') {
+            if (typeof marker === 'undefined' || !marker) {
+              // create a marker if your page hasn't yet
+              window.marker = L.marker([lat, lng]).addTo(map);
+            } else {
+              marker.setLatLng([lat, lng]);
+            }
+            // center/zoom the map on your location
+            map.setView([lat, lng], 14);
+          }
+        } catch (e) {
+          // silently ignore if map/marker aren't available yet
+          console.warn('Map centering skipped:', e);
+        }
+      }
+
+      // Try to get the user's position automatically on page load
+      if ('geolocation' in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          function (pos) {
+            applyPosition(pos.coords.latitude, pos.coords.longitude);
+          },
+          function (err) {
+            // Do nothing if denied/unavailable; your page keeps working as before
+            console.warn('Geolocation denied/unavailable:', err && err.message);
+          },
+          { enableHighAccuracy: true, timeout: 7000, maximumAge: 0 }
+        );
+      }
+    })();
 </script>
