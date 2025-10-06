@@ -1,0 +1,29 @@
+# Visual Studio
+.vs/
+.vscode/
+*.user
+*.suo
+
+# Build directories
+bin/
+obj/
+
+# Logs
+*.log
+
+# Docker artifacts
+docker-compose.override.yml
+Dockerfile.user
+
+# Publish outputs
+publish/
+out/
+
+# Temporary files
+*.db
+*.sqlite
+*.pdb
+
+# Secret and local settings
+appsettings.Development.json
+secrets.json

@@ -8,11 +8,11 @@ services:
       dockerfile: WebApplication1/Dockerfile
     ports:
       - "5000:8080"
-    environment: 
+    environment:
       - ASPNETCORE_ENVIRONMENT=Development 
       - ConnectionStrings__DefaultConnection=server=mariadbcontainer;port=3306;database=mysql;user=root;password=051192;
     networks:
-      - appnet 
+      - appnet
 
 networks:
   appnet:

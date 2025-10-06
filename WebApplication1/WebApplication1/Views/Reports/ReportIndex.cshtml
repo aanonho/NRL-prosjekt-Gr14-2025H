@@ -1,0 +1,106 @@
+﻿@model WebApplication1.ViewModels.ReportFilterViewModel
+
+@{
+    ViewData["Title"] = "Reports";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4 text-primary fw-bold">
+        <i class="bi bi-bar-chart-fill"></i> Reports Overview
+    </h2>
+
+    <form asp-action="Filter" method="post" class="card p-3 mb-4 shadow-sm border-0 bg-light">
+        <div class="row g-3">
+            <div class="col-md-2">
+                <label class="form-label fw-semibold">Type</label>
+                <input type="text" name="Type" value="@Model?.Type" class="form-control" placeholder="e.g. mast" />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label fw-semibold">Organization</label>
+                <input type="text" name="Organization" value="@Model?.Organization" class="form-control" placeholder="e.g. NLA" />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label fw-semibold">Reporter</label>
+                <input type="text" name="ReporterName" value="@Model?.ReporterName" class="form-control" placeholder="e.g. Ola Nordmann" />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label fw-semibold">Status</label>
+                <select name="Status" class="form-select">
+                    <option value="">All</option>
+                    <option value="pending" selected="@("pending" == Model?.Status)">Pending</option>
+                    <option value="approved" selected="@("approved" == Model?.Status)">Approved</option>
+                    <option value="rejected" selected="@("rejected" == Model?.Status)">Rejected</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label fw-semibold">From</label>
+                <input type="date" name="FromDate" value="@(Model?.FromDate?.ToString("yyyy-MM-dd"))" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label fw-semibold">To</label>
+                <input type="date" name="ToDate" value="@(Model?.ToDate?.ToString("yyyy-MM-dd"))" class="form-control" />
+            </div>
+        </div>
+
+        <div class="mt-3 d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary px-4 me-2">
+                <i class="bi bi-funnel-fill"></i> Filter
+            </button>
+            <a asp-action="Index" class="btn btn-outline-secondary px-4">
+                <i class="bi bi-arrow-clockwise"></i> Reset
+            </a>
+        </div>
+    </form>
+
+    @if (Model?.Reports != null && Model.Reports.Any())
+    {
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <table class="table table-hover align-middle">
+                    <thead class="table-primary">
+                        <tr>
+                            <th>ID</th>
+                            <th>Type</th>
+                            <th>Organization</th>
+                            <th>Reporter</th>
+                            <th>Date Reported</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var report in Model.Reports)
+                        {
+                            <tr>
+                                <td>@report.Id</td>
+                                <td>@report.Type</td>
+                                <td>@report.Organization</td>
+                                <td>@report.ReporterName</td>
+                                <td>@report.DateReported.ToString("dd.MM.yyyy")</td>
+                                <td>
+                                    @if (report.Status == "approved")
+                                    {
+                                        <span class="badge bg-success">Approved</span>
+                                    }
+                                    else if (report.Status == "rejected")
+                                    {
+                                        <span class="badge bg-danger">Rejected</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning text-dark">Pending</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info text-center shadow-sm" role="alert">
+            <i class="bi bi-info-circle"></i> No reports found.
+        </div>
+    }
+</div>

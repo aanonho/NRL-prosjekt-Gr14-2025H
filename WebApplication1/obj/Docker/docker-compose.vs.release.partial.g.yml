@@ -8,11 +8,11 @@ services:
         com.microsoft.created-by: "visual-studio"
         com.microsoft.visual-studio.project-name: "WebApplication1"
     volumes:
-      - C:\Users\mytri\vsdbg\vs2017u5:/remote_debugger:rw
-      - C:\Users\mytri\AppData\Roaming\ASP.NET\Https:/root/.aspnet/https:ro
-      - C:\Users\mytri\AppData\Roaming\ASP.NET\Https:/home/app/.aspnet/https:ro
-      - C:\Users\mytri\AppData\Roaming\Microsoft\UserSecrets:/root/.microsoft/usersecrets:ro
-      - C:\Users\mytri\AppData\Roaming\Microsoft\UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - C:\Users\sabri\vsdbg\vs2017u5:/remote_debugger:rw
+      - C:\Users\sabri\AppData\Roaming\ASP.NET\Https:/root/.aspnet/https:ro
+      - C:\Users\sabri\AppData\Roaming\ASP.NET\Https:/home/app/.aspnet/https:ro
+      - C:\Users\sabri\AppData\Roaming\Microsoft\UserSecrets:/root/.microsoft/usersecrets:ro
+      - C:\Users\sabri\AppData\Roaming\Microsoft\UserSecrets:/home/app/.microsoft/usersecrets:ro
       - C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Sdks\Microsoft.Docker.Sdk\tools\linux-x64\net6.0:/VSTools:ro
       - C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\HotReload:/HotReloadAgent:ro
 
