@@ -5,17 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - WebApplication1</title>
 
-    <!-- Tailwind CSS -->
-    <link href="~/css/output.css" rel="stylesheet" />
+    <!-- Tailwind CSS (bygget til wwwroot/css/output.css) -->
+    <link href="~/css/output.css" rel="stylesheet" asp-append-version="true" />
 
     <!-- Egne CSS-filer -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/WebApplication1.styles.css" asp-append-version="true" />
+
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 <body class="bg-gray-50">
 
     <header>
-        <nav class="bg-white shadow-md">
+        <nav class="bg-white shadow-md" aria-label="Main">
             <div class="container mx-auto px-4 py-3 flex items-center justify-between">
                 <!-- Logo -->
                 <a asp-area="" asp-controller="Home" asp-action="Index" class="flex items-center">
@@ -25,21 +27,21 @@
 
                 <!-- Hamburger (mobil) -->
                 <div class="sm:hidden">
-                    <button id="menu-btn" class="text-gray-800 focus:outline-none">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <button id="menu-btn" class="text-gray-800 focus:outline-none" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobile-menu">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                   d="M4 6h16M4 12h16M4 18h16" />
                         </svg>
                     </button>
                 </div>
 
-                <!-- Meny -->
+                <!-- Meny (desktop) -->
                 <ul id="menu" class="hidden sm:flex space-x-4 text-gray-800 font-medium">
                     <li><a class="hover:text-green-600" asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
                     <li><a class="hover:text-green-600" asp-area="" asp-controller="User" asp-action="UserForm">User Registration</a></li>
                     <li><a class="hover:text-green-600" asp-area="" asp-controller="Obstacle" asp-action="DataForm">Obstacle Registration</a></li>
-                    <li><a class="hover:text-green-600" asp-area="" asp-controller="Reports" asp-action="Index">Raports</a></li>
-                    <li><a class="hover:text-green-600" asp-area="" asp-controller="User" asp-action="User">User</a></li>
+                    <li><a class="hover:text-green-600" asp-area="" asp-controller="Reports" asp-action="Index">Reports</a></li>
+                    <li><a class="hover:text-green-600" asp-area="" asp-controller="User" asp-action="Index">User</a></li>
                     <li><a class="hover:text-green-600" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a></li>
                     <li><a class="hover:text-green-600" asp-area="" asp-controller="Home" asp-action="ContactUs">Contact Us</a></li>
                 </ul>
@@ -50,8 +52,8 @@
                 <li><a class="block hover:text-green-600" asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
                 <li><a class="block hover:text-green-600" asp-area="" asp-controller="User" asp-action="UserForm">User Registration</a></li>
                 <li><a class="block hover:text-green-600" asp-area="" asp-controller="Obstacle" asp-action="DataForm">Obstacle Registration</a></li>
-                <li><a class="block hover:text-green-600" asp-area="" asp-controller="Reports" asp-action="Index">Raports</a></li>
-                <li><a class="block hover:text-green-600" asp-area="" asp-controller="User" asp-action="User">User</a></li>
+                <li><a class="block hover:text-green-600" asp-area="" asp-controller="Reports" asp-action="Index">Reports</a></li>
+                <li><a class="block hover:text-green-600" asp-area="" asp-controller="User" asp-action="Index">User</a></li>
                 <li><a class="block hover:text-green-600" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a></li>
                 <li><a class="block hover:text-green-600" asp-area="" asp-controller="Home" asp-action="ContactUs">Contact Us</a></li>
             </ul>
@@ -66,18 +68,22 @@
 
     <footer class="bg-white border-t py-4 mt-6">
         <div class="container mx-auto px-4 text-center text-gray-600">
-            &copy; 2025 - WebApplication1 - <a asp-area="" asp-controller="Home" asp-action="Privacy" class="text-green-600 hover:underline">Privacy</a>
+            &copy; 2025 - WebApplication1 -
+            <a asp-area="" asp-controller="Home" asp-action="Privacy" class="text-green-600 hover:underline">Privacy</a>
         </div>
     </footer>
 
     <script>
-        // Toggle mobil-meny
+        // Toggle mobil-meny (sjekker at elementene finnes)
         const menuBtn = document.getElementById('menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
 
-        menuBtn.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
+        if (menuBtn && mobileMenu) {
+            menuBtn.addEventListener('click', () => {
+                const isHidden = mobileMenu.classList.toggle('hidden');
+                menuBtn.setAttribute('aria-expanded', String(!isHidden));
+            });
+        }
     </script>
 
     @await RenderSectionAsync("Scripts", required: false)

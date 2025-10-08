@@ -53,7 +53,7 @@
 
         <!-- Table -->
         <div class="p-4 overflow-x-auto">
-            @if (Model.Reports.Count == 0)
+            @if (Model.Reports == null || Model.Reports.Count == 0)
             {
                 <div class="text-gray-600">No reports found.</div>
             }
@@ -114,10 +114,5 @@
                 </table>
             }
         </div>
-
-        <!-- Hint -->
-        <div class="px-4 py-3 bg-gray-50 text-sm text-gray-600 border-t">
-            <p><strong>Note:</strong> Status and Organization are placeholders for now. They default to <em>Pending</em> and <em>Unknown</em> until those fields exist in the form and approval flow.</p>
-        </div>
-    </div>
-</div>
+    </div> <!-- /.bg-white card -->
+</div>     <!-- /.container -->

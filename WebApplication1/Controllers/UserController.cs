@@ -12,17 +12,18 @@ namespace WebApplication1.Controllers
             return View();
         }
 
-        //Mottar skjema; viser oppsummeringen med innsendte data
+        // Mottar skjema; viser oppsummeringen med innsendte data
         [HttpPost]
         public ActionResult UserForm(UserData userData)
         {
             return View("UserRegistrationOverview", userData);
         }
 
-        public IActionResult User()
-        {
-            return View();
-        }
 
+        [HttpGet]
+        public IActionResult Index()
+        {
+            return View("User");
+        }
     }
 }
