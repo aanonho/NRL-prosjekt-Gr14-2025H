@@ -25,3 +25,6 @@ dist/
 # Test results
 TestResults/
 coverage/
+
+*.user
+*.csproj.user
