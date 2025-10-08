@@ -1,0 +1,27 @@
+# Build results
+bin/
+obj/
+out/
+Debug/
+Release/
+
+# Visual Studio / VS Code
+.vs/
+.vscode/
+
+# Node
+node_modules/
+dist/
+
+# Logs and caches
+*.log
+*.cache
+*.tmp
+
+# Environment
+.env
+.env.*
+
+# Test results
+TestResults/
+coverage/
