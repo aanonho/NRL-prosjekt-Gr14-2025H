@@ -1,10 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebApplication1.Models;
+using WebApplication1.DataInfrastructure;
 
 namespace WebApplication1.Controllers
 {
     public class ObstacleController : Controller
     {
+        private readonly ApplicationDbContext _context;
+
+        public ObstacleController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
         // Blir kalt etter at vi trykker på "Register Obstacle"
         [HttpGet]
         public ActionResult DataForm()
@@ -14,9 +22,25 @@ namespace WebApplication1.Controllers
 
         // Blir kalt etter at vi trykker på "Submit Data"
         [HttpPost]
-        public ActionResult DataForm(ObstacleData obstacleData)
+        [ValidateAntiForgeryToken] // for å sikre at rapporter er gyldige
+        public async Task<IActionResult> DataForm(ObstacleData obstacleData, string submitType)
         {
-            if (!ModelState.IsValid)
+            if (submitType == "SaveDraft")
+            {
+                // Tillat lagring av utkast selv om validering feiler
+                obstacleData.IsDraft = true;
+
+                _context.Add(obstacleData);
+                await _context.SaveChangesAsync();
+            }
+            else if (submitType == "Submit" && ModelState.IsValid)
+            {
+                obstacleData.IsDraft = false;
+
+                _context.Add(obstacleData);
+                await _context.SaveChangesAsync();
+            }
+            else
             {
                 // Hvis valideringen feiler, returner til skjemaet med valideringsfeil
                 return View(obstacleData);
@@ -37,8 +61,9 @@ namespace WebApplication1.Controllers
             };
             ReportStore.Add(item);
 
-            // Vis oversiktssiden som før
+            // Viser oversiktssiden som før --> endre til at visningen går til ObstacleRegistrationOverview, hvordan??
             return View("ObstacleRegistrationOverview", obstacleData);
+
         }
     }
 }

@@ -65,9 +65,14 @@
             <input asp-for="ObstacleLongitude" class="w-full border border-gray-300 rounded p-2" readonly />
         </div>
 
-        <div class="sm:col-span-2">
+        <div class="sm:col-span-2 flex gap-6 mt-4">
             <button type="submit" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded mt-4">
                 Submit Data
+            </button>
+
+            <button type="submit"
+                    class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded">
+                Save draft
             </button>
         </div>
     </form>

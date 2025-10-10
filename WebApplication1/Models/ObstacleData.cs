@@ -1,9 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WebApplication1.Models
 {
     public class ObstacleData
     {
+        public int ObstacleID { get; set; } // trengs for å kunne sette en PK i database
+
         [Required(ErrorMessage = "Field is required")]
         [MaxLength(100)]
         public string? ObstacleName { get; set; }
@@ -17,6 +20,8 @@ namespace WebApplication1.Models
         public double? ObstacleLongitude { get; set; }
 
         public DateTime ObstacleRegistrationTime { get; set; } = DateTime.Now;
+        public bool IsDraft { get; set; } = true; // Default at rapport lagres som utkast
+
 
         // Nye egenskaper for å støtte ulike former
         public string? ObstacleType { get; set; } // "marker", "circle" eller "line"
