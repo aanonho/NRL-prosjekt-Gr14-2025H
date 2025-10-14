@@ -27,7 +27,8 @@ services:
       ASPNETCORE_URLS: http://+:8080
       ASPNETCORE_ENVIRONMENT: Development
       # Important: use the service name "db" inside the Compose network
-      ConnectionStrings__DefaultConnection: server=db;port=3306;database=nrl;user=nrl;password=nrlpass
+      ConnectionStrings__DefaultConnection: server=db;port=3306;database=nrl;user=nrl;password=nrlpass #ole Test
+     #ConnectionStrings__DefaultConnection: server=localhost;port=3306;database=nrl;user=nrl;password=nrlpass
     ports:
       - "8080:8080"
 

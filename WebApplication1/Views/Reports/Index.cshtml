@@ -1,14 +1,137 @@
-﻿@model WebApplication1.Models.ReportsIndexViewModel
+﻿@model WebApplication1.Models.ReportFilterViewModel
+
 
 @{
-    ViewData["Title"] = "Raports";
+       ViewData["Title"] = "Reports";
+}
+
+<div class="countainer mt-4">
+    <h2 class="mb-3 fw-bold">Reports Overview</h2>
+
+   <!--FILTER FORM-->
+   <form asp-action="Filter" method="post" class="card px-3 mb-4 shadow-md border bg-light">
+      <div class="row g-3">
+         <div class="col-md-2">
+            <label class="form-label fw-semibold">Type</label>
+            <input class="form-control" name="Type" value="@Model?.Type" placeholder="E.g pole" />
+         </div>
+
+         <div class="col-md-2">
+            <label class="form-label fw-semibold">Organization</label>
+            <input class="form-control" name="Organization" value="@Model?.Organization" placeholder="E.g NLA" />
+         </div>
+
+         <div class="col-md-2">
+            <label class="form-label fw-semibold">Reporter</label>
+            <input class="form-control" name="Reporter" value="@Model?.ReporterName" placeholder="E.g Ola Nordmann" />
+         </div>
+
+         <div class="col-md-2">
+            <label class="form-label fw-semibold">Status</label>
+            <select name="status" class="form-select">
+                <option value="">All</option>
+                <option value="Pending" selected="@(Model.Status == "Pending")">Pending</option>
+                <option value="Approved" selected="@(Model.Status == "Approved")">Approved</option>
+                <option value="Rejected" selected="@(Model.Status == "Rejected")">Rejected</option>
+            </select>
+         </div>
+        
+         <div class="col-md-2">
+            <label class="form-label fw-semibold">From</label>
+            <input type="date" name="FromDate" class="form-control" value="@(Model?.FromDate?.ToString("yyyy-MM-dd"))" />
+         </div>
+      </div>
+
+         <div class="col-md-2">
+            <label class="form-label fw-semibold">To</label>
+            <input type="date" name="ToDate" class="form-control" value="(@Model?.ToDate?.ToString("yyyy-MM-dd"))" />
+         </div>
+
+      <div class="row g-3 mt-1">
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">Sort by date</label>
+                <select name="Sort" class="form-select">
+                    <option value="date_desc" selected="@(Model?.Sort == "date_desc")">Newest first</option>
+                    <option value="date_asc" selected="@(Model?.Sort == "date_asc")">Oldest first</option>
+                </select>
+            </div>
+
+            <div class="col-md-9 d-flex align-items-end justify-content-end">
+                <button type="submit" class="btn btn-primary me-2">
+                    <i class="bi bi-funnel-fill"></i> Apply
+                </button>
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-clockwise"></i> Reset
+                </a>
+            </div>
+      </div>
+  </form>
+    
+    <!-- REPORT TABLE -->
+    @if (Model?.Reports != null && Model.Reports.Any())
+    {
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Type</th>
+                                <th>Organization</th>
+                                <th>Reporter</th>
+                                <th>Date Reported</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var report in Model.Reports)
+                            {
+                                <tr>
+                                    <td>@report.Id</td>
+                                    <td>@report.Type</td>
+                                    <td>@report.Organization</td>
+                                    <td>@report.ReporterName</td>
+                                    <td>@report.CreatedAt.ToString("dd.MM.yyyy HH:mm")</td>
+                                    <td>
+                                        @{
+                                            var status = report.Status ?? "Pending";
+                                            var badge = "bg-warning text-dark";   // Pending = gul
+                                            if (status.Equals("Approved", StringComparison.OrdinalIgnoreCase))
+                                                badge = "bg-success text-white";   // Approved = blå (ikke grønn)
+                                            else if (status.Equals("Rejected", StringComparison.OrdinalIgnoreCase))
+                                                badge = "bg-danger text-white";    // Rejected = rød
+                                        }
+                                        <span class="badge @badge">@status</span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-secondary text-center shadow-sm" role="alert">
+            <i class="bi bi-info-circle"></i> No reports found.
+        </div>
+    }
+</div>
+
+
+
+@*  Kommentert vekk! bare legg tilbake om det ikke funker! sabrine
+    @{
+    ViewData["Title"] = "Reports";
 }
 
 <div class="container mx-auto px-4 mt-6">
     <div class="bg-white shadow-md rounded-lg overflow-hidden">
         <!-- Header -->
         <div class="bg-green-500 text-white px-4 py-3 flex items-center justify-between">
-            <h1 class="text-xl sm:text-2xl font-bold">Raports</h1>
+            <h1 class="text-xl sm:text-2xl font-bold">Reports</h1>
             <p class="text-sm opacity-90">
                 Showing <strong>@Model.FilteredCount</strong> of <strong>@Model.TotalCount</strong>
             </p>
@@ -116,3 +239,4 @@
         </div>
     </div> <!-- /.bg-white card -->
 </div>     <!-- /.container -->
+*@

@@ -45,6 +45,23 @@
                     <li><a class="hover:text-green-600" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a></li>
                     <li><a class="hover:text-green-600" asp-area="" asp-controller="Home" asp-action="ContactUs">Contact Us</a></li>
                 </ul>
+                <!-- Login-status view -->
+                <div class="flex items-center space-x-3 text-sm">
+                    @if (Context.Session.GetString("Username") != null)
+                    {
+                        <span class="text-grey-700">
+                            Logged in as <strong>@Context.Session.GetString("Username")</strong>
+                        </span>
+                        <a asp-controller="Auth" asp-action="Logout"
+                        class="text-red-500 hover:text-red-800 underline">Logout</a>
+                    }
+                    else
+                    {
+                        <a asp-controller="Auth" asp-action="Login"
+                           class="text-blue-600 hover:text-red-800 underline">Login</a>
+    }
+                </div>
+
             </div>
 
             <!-- Mobil-meny -->
@@ -56,6 +73,25 @@
                 <li><a class="block hover:text-green-600" asp-area="" asp-controller="User" asp-action="Index">User</a></li>
                 <li><a class="block hover:text-green-600" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a></li>
                 <li><a class="block hover:text-green-600" asp-area="" asp-controller="Home" asp-action="ContactUs">Contact Us</a></li>
+            
+            <!--Login-status mobil-->
+              @if(Context.Session.GetString("Username") != null)
+                {
+                    <li class="pt-2 border-t border-grey-200 text-sm text-grey-700">>
+                        Logged in as <strong>@Context.Session.GetString("Username")</strong>
+                    </li>
+                    <li>
+                        <a asp-controller="Auth" asp-action="Logout"
+                        class="block text-red-600 hover:text-red-800 underline">Logout</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="pt-2 border-t border-grey-200">
+                        <a asp-controller="Auth" asp-action="Login"
+                           class="text-blue-600 hover:text-red-800 underline text-sm">Login</a>
+                    </li>
+                }
             </ul>
         </nav>
     </header>

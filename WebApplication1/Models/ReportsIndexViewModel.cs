@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 
+/*
 namespace WebApplication1.Models
 {
     // ViewModel for the Raports page so the view has both filters and the list.
@@ -16,3 +17,4 @@ namespace WebApplication1.Models
         public int FilteredCount { get; set; }
     }
 }
+*/
