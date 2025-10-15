@@ -9,6 +9,6 @@ namespace WebApplication1.DataInfrastructure
         {
         }
 
-        public DbSet<ObstacleData> ObstacleData { get; set; }
+        public DbSet<ObstacleData> Obstacles { get; set; }
     }
 }

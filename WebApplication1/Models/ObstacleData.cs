@@ -5,16 +5,12 @@ namespace WebApplication1.Models
 {
     public class ObstacleData
     {
-        public int ObstacleID { get; set; } // trengs for å kunne sette en PK i database
+        public Guid Id { get; set; } = Guid.NewGuid();
 
-        [Required(ErrorMessage = "Field is required")]
-        [MaxLength(100)]
         public string? ObstacleName { get; set; }
-        [Required(ErrorMessage = "Field is required")]
-        [Range(0, 200)]
+
         public double? ObstacleHeight { get; set; }
-        [Required(ErrorMessage = "Field is required")]
-        [MaxLength(1000)]
+ 
         public string? ObstacleDescription { get; set; }
         public double? ObstacleLatitude { get; set; }
         public double? ObstacleLongitude { get; set; }
@@ -22,6 +18,7 @@ namespace WebApplication1.Models
         public DateTime ObstacleRegistrationTime { get; set; } = DateTime.Now;
         public bool IsDraft { get; set; } = true; // Default at rapport lagres som utkast
 
+        // public string? GeometryGeoJson { get; set; } // Felt som beholder koordinatene til hinderets lokasjon?
 
         // Nye egenskaper for å støtte ulike former
         public string? ObstacleType { get; set; } // "marker", "circle" eller "line"

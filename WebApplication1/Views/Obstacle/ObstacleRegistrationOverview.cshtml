@@ -16,17 +16,17 @@
             <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-gray-800">
                 <div>
                     <dt class="font-medium">Name</dt>
-                    <dd>@Model.ObstacleName</dd>
+                    <dd>@(string.IsNullOrWhiteSpace(Model.ObstacleName) ? "Not provided" : Model.ObstacleName)</dd>
                 </div>
 
                 <div>
                     <dt class="font-medium">Height</dt>
-                    <dd>@Model.ObstacleHeight m</dd>
+                    <dd>@(Model.ObstacleHeight <= 0 ? "Not provided" : $"{Model.ObstacleHeight} m")</dd>
                 </div>
 
                 <div>
                     <dt class="font-medium">Description</dt>
-                    <dd>@Model.ObstacleDescription</dd>
+                    <dd>@(string.IsNullOrWhiteSpace(Model.ObstacleDescription) ? "Not provided" : Model.ObstacleDescription)</dd>
                 </div>
 
                 <div>

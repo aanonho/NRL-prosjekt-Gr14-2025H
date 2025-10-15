@@ -13,7 +13,7 @@ namespace WebApplication1.Models
         public double? Height { get; set; }             // From ObstacleHeight
         public double? Latitude { get; set; }           // From ObstacleLatitude
         public double? Longitude { get; set; }          // From ObstacleLongitude
-        public string? Type { get; set; }               // From ObstacleType (marker/circle/line)
+        public string? ObstacleType { get; set; }               // From ObstacleType (marker/circle/line)
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 

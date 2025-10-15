@@ -34,6 +34,9 @@
 
     <!-- Skjema -->
     <form asp-controller="Obstacle" asp-action="DataForm" method="post" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="submitType" id="submitType" value="Submit" />
+        <div asp-validation-summary="All" class="text-red-500 mb-4"></div>
 
         <div>
             <label asp-for="ObstacleName" class="block mb-1 font-medium text-gray-700">Obstacle Name</label>
@@ -44,7 +47,7 @@
 
         <div>
             <label asp-for="ObstacleHeight" class="block mb-1 font-medium text-gray-700">Obstacle Height (meters)</label>
-            <input asp-for="ObstacleHeight" class="w-full border border-gray-300 rounded p-2" />
+            <input asp-for="ObstacleHeight" type="number" step="any" class="w-full border border-gray-300 rounded p-2" />
             <span asp-validation-for="ObstacleHeight" class="text-red-500"></span>
             <p class="text-sm text-gray-500">Obstacle Height must be between 0 and 200 meters.</p>
         </div>
@@ -57,22 +60,21 @@
 
         <div>
             <label asp-for="ObstacleLatitude" class="block mb-1 font-medium text-gray-700">Latitude</label>
-            <input asp-for="ObstacleLatitude" class="w-full border border-gray-300 rounded p-2" readonly />
+            <input asp-for="ObstacleLatitude" id="ObstacleLatitude" type="number" step="any" class="w-full border border-gray-300 rounded p-2" readonly />
         </div>
 
         <div>
             <label asp-for="ObstacleLongitude" class="block mb-1 font-medium text-gray-700">Longitude</label>
-            <input asp-for="ObstacleLongitude" class="w-full border border-gray-300 rounded p-2" readonly />
+            <input asp-for="ObstacleLongitude" id="ObstacleLongitude" type="number" step="any" class="w-full border border-gray-300 rounded p-2" readonly />
         </div>
 
         <div class="sm:col-span-2 flex gap-6 mt-4">
-            <button type="submit" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded mt-4">
+            <button type="submit" onclick="setSubmitType('Submit')" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded mt-4">
                 Submit Data
             </button>
 
-            <button type="submit"
-                    class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded">
-                Save draft
+            <button type="submit" onclick="setSubmitType('SaveDraft')" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded mt-4">
+                Save Draft
             </button>
         </div>
     </form>
@@ -140,6 +142,10 @@
             });
         }
     });
+
+    function setSubmitType(value) {
+            document.getElementById('submitType').value = value;
+        }
 </script>
 <script>
     (function () {
