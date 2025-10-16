@@ -25,12 +25,14 @@ namespace WebApplication1.Controllers
             // Legg inn i enkel minneliste slik at Raports-siden kan vise det som blir sendt inn
             var item = new ReportItem
             {
-                Title = obstacleData.ObstacleName,
-                Description = obstacleData.ObstacleDescription,
-                Height = obstacleData.ObstacleHeight,
-                Latitude = obstacleData.ObstacleLatitude,
-                Longitude = obstacleData.ObstacleLongitude,
-                Type = obstacleData.ObstacleType,
+                //Title = obstacleData.ObstacleName,
+                //Description = obstacleData.ObstacleDescription,
+                //Height = obstacleData.ObstacleHeight,
+                //Latitude = obstacleData.ObstacleLatitude,
+                //Longitude = obstacleData.ObstacleLongitude,
+                //Type = obstacleData.ObstacleType,
+
+                Obstacle = obstacleData, //Composition for ObstacleData
                 CreatedAt = obstacleData.ObstacleRegistrationTime,
                 Status = "Pending",            // foreløpig fast verdi
                 Organization = "Unknown"       // foreløpig fast verdi

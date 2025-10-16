@@ -79,7 +79,7 @@
                                     @r.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")
                                 </td>
                                 <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-800">
-                                    @(!string.IsNullOrWhiteSpace(r.Title) ? r.Title : "(no title)")
+                                    @(!string.IsNullOrWhiteSpace(r.Obstacle.ObstacleName) ? r.Obstacle.ObstacleName : "(no title)")
                                 </td>
                                 <td class="px-3 py-2 whitespace-nowrap">
                                     @{
@@ -100,13 +100,13 @@
                                     @(string.IsNullOrWhiteSpace(r.Organization) ? "Unknown" : r.Organization)
                                 </td>
                                 <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-700">
-                                    @(r.Height?.ToString("0.##") ?? "-")
+                                    @(r.Obstacle.ObstacleHeight?.ToString("0.##") ?? "-")
                                 </td>
                                 <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-700">
-                                    @(r.Latitude?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "-")
+                                    @(r.Obstacle.ObstacleLatitude?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "-")
                                 </td>
                                 <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-700">
-                                    @(r.Longitude?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "-")
+                                    @(r.Obstacle.ObstacleLongitude?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "-")
                                 </td>
                             </tr>
                         }
