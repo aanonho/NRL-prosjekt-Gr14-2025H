@@ -8,18 +8,22 @@ namespace WebApplication1.Models
     // for fields we will support later (Status, Organization).
     public class ReportItem
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
+        /*
+        
         public string? Title { get; set; }              // From ObstacleName
         public string? Description { get; set; }        // From ObstacleDescription
         public double? Height { get; set; }             // From ObstacleHeight
         public double? Latitude { get; set; }           // From ObstacleLatitude
         public double? Longitude { get; set; }          // From ObstacleLongitude
         public string? ObstacleType { get; set; }               // From ObstacleType (marker/circle/line)
-        public bool IsDraft { get; set; } = false;      // From IsDraft, here default false
+        
         public double? Radius { get; set; }             // Is circle
         public string? LineCoords { get; set; }         // If line
-
+        */
+        public Guid Id { get; set; } = Guid.NewGuid();
+        public ObstacleData Obstacle { get; set; } = new(); // Composition instead of duplication and inheritance
         public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public bool IsDraft { get; set; } = false;      // From IsDraft, here default false
 
         // Not in the form yet — added now to make the list "future-ready":
         // Valid values we expect later: "Pending", "Approved", "Rejected".

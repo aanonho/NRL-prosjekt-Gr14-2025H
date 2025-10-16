@@ -20,6 +20,7 @@ namespace WebApplication1.Controllers
             return View();
         }
 
+        // Blir kalt når vi trykker på "Submit Data" / "Save Draft"
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DataForm(ValidatedObstacleData validatedData, string submitType)
@@ -38,12 +39,15 @@ namespace WebApplication1.Controllers
                 // Legg inn i enkel minneliste slik at Raports-siden kan vise det som blir sendt inn
                 var item = new ReportItem
                 {
+                    /*
                     Title = validatedData.ObstacleName,
                     Description = validatedData.ObstacleDescription,
                     Height = validatedData.ObstacleHeight,
                     Latitude = validatedData.ObstacleLatitude,
                     Longitude = validatedData.ObstacleLongitude,
                     ObstacleType = validatedData.ObstacleType,
+                    */
+                    Obstacle = validatedData,
                     CreatedAt = validatedData.ObstacleRegistrationTime,
                     Status = "Pending",            // foreløpig fast verdi
                     Organization = "Unknown"       // foreløpig fast verdi
@@ -57,6 +61,7 @@ namespace WebApplication1.Controllers
             {
                 var draft = new ReportItem
                 {
+                    /*
                     Title = validatedData.ObstacleName,
                     Height = validatedData.ObstacleHeight,
                     Description = validatedData.ObstacleDescription,
@@ -66,6 +71,7 @@ namespace WebApplication1.Controllers
                     Radius = validatedData.ObstacleRadius,
                     LineCoords = validatedData.ObstacleLineCoords,
                     IsDraft = true
+                    */
                 };
                 ReportStore.Add(draft);
 
