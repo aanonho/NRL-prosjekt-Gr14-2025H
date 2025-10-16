@@ -10,5 +10,6 @@ namespace WebApplication1.DataInfrastructure
         }
 
         public DbSet<ObstacleData> Obstacles { get; set; }
+        public DbSet<ReportItem> ReportStore { get; set; }
     }
 }

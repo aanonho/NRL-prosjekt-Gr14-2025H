@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.Eventing.Reader;
 
 namespace WebApplication1.Models
 {
@@ -14,6 +15,9 @@ namespace WebApplication1.Models
         public double? Latitude { get; set; }           // From ObstacleLatitude
         public double? Longitude { get; set; }          // From ObstacleLongitude
         public string? ObstacleType { get; set; }               // From ObstacleType (marker/circle/line)
+        public bool IsDraft { get; set; } = false;      // From IsDraft, here default false
+        public double? Radius { get; set; }             // Is circle
+        public string? LineCoords { get; set; }         // If line
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 

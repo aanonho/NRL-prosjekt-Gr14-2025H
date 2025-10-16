@@ -7,11 +7,11 @@ namespace WebApplication1.Models
     {
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        public string? ObstacleName { get; set; }
+        public virtual string? ObstacleName { get; set; }
 
-        public double? ObstacleHeight { get; set; }
+        public virtual double? ObstacleHeight { get; set; }
  
-        public string? ObstacleDescription { get; set; }
+        public virtual string? ObstacleDescription { get; set; }
         public double? ObstacleLatitude { get; set; }
         public double? ObstacleLongitude { get; set; }
 
