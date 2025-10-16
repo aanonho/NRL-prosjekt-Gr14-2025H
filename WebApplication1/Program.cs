@@ -1,11 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using MySqlConnector;
-using WebApplication1.DataInfrastructure;
+﻿using MySqlConnector;
 
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseInMemoryDatabase("ObstacleDb"));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
