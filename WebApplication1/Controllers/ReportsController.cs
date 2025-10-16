@@ -19,8 +19,19 @@ namespace WebApplication1.Controllers
             if (!string.IsNullOrWhiteSpace(statusNormalized) &&
                 !statusNormalized.Equals("all", StringComparison.OrdinalIgnoreCase))
             {
-                filtered = filtered.Where(r =>
-                    string.Equals(r.Status, statusNormalized, StringComparison.OrdinalIgnoreCase));
+                if (statusNormalized.Equals("draft", StringComparison.OrdinalIgnoreCase))
+                {
+                    filtered = filtered.Where(r => r.IsDraft);
+                }
+                else if (statusNormalized.Equals("submitted", StringComparison.OrdinalIgnoreCase))
+                {
+                    filtered = filtered.Where(r => !r.IsDraft);
+                }
+                else
+                {
+                    filtered = filtered.Where(r =>
+                        string.Equals(r.Status, statusNormalized, StringComparison.OrdinalIgnoreCase));
+                }
             }
 
             // Filter by organization (contains, case-insensitive)
@@ -39,6 +50,7 @@ namespace WebApplication1.Controllers
                 _ => filtered.OrderByDescending(r => r.CreatedAt) // default newest first
             };
 
+            // Prepare ViewModel
             var vm = new ReportsIndexViewModel
             {
                 Reports = filtered.ToList(),
