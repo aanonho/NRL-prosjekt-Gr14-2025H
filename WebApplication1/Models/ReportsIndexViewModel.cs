@@ -14,5 +14,8 @@ namespace WebApplication1.Models
 
         public int TotalCount { get; set; }
         public int FilteredCount { get; set; }
+
+        public int DraftCount => Reports.Count(r => r.IsDraft); // field for drafts
+        public int SubmittedCount => Reports.Count(r => !r.IsDraft); // field for submitted reports
     }
 }

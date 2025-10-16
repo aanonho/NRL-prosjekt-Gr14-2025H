@@ -6,27 +6,27 @@
     <div class="bg-white shadow-md rounded-lg overflow-hidden">
         <!-- Header -->
         <div class="bg-green-500 text-white px-4 py-3">
-            <h2 class="text-xl sm:text-2xl font-bold">Obstacle Overview</h2>
+            <h2 class="text-xl sm:text-2xl font-bold">@(Model.IsDraft ? "Draft saved" : "Report submitted")</h2>
         </div>
 
         <!-- Body -->
         <div class="p-4">
-            <p class="mb-4 text-gray-700">Thank you for registering an obstacle. Here are the details:</p>
+            <p class="mb-4 text-gray-700">@(Model.IsDraft ? "You have saved a draft. You may edit and submit later." : "Thank you for registering an obstacle. Here are the details:")</p>
 
             <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-gray-800">
                 <div>
                     <dt class="font-medium">Name</dt>
-                    <dd>@Model.ObstacleName</dd>
+                    <dd>@(string.IsNullOrWhiteSpace(Model.ObstacleName) ? "Not provided" : Model.ObstacleName)</dd>
                 </div>
 
                 <div>
                     <dt class="font-medium">Height</dt>
-                    <dd>@Model.ObstacleHeight m</dd>
+                    <dd>@(Model.ObstacleHeight <= 0 ? "Not provided" : $"{Model.ObstacleHeight} m")</dd>
                 </div>
 
                 <div>
                     <dt class="font-medium">Description</dt>
-                    <dd>@Model.ObstacleDescription</dd>
+                    <dd>@(string.IsNullOrWhiteSpace(Model.ObstacleDescription) ? "Not provided" : Model.ObstacleDescription)</dd>
                 </div>
 
                 <div>

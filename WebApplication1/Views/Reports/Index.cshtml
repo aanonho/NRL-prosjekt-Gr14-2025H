@@ -10,7 +10,9 @@
         <div class="bg-green-500 text-white px-4 py-3 flex items-center justify-between">
             <h1 class="text-xl sm:text-2xl font-bold">Raports</h1>
             <p class="text-sm opacity-90">
-                Showing <strong>@Model.FilteredCount</strong> of <strong>@Model.TotalCount</strong>
+                Showing <strong>@Model.FilteredCount</strong> of <strong>@Model.TotalCount</strong> reports —
+                <span class="text-green-100">Submitted:</span> <strong>@Model.SubmittedCount</strong>,
+                <span class="text-yellow-100">Drafts:</span> <strong>@Model.DraftCount</strong>
             </p>
         </div>
 
@@ -24,6 +26,8 @@
                     <option value="Pending" selected="@(Model.Status == "Pending")">Pending</option>
                     <option value="Approved" selected="@(Model.Status == "Approved")">Approved</option>
                     <option value="Rejected" selected="@(Model.Status == "Rejected")">Rejected</option>
+                    <option value="submitted" selected="@(Model.Status == "submitted")">Submitted</option>
+                    <option value="draft" selected="@(Model.Status == "draft")">Draft</option>
                 </select>
             </div>
 
@@ -74,7 +78,7 @@
                     <tbody class="bg-white divide-y divide-gray-200">
                         @foreach (var r in Model.Reports)
                         {
-                            <tr class="hover:bg-gray-50">
+                            <tr class="hover:bg-gray-50" @(r.IsDraft ? "bg-yellow-100" : "")">
                                 <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-700">
                                     @r.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")
                                 </td>
@@ -95,6 +99,10 @@
                                         }
                                     }
                                     <span class="text-xs px-2 py-1 rounded @badge">@status</span>
+                                    @if (r.IsDraft)
+                                    {
+                                        <span class="text-xs px-2 py-1 rounded bg-yellow-200 text-yellow-900 ml-2">Draft</span>
+                                    }
                                 </td>
                                 <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-700">
                                     @(string.IsNullOrWhiteSpace(r.Organization) ? "Unknown" : r.Organization)
