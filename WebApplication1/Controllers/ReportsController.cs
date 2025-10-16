@@ -39,6 +39,7 @@ namespace WebApplication1.Controllers
                 _ => filtered.OrderByDescending(r => r.CreatedAt) // default newest first
             };
 
+            // Prepare ViewModel
             var vm = new ReportsIndexViewModel
             {
                 Reports = filtered.ToList(),
