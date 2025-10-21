@@ -31,6 +31,11 @@ namespace WebApplication1.Models
 
         // Also not in the form yet. We'll default to "Unknown" so the filter still works.
         public string Organization { get; set; } = "Unknown";
+
+        //public static implicit operator ReportItem(ReportItem v)
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }
 
