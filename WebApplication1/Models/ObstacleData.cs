@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WebApplication1.Models
 {
@@ -10,12 +9,20 @@ namespace WebApplication1.Models
         public virtual string? ObstacleName { get; set; }
 
         public virtual double? ObstacleHeight { get; set; }
- 
+
         public virtual string? ObstacleDescription { get; set; }
         public double? ObstacleLatitude { get; set; }
         public double? ObstacleLongitude { get; set; }
 
-        public DateTime ObstacleRegistrationTime { get; set; } = DateTime.Now;
+        public DateTime ObstacleRegistrationTime { get; set; } = DateTime.UtcNow;
+
+        [NotMapped]
+        public DateTime ObstacleRegistrationLocalTime =>
+            TimeZoneInfo.ConvertTimeFromUtc(
+                ObstacleRegistrationTime,
+                TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time")
+            );
+
         public bool IsDraft { get; set; } = true; // Default at rapport lagres som utkast
 
         // public string? GeometryGeoJson { get; set; } // Felt som beholder koordinatene til hinderets lokasjon?
