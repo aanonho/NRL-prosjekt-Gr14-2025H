@@ -80,7 +80,14 @@
             attribution: '&copy; OpenStreetMap contributors'
         }).addTo(map);
 
-        L.marker([lat, lng])
+        // HelicopterIcon
+        var helicopterIcon = L.icon({
+        iconUrl: '/images/helicopterIcon.svg',
+        iconSize: [60, 60],
+        iconAnchor: [30, 30]
+         });
+
+        L.marker([lat, lng], {icon: helicopterIcon})
             .addTo(map)
             .bindPopup("<b>@Model.ObstacleName</b><br/>Height: @Model.ObstacleHeight m")
             .openPopup();
