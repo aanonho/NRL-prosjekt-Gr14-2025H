@@ -106,10 +106,12 @@
             attribution: '&copy; OpenStreetMap contributors'
         }).addTo(map);
 
-        var marker;
+        var obstacleMarker;
         var circle;
         var line;
         var latlngsLine = [];
+        var helicopterMarker;
+        
 
         // Sett marker/circle/line på kartklikk og oppdater skjema
         map.on('click', function(e) {
@@ -117,10 +119,11 @@
             document.getElementById('ObstacleLatitude').value = e.latlng.lat.toFixed(6);
             document.getElementById('ObstacleLongitude').value = e.latlng.lng.toFixed(6);
 
-            if(shape === 'marker') {
-                if(marker) map.removeLayer(marker);
-                marker = L.marker(e.latlng).addTo(map);
-                marker.on('click', function() { map.removeLayer(marker); marker=null; });
+            if(shape === 'marker') {            
+                if(obstacleMarker) map.removeLayer(obstacleMarker);
+        
+                obstacleMarker = L.marker(e.latlng).addTo(map);
+                obstacleMarker.on('click', function() { map.removeLayer(obstacleMarker); obstacleMarker=null; });
             } else if(shape === 'circle') {
                 if(circle) map.removeLayer(circle);
                 circle = L.circle(e.latlng, {color:'red', fillColor:'#f03', fillOpacity:0.5, radius:300}).addTo(map);
@@ -136,15 +139,27 @@
         // Sett submit type
         window.setSubmitType = function(value) {
             document.getElementById('submitType').value = value;
-        }
+        }   
+            // HelicopterIcon
+                var helicopterIcon = L.icon({
+                    iconUrl: '/images/helicopterIcon.svg',
+                    iconSize: [60, 60],
+                    iconAnchor: [30, 30]
+                });
 
         // Geolocation
         if('geolocation' in navigator) {
-            navigator.geolocation.getCurrentPosition(function(pos) {
+            navigator.geolocation.watchPosition(function(pos) {
                 var lat = pos.coords.latitude;
                 var lng = pos.coords.longitude;
-                map.setView([lat, lng], 14);
-                if(!marker) marker=L.marker([lat,lng]).addTo(map);
+
+                map.setView([lat, lng], 14);         
+
+                if (!helicopterMarker) {
+                    helicopterMarker = L.marker([lat, lng], { icon: helicopterIcon }).addTo(map);
+                } else {
+                    helicopterMarker.setLatLng([lat, lng]);
+                }             
             });
         }
 
