@@ -6,37 +6,40 @@ namespace WebApplication1.Controllers
 {
     public class ObstacleController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context; // Database context     
 
         public ObstacleController(ApplicationDbContext context)
         {
-            _context = context;
+            _context = context;          
         }
 
-        // Blir kalt etter at vi trykker på "Register Obstacle"
+        // For showing the form for obstacle data submission
         [HttpGet]
         public ActionResult DataForm()
-        {
+        {            
             return View();
         }
 
-        // Blir kalt når vi trykker på "Submit Data" / "Save Draft"
+        // For handling form submission and draft saving for obstacle data
         [HttpPost]
         [ValidateAntiForgeryToken]
+
         public async Task<IActionResult> DataForm(ValidatedObstacleData validatedData, string submitType)
         {
+            // Determine action based on submitType
             if (submitType == "Submit")
-            {
+            {              
+
                 if (!ModelState.IsValid)
-                {
+                {                  
                     return View(validatedData);
                 }
 
                 validatedData.IsDraft = false;
                 _context.Add(validatedData);
                 await _context.SaveChangesAsync();
-
-                // Legg inn i enkel minneliste slik at Raports-siden kan vise det som blir sendt inn
+             
+                // Create a new ReportItem to store the submitted obstacle data
                 var item = new ReportItem
                 {
                     /*
@@ -52,13 +55,16 @@ namespace WebApplication1.Controllers
                     Status = "Pending",            // foreløpig fast verdi
                     Organization = "Unknown"       // foreløpig fast verdi
                 };
+
+                // Add the new ReportItem to the ReportStore
                 ReportStore.Add(item);
 
                 return View("ObstacleRegistrationOverview", validatedData);
-            }
-
+            }        
             else if (submitType == "SaveDraft")
-            {
+            {             
+
+                // Create a new ReportItem to store the draft obstacle data
                 var draft = new ReportItem
                 {
                     /*

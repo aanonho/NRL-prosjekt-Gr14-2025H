@@ -5,6 +5,7 @@ namespace WebApplication1.DataInfrastructure
 {
     public class ApplicationDbContext : DbContext
     {
+        // Constructor to initialize the DbContext with options
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }

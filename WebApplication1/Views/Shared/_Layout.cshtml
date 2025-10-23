@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Obstacle Registration App</title>
 
-    <!-- Tailwind CSS (bygget til wwwroot/css/output.css) -->
+    <!-- Tailwind CSS (built to wwwroot/css/output.css) -->
     <link href="~/css/output.css" rel="stylesheet" asp-append-version="true" />
 
-    <!-- Egne CSS-filer -->
+    <!-- CSS-files -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/WebApplication1.styles.css" asp-append-version="true" />
 
@@ -25,7 +25,7 @@
                     <span class="ml-2 font-bold text-lg text-gray-800">Obstacle Registration App</span>
                 </a>
 
-                <!-- Hamburger (mobil) -->
+                <!-- Hamburger (mobile) -->
                 <div class="sm:hidden">
                     <button id="menu-btn" class="text-gray-800 focus:outline-none" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobile-menu">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -47,7 +47,7 @@
                 </ul>
             </div>
 
-            <!-- Mobil-meny -->
+            <!-- Mobile-meny -->
             <ul id="mobile-menu" class="sm:hidden hidden flex-col px-4 pb-4 space-y-2 bg-white">
                 <li><a class="block hover:text-green-600" asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
                 <li><a class="block hover:text-green-600" asp-area="" asp-controller="User" asp-action="UserForm">User Registration</a></li>
@@ -74,7 +74,7 @@
     </footer>
 
     <script>
-        // Toggle mobil-meny (sjekker at elementene finnes)
+        // Toggle mobile-meny (checking if the elements exist)
         const menuBtn = document.getElementById('menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
 

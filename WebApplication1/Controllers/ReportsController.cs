@@ -7,6 +7,7 @@ namespace WebApplication1.Controllers
 {
     public class ReportsController : Controller
     {
+        // For displaying the list of reports with filtering and sorting
         [HttpGet]
         public IActionResult Index(string status = "all", string sort = "date_desc", string organization = "")
         {
