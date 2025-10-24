@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WebApplication1.Models
 {
+    // Derived class with validation attributes
     public class ValidatedObstacleData : ObstacleData
     {
         [Required(ErrorMessage = "Field is required")]

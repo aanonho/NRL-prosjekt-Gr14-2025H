@@ -5,21 +5,21 @@ namespace WebApplication1.Controllers
 {
     public class UserController : Controller
     {
-        // Viser skjema for brukerdata
+        // Registration form for user data
         [HttpGet]
         public ActionResult UserForm()
         {
             return View();
         }
-
-        // Mottar skjema; viser oppsummeringen med innsendte data
+     
+        // Getting user data from the form submission, then displaying an overview
         [HttpPost]
         public ActionResult UserForm(UserData userData)
         {
             return View("UserRegistrationOverview", userData);
         }
 
-
+        // Displaying the user view
         [HttpGet]
         public IActionResult Index()
         {

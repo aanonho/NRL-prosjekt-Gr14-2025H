@@ -13,8 +13,11 @@ namespace WebApplication1.Models
         public virtual string? ObstacleDescription { get; set; }
         public double? ObstacleLatitude { get; set; }
         public double? ObstacleLongitude { get; set; }
+        public string? ObstacleType { get; set; } // "marker", "circle" or "line"
+        public double? ObstacleRadius { get; set; } // only for circle type obstacles
+        public string? ObstacleLineCoords { get; set; }
 
-        public DateTime ObstacleRegistrationTime { get; set; } = DateTime.UtcNow;
+        public DateTime ObstacleRegistrationTime { get; set; } = DateTime.UtcNow; //saves in UTC
 
         [NotMapped]
         public DateTime ObstacleRegistrationLocalTime =>
@@ -23,14 +26,10 @@ namespace WebApplication1.Models
                 TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time")
             );
 
-        public bool IsDraft { get; set; } = true; // Default at rapport lagres som utkast
+        public bool IsDraft { get; set; } = true; // Report is draft by default
 
         // public string? GeometryGeoJson { get; set; } // Felt som beholder koordinatene til hinderets lokasjon?
 
-        // Nye egenskaper for å støtte ulike former
-        public string? ObstacleType { get; set; } // "marker", "circle" eller "line"
-        public double? ObstacleRadius { get; set; } // bare relevant for sirkel
-        public string? ObstacleLineCoords { get; set; }
 
     }
 }
