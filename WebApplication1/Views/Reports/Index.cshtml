@@ -116,6 +116,22 @@
                                 <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-700">
                                     @(r.Obstacle.ObstacleLongitude?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "-")
                                 </td>
+                                <!-- show picture -->
+                                <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-700">
+                                    @if (!string.IsNullOrWhiteSpace(r.Obstacle.ImagePath))
+                                    {
+                                        <a href="@r.Obstacle.ImagePath" target="_blank">
+                                            <img src="@r.Obstacle.ImagePath"
+                                                 alt="Obstacle image"
+                                                 style="width: 300px; height: auto; object-fit: contain;"
+                                                 class="rounded border" />
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <span>-</span>
+                                    }
+                                </td>
                             </tr>
                         }
                     </tbody>

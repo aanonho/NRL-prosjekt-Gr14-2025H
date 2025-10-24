@@ -15,5 +15,7 @@ namespace WebApplication1.Models
         [Required(ErrorMessage = "Field is required")]
         [MaxLength(1000)]
         public override string? ObstacleDescription { get; set; }
+
+      
     }
 }
