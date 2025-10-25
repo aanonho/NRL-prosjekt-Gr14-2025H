@@ -79,17 +79,19 @@ namespace WebApplication1.Controllers
                 // Create a new ReportItem to store the draft obstacle data
                 var draft = new ReportItem
                 {
-                    /*
-                    Title = validatedData.ObstacleName,
-                    Height = validatedData.ObstacleHeight,
-                    Description = validatedData.ObstacleDescription,
-                    Latitude = validatedData.ObstacleLatitude,
-                    Longitude = validatedData.ObstacleLongitude,
-                    ObstacleType = validatedData.ObstacleType,
-                    Radius = validatedData.ObstacleRadius,
-                    LineCoords = validatedData.ObstacleLineCoords,
+
+                    //Title = validatedData.ObstacleName,
+                    //Height = validatedData.ObstacleHeight,
+                    //Description = validatedData.ObstacleDescription,
+                    //Latitude = validatedData.ObstacleLatitude,
+                    //Longitude = validatedData.ObstacleLongitude,
+                    //ObstacleType = validatedData.ObstacleType,
+                    //Radius = validatedData.ObstacleRadius,
+                    //LineCoords = validatedData.ObstacleLineCoords,
+                    Obstacle = validatedData,
+                    CreatedAt = validatedData.ObstacleRegistrationTime,
                     IsDraft = true
-                    */
+
                 };
                 ReportStore.Add(draft);
 

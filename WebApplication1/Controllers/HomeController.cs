@@ -14,12 +14,7 @@ namespace WebApplication1.Controllers
         public HomeController(IConfiguration config)
         {          
             _connectionString = config.GetConnectionString("DefaultConnection")!;
-        }
-       
-        public IActionResult ContactUs()
-        {           
-            return View();
-        }
+        }         
         public IActionResult Index()
         {       
             return View();
