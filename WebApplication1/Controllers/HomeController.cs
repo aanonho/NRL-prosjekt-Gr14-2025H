@@ -14,12 +14,7 @@ namespace WebApplication1.Controllers
         public HomeController(IConfiguration config)
         {          
             _connectionString = config.GetConnectionString("DefaultConnection")!;
-        }
-       
-        public IActionResult ContactUs()
-        {           
-            return View();
-        }
+        }         
         public IActionResult Index()
         {       
             return View();
@@ -29,8 +24,7 @@ namespace WebApplication1.Controllers
         {          
             return View();
         }
-
-      
+    
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error() // Error handling action
         {           

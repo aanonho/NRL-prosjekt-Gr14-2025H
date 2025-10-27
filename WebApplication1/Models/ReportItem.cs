@@ -23,6 +23,8 @@ namespace WebApplication1.Models
         public Guid Id { get; set; } = Guid.NewGuid();
         public ObstacleData Obstacle { get; set; } = new(); // Composition instead of duplication and inheritance
         public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+        public ObstacleData ImangePath { get; set; } = new();
         public bool IsDraft { get; set; } = false;      // From IsDraft, here default false
 
         // Not in the form yet — added now to make the list "future-ready":

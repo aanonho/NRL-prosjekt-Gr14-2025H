@@ -40,7 +40,7 @@
         </div> *@
 
         <!-- Form -->
-        <form asp-controller="Obstacle" asp-action="DataForm" method="post" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <form asp-controller="Obstacle" asp-action="DataForm" method="post" enctype="multipart/form-data" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             @Html.AntiForgeryToken()
             <input type="hidden" name="submitType" id="submitType" value="Submit" />
             <div asp-validation-summary="All" class="text-red-500 mb-4 sm:col-span-2"></div>
@@ -62,6 +62,50 @@
                 <textarea asp-for="ObstacleDescription" class="w-full border border-gray-300 rounded p-2 h-96"></textarea>
                 <span asp-validation-for="ObstacleDescription" class="text-red-500"></span>
             </div>
+
+            <!-- Image upload -->
+            <div class="sm:col-span-2">
+                <label for="ObstacleImage" class="block mb-1 font-medium text-gray-700">Upload Image</label>
+                <input type="file" name="imageFile" id="ObstacleImage" class="w-full border border-gray-300 rounded p-2" />
+
+                <!-- Image preview + delete -->
+                <div id="imageContainer" class="mt-2 hidden">
+                    <img id="imagePreview" class="max-h-60 rounded border border-gray-300" />
+                    <button type="button" id="removeImageButton"
+                            class="block mt-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded">
+                            Remove Image
+                    </button>
+                </div>
+            </div>
+
+
+            <script>
+                // 
+                const fileInput = document.getElementById('ObstacleImage');
+                const imagePreview = document.getElementById('imagePreview');
+                const imageContainer = document.getElementById('imageContainer');
+                const removeButton = document.getElementById('removeImageButton');
+              
+                // When user uploads an image
+                fileInput.addEventListener('change', function(event) {
+                    const file = event.target.files[0];
+                    if (!file) return;
+
+                    const reader = new FileReader();
+                    reader.onload = function() {
+                        imagePreview.src = reader.result;
+                        imageContainer.classList.remove('hidden');
+                    };
+                    reader.readAsDataURL(file);
+                });
+
+                // When user clicks remove button
+                removeButton.addEventListener('click', function() {
+                    fileInput.value = ""; // removes file input
+                    imagePreview.src = "";
+                    imageContainer.classList.add('hidden');
+                });
+            </script>
 
             <div>
                 <label asp-for="ObstacleLatitude" class="block mb-1 font-medium text-gray-700">Latitude</label>

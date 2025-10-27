@@ -16,7 +16,7 @@ namespace WebApplication1.Models
         public string? ObstacleType { get; set; } // "marker", "circle" or "line"
         public double? ObstacleRadius { get; set; } // only for circle type obstacles
         public string? ObstacleLineCoords { get; set; }
-
+        public string? ImagePath { get; set; } // Path to the uploaded image file
         public DateTime ObstacleRegistrationTime { get; set; } = DateTime.UtcNow; //saves in UTC
 
         [NotMapped]
