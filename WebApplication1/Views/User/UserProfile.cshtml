@@ -1,47 +1,77 @@
-﻿@model WebApplication1.Models.UserData
+﻿@model IEnumerable<WebApplication1.Models.ReportItem>
+@using WebApplication1.Models
 @{
     ViewData["Title"] = "User Profile";
+    var user = ViewBag.User as UserData;
 }
 
-<div class="min-h-screen bg-gray-100 flex flex-col items-center py-10 px-4 sm:px-6 lg:px-8">
-    <div class="w-full max-w-md sm:max-w-lg md:max-w-2x1 bg-white shadow-2xl rounded-2x1 p-6 sm:p-8 md:p-10">
-        <h1 class="text-2x1 sm:text-3xl font-bold text-center mb-8">User Profile</h1>
+<div class="flex min-h-screen flex-col items-center bg-gray-50 px-4 py-10 sm:px-6 lg:px-8">
+    <div class="w-full max-w-3xl rounded-2xl bg-white p-6 shadow-xl ring-1 ring-gray-200 sm:p-10">
+        <h1 class="mb-8 text-center text-3xl font-bold text-blue-700">User Profile</h1>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div>
-                <label class="block font-semibold text-gray-700 mb-1">Name</label>
-                <div class="p-3 bg-gray-50 rounded border border-gray-200">@Model.Name</div>
+        @if (user != null)
+        {
+            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                @foreach (var field in new[]
+                            {
+                        new { Label = "Name", Value = user.Name },
+                        new { Label = "E-mail", Value = user.Email },
+                        new { Label = "Phone Number", Value = user.Phone },
+                        new { Label = "Address", Value = user.Address },
+                        new { Label = "Role", Value = user.Role },
+                        new { Label = "Organization", Value = user.Organization }
+                        })
+                {
+                    <div>
+                        <label class="mb-1 block font-semibold text-gray-700">@field.Label</label>
+                        <div class="rounded-lg border border-gray-200 bg-gray-50 p-3 shadow-sm">@field.Value</div>
+                    </div>
+                }
             </div>
+        }
 
-            <div>
-                <label class="block font-semibold text-gray-700 mb-1">E-mail</label>
-                <div class="p-3 bg-gray-50 rounded border border-gray-200">@Model.Email</div>
-            </div>
+        <div class="mt-12">
+            <h2 class="mb-4 border-b pb-2 text-2xl font-semibold text-gray-800">Submitted Reports</h2>
 
-            <div>
-                <label class="block font-semibold text-gray-700 mb-1">Phone Number</label>
-                <div class="p-3 bg-gray-50 rounded border border-gray-200">@Model.Phone</div>
-            </div>
-
-            <div>
-                <label class="block font-semibold text-gray-700 mb-1">Address</label>
-                <div class="p-3 bg-gray-50 rounded border border-gray-200">@Model.Address</div>
-            </div>
-
-            <div>
-                <label class="block font-semibold text-gray-700 mb-1">Role</label>
-                <div class="p-3 bg-gray-50 rounded border border-gray-200">@Model.Role</div>
-            </div>
-
-            <div>
-                <label class="block font-semibold text-gray-700 mb-1">Organization</label>
-                <div class="p-3 bg-gray-50 rounded border border-gray-200">@Model.Organization</div>
-            </div>
+            @if (Model == null || !Model.Any())
+            {
+                <p class="text-gray-500">No reports submitted yet.</p>
+            }
+            else
+            {
+                <div class="overflow-x-auto">
+                    <table class="min-w-full overflow-hidden rounded-lg border border-gray-200">
+                        <thead class="bg-blue-600 text-sm text-white uppercase">
+                            <tr>
+                                <th class="px-4 py-2 text-left font-semibold">Created</th>
+                                <th class="px-4 py-2 text-left font-semibold">Status</th>
+                                <th class="px-4 py-2 text-left font-semibold">Description</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100 bg-white">
+                            @foreach (var report in Model)
+                            {
+                                <tr class="transition hover:bg-blue-50">
+                                    <td class="px-4 py-2 text-gray-700">@report.CreatedAt.ToString("g")</td>
+                                    <td class="px-4 py-2 font-semibold">
+                                        <span class="@(
+                                              report.Status == "Approved" ? "text-green-600" :
+                                              report.Status == "Rejected" ? "text-red-600" : "text-yellow-600")">
+                                    @report.Status
+                                </span>
+                            </td>
+                            <td class="px-4 py-2 text-gray-700">@report.Obstacle?.ToString() ?? "No description"</td>
+                        </tr>
+                                                }
+                        </tbody>
+                    </table>
+                </div>
+            }
         </div>
 
         <div class="mt-10 text-center">
             <a asp-controller="Home" asp-action="Index"
-            class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-xl transition-all duration-200">
+               class="inline-block rounded-xl bg-blue-600 px-6 py-2 font-semibold text-white transition hover:bg-blue-700">
                 Back to Homepage
             </a>
         </div>

@@ -7,105 +7,103 @@ namespace WebApplication1.Controllers
 {
     public class UserController : Controller
     {
-        // Mock data (works w/o connected db)
+        // Mock user list
         private static List<UserData> _users = new List<UserData>();
-        // Static user - shows in user profile
+
+        // Currently "logged in" user (temp)
         private static UserData? _currentUser = null;
 
-        // Registration form for user data
-        private static readonly List<UserData> _registeredUsers = new();
-
-
         [HttpGet]
-        public ActionResult UserForm()
+        public IActionResult UserForm()
         {
             return View();
         }
 
-        // Getting user data from the form submission, then displaying an overview
-
         [HttpPost]
-        public ActionResult UserForm(UserData userData)
+        public IActionResult UserForm(UserData userData)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                // Legg til brukeren i lista
-                _registeredUsers.Add(userData);
-
-                // Send videre til oversiktsside
-                return RedirectToAction("UserProfile", new { email = userData.Email });
+                return View(userData);
             }
 
-            // Hvis validering feiler, vis skjema på nytt
-            return View(userData);
-        }
-
-        // 👤 Viser en spesifikk brukerprofil
-        [HttpGet]
-        public ActionResult UserProfile(string email)
-        {
-            var user = _registeredUsers.FirstOrDefault(u => u.Email == email);
-            if (user == null)
-            {
-                return NotFound("User not found.");
-            }
-
-            return View(user);
-        }
-
-        // 📋 Gir tilgang til registrerte brukere (fra andre controllere)
-        public static List<UserData> GetRegisteredUsers()
-        {
-            return _registeredUsers;
-        }
-
-        // Brukes for User-menyen
-        public ActionResult Index()
-        {
-            if (_currentUser != null)
-            {
-                return View("UserProfile", _currentUser);
-            }
-
-            return RedirectToAction("UserForm");
-        }
-
-    [HttpPost]
-        public IActionResult SaveUser(UserData userData)
-        {
-            // Validation
-            if(!ModelState.IsValid)
-            {
-                return View("UserForm", userData);
-            }
-
-            // Add user in mock data list
+            // Add user if not already in list
             if (!_users.Any(u => u.Email == userData.Email))
             {
                 _users.Add(userData);
             }
 
-            // Setting current user
+            // Set as current user
             _currentUser = userData;
-            return RedirectToAction("UserProfile", new { email = userData.Email });
+
+            // Redirect based on role
+            if (userData.Role != null && userData.Role.ToLower() == "registrar")
+            {
+                return RedirectToAction("RegistrarDashboard");
+            }
+            else
+            {
+                return RedirectToAction("UserProfile", new { email = userData.Email });
+            }
         }
 
-        // Displaying user profile based on email
+
+        // == SUPPORTING METHODS FOR MOCK AUTHENTICATION ==
+        public static List<UserData> GetRegisteredUsers() => _users;
+
+        // Returns the currently "logged in" user
+        public static UserData? GetCurrentUser() => _currentUser;
+        
+        public IActionResult Index()
+        {
+         if (_currentUser != null)
+             return RedirectToAction("UserProfile", _currentUser);
+        
+             return RedirectToAction("UserForm");
+        }
+
+        // === USER PROFILE VIEW ===
         [HttpGet]
         public IActionResult UserProfile(string email)
         {
             var user = _users.FirstOrDefault(u => u.Email == email);
             if (user == null)
-            {
                 return RedirectToAction("UserForm");
-            }
-            return View("UserProfile", user);
+
+            var reports = ReportStore.GetReportsByUser(email);
+
+            // Sends user and reports to the view
+            ViewBag.User = user;
+            return View(reports);
         }
 
-        // Static method (other controllers can access mock-users)
-        public static List<UserData> GetMockUsers()
+        // === REGISTRAR VIEW ===
+        [HttpGet]
+        public IActionResult RegistrarDashboard(string status = "all", string sort = "date_desc")
         {
-            return _users;
+            var reports = ReportStore.GetAll() ?? new List<ReportItem>();
+
+            if
+                (!string.IsNullOrEmpty(status) && status.ToLower() != "all")
+            {
+                reports = reports
+                    .Where(r => string.Equals(r.Status, status, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
+
+            // Date sorting
+            reports = sort == "date_asc"
+                ? reports.OrderBy(r => r.CreatedAt).ToList()
+                : reports.OrderByDescending(r => r.CreatedAt).ToList();
+
+            return View("RegistrarDashboard", reports);
+        }
+
+        [HttpPost]
+        public IActionResult UpdateReportStatus(Guid id, string status, string message)
+        {
+            ReportStore.UpdateStatus(id, status, message);
+            return RedirectToAction("RegistrarDashboard");
         }
 
     }

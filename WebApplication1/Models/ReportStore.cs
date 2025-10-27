@@ -29,14 +29,6 @@ namespace WebApplication1.Models
             }
         }
 
-        public static List<ReportItem> GetAll()
-        {
-            lock (_lock)
-            {
-                // Return a copy so callers cannot modify internal list by mistake
-                return _items.ToList();
-            }
-        }
 
         // Gathering reports to a specific user
         public static List<ReportItem> GetReportsByUser(string email)

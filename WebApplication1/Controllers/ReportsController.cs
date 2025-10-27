@@ -64,5 +64,41 @@ namespace WebApplication1.Controllers
 
             return View(vm);
         }
+
+        [HttpGet]
+        public IActionResult ReportStatus(string status = "all")
+        {
+            var allReports = ReportStore.GetAll();
+
+            var filtered = status.ToLower() switch
+            {
+                "pending" => allReports.Where(r => r.Status == "Pending"),
+                "approved" => allReports.Where(r => r.Status == "Approved"),
+                "rejected" => allReports.Where(r => r.Status == "Rejected"),
+                _ => allReports
+            };
+
+            return View(filtered.ToList());
+        }
+
+        // Registrar-only: update of status
+        [HttpPost]
+        public IActionResult UpdateStatus(Guid id, string status, string message)
+        {
+            ReportStore.UpdateStatus(id, status, message);
+            return RedirectToAction("Index");
+        }
+
+        //Optional? Viewing report details
+        [HttpGet]
+        public IActionResult Details(Guid id)
+        {
+            var report = ReportStore.GetAll().FirstOrDefault(r => r.Id == id);
+            if (report == null)
+            {
+                return NotFound();
+            }
+            return View(report);
+        }
     }
 }
