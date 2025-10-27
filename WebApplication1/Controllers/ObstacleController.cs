@@ -53,8 +53,25 @@ namespace WebApplication1.Controllers
                     Obstacle = validatedData,
                     CreatedAt = validatedData.ObstacleRegistrationTime,
                     Status = "Pending",            // foreløpig fast verdi
-                    Organization = "Unknown"       // foreløpig fast verdi
+                    Organization = currentUser?.OrganizationName ?? "Unknown",       // foreløpig fast verdi
+
+                    UserLink = new ReportItem.UserLink
+                    {
+                        SubmittedByEmail = currentUser?.Email ?? "Unknown",
+                        SubmittedByName = currentUser?.Name ?? "Unknown",
+                        OrganizationName = currentUser?.Organization ?? "Uknown"
+                    }
                 };
+
+                // Connecting report to user (temp)
+                var currentUser = UserController.GetRegisteredUsers().FirstOrDefault();
+                if (currentUser != null)
+                {
+                    item.SubmittedByEmail = currentUser.Email;
+                    item.SubmittedByName = currentUser.Name;
+                    item.Organization = currentUser.Organization;
+                    item.OrganizationName = currentUser.Organization;
+                }
 
                 // Add the new ReportItem to the ReportStore
                 ReportStore.Add(item);
@@ -85,6 +102,17 @@ namespace WebApplication1.Controllers
                 await _context.SaveChangesAsync();
 
                 return View("ObstacleRegistrationOverview", validatedData);
+
+                
+                var currentUser = UserController.GetRegisteredUsers().FirstOrDefault();
+                if (currentUser != null)
+                {
+                    draft.SubmittedByEmail = currentUser.Email;
+                    draft.SubmittedByName = currentUser.Name;
+                    draft.Organization = currentUser.Organization;
+                    draft.OrganizationName = currentUser.Organization;
+                }
+                    ReportStore.Add(draft);
             }
 
             return View(validatedData);

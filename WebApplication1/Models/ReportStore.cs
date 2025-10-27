@@ -28,5 +28,37 @@ namespace WebApplication1.Models
                 return _items.ToList();
             }
         }
+
+        public static List<ReportItem> GetAll()
+        {
+            lock (_lock)
+            {
+                // Return a copy so callers cannot modify internal list by mistake
+                return _items.ToList();
+            }
+        }
+
+        // Gathering reports to a specific user
+        public static List<ReportItem> GetReportsByUser(string email)
+        {
+            lock (_lock)
+            {
+                return _items.Where(item => item.SubmittedByEmail == email).ToList();
+            }
+        }
+
+        // Update status, add message(Registrar)
+        public static void UpdateStatus(Guid id, string status, string? message = null)
+        {
+            lock (_lock)
+            {
+                var report = _items.FirstOrDefault(i => i.Id == id);
+                if (report != null)
+                {
+                    report.Status = status;
+                    report.ReviewMessage = message ?? "";
+                }
+            }
+        }
     }
 }

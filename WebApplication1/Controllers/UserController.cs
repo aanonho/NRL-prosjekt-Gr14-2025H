@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebApplication1.Models;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace WebApplication1.Controllers
 {
@@ -11,6 +13,9 @@ namespace WebApplication1.Controllers
         private static UserData? _currentUser = null;
 
         // Registration form for user data
+        private static readonly List<UserData> _registeredUsers = new();
+
+
         [HttpGet]
         public ActionResult UserForm()
         {
@@ -18,15 +23,44 @@ namespace WebApplication1.Controllers
         }
 
         // Getting user data from the form submission, then displaying an overview
+
         [HttpPost]
         public ActionResult UserForm(UserData userData)
         {
-            return View("UserRegistrationOverview", userData);
+            if (ModelState.IsValid)
+            {
+                // Legg til brukeren i lista
+                _registeredUsers.Add(userData);
+
+                // Send videre til oversiktsside
+                return RedirectToAction("UserProfile", new { email = userData.Email });
+            }
+
+            // Hvis validering feiler, vis skjema på nytt
+            return View(userData);
         }
 
-        // Displaying the user view
+        // 👤 Viser en spesifikk brukerprofil
         [HttpGet]
-        public IActionResult Index()
+        public ActionResult UserProfile(string email)
+        {
+            var user = _registeredUsers.FirstOrDefault(u => u.Email == email);
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            return View(user);
+        }
+
+        // 📋 Gir tilgang til registrerte brukere (fra andre controllere)
+        public static List<UserData> GetRegisteredUsers()
+        {
+            return _registeredUsers;
+        }
+
+        // Brukes for User-menyen
+        public ActionResult Index()
         {
             if (_currentUser != null)
             {
