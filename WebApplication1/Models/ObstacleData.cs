@@ -11,11 +11,17 @@ namespace WebApplication1.Models
         public virtual double? ObstacleHeight { get; set; }
 
         public virtual string? ObstacleDescription { get; set; }
+
         public double? ObstacleLatitude { get; set; }
         public double? ObstacleLongitude { get; set; }
-        public string? ObstacleType { get; set; } // "marker", "circle" or "line"
-        public double? ObstacleRadius { get; set; } // only for circle type obstacles
-        public string? ObstacleLineCoords { get; set; }
+        public string? ObstacleType { get; set; } // Type of obstacle (e.g., "circle", "line", etc.)    
+        public double? ObstacleRadius { get; set; } // For circular obstacles
+        public string? ObstacleGeometry { get; set; } // JSON representation of the obstacle's geometry
+       
+        // For line obstacles
+        public string? ObstacleLineHeight { get; set; } 
+        public string? ObstacleLineLength { get; set; }
+
         public string? ImagePath { get; set; } // Path to the uploaded image file
         public DateTime ObstacleRegistrationTime { get; set; } = DateTime.UtcNow; //saves in UTC
 
