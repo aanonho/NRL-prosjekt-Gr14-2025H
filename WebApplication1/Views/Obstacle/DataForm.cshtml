@@ -288,7 +288,7 @@
                 if(latlngsLine.length > 1) // Draw line if more than 1 point
                 {
                     if(line) map.removeLayer(line);
-                    line = L.polyline(latlngsLine, {color: '#555555', fillColor:'#555555', weight: 3, fillOpacity: 0.7}).addTo(map);
+                    line = L.polyline(latlngsLine, {color: '#555555', weight: 3, dashArray: '5, 10'}).addTo(map);
                 }
 
                 let totalLength = 0;
