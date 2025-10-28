@@ -279,11 +279,32 @@
                 // });
 
                 latlngsLine.forEach(pt => {                   
-                    const squareIcon = L.divIcon ({
-                        className: 'square-marker',
-                        html: '<div style="width:10px; height:10px; background-color:#3388ff;"></div>',                   
+                    const circleIcon = L.divIcon ({
+                        className: 'circle-marker',
+                        html: `
+                        <div style="
+                            width:20px;
+                            height:20px; 
+                            background-color:red;
+                            border-radius:50%;
+                            border: 2px solid darkred;
+                            display:flex;
+                            align-items:center; 
+                            justify-content:center;
+                            box-sizing:border-box;                            
+                        "> 
+                            <div style="
+                                width:8px;
+                                height:8px;
+                                background-color:darkred;
+                                border-radius:50%;
+                            "></div>
+                        </div>
+                        `,
+                        iconSize: [20, 20],
+                        iconAnchor: [10, 10]
                     });                                  
-                    const m = L.marker(pt, {icon: squareIcon}).addTo(map);
+                    const m = L.marker(pt, {icon: circleIcon}).addTo(map);
                     lineMarkers.push(m);
                 });
              
@@ -291,7 +312,7 @@
                 if(latlngsLine.length > 1) // Draw line if more than 1 point
                 {
                     if(line) map.removeLayer(line);
-                    line = L.polyline(latlngsLine, {color: '#555555', weight: 3, dashArray: '5, 10'}).addTo(map);
+                    line = L.polyline(latlngsLine, {color: '#000000', weight: 3, dashArray: '5, 10'}).addTo(map);
                 }
 
                 let totalLength = 0;
