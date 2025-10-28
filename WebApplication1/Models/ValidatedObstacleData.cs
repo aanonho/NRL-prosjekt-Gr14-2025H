@@ -16,8 +16,7 @@ namespace WebApplication1.Models
 
         [Required(ErrorMessage = "Obstacle Description is required")]
         [MaxLength(1000, ErrorMessage ="Descpriction cannot exceed 1000 characters")]
-        public override string? ObstacleDescription { get; set; }
-     
+        public override string? ObstacleDescription { get; set; }    
 
     }
 }

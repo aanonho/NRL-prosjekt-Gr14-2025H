@@ -191,6 +191,7 @@
         const obstacleTypeHidden = document.getElementById('ObstacleTypeHidden')
         const areaRadiusContainer= document.getElementById('areaRadiusContainer');   
         const lineLengthContainer= document.getElementById('lineLengthContainer');
+        const lineCoordinatesContainer = document.getElementById('lineCoordinatesContainer');
 
             
         obstacleTypeSelect.addEventListener('change', function() {
@@ -234,6 +235,10 @@
                 map.removeLayer(line);
                 line = null;
                 latlngsLine = [];
+            }
+            if (lineMarkers && lineMarkers.length > 0) {
+                lineMarkers.forEach(m => map.removeLayer(m));
+                lineMarkers = [];
             }
 
             if(type === 'point') 
