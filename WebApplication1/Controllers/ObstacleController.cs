@@ -20,7 +20,6 @@ namespace WebApplication1.Controllers
             return View();
         }
 
-
         // For handling form submission and draft saving for obstacle data
         [HttpPost]
         [ValidateAntiForgeryToken]

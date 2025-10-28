@@ -9,13 +9,15 @@ namespace WebApplication1.Models
         [Required(ErrorMessage = "Field is required")]
         [MaxLength(100)]
         public override string? ObstacleName { get; set; }
+
         [Required(ErrorMessage = "Field is required")]
-        [Range(0, 200)]
+        [Range(0, 200, ErrorMessage = "Height must be between 0 and 200 meters")]
         public override double? ObstacleHeight { get; set; }
+
         [Required(ErrorMessage = "Field is required")]
         [MaxLength(1000)]
         public override string? ObstacleDescription { get; set; }
+     
 
-      
     }
 }
