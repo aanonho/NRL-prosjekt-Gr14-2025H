@@ -17,9 +17,7 @@ namespace WebApplication1.Models
         public string? ObstacleType { get; set; } // Type of obstacle (e.g., "circle", "line", etc.)    
         public double? ObstacleRadius { get; set; } // For circular obstacles
         public string? ObstacleGeometry { get; set; } // JSON representation of the obstacle's geometry
-       
-        // For line obstacles
-        public string? ObstacleLineHeight { get; set; } 
+        public string? ObstacleLineCoordinates { get; set; } // For line obstacles, stores coordinates as a string
         public string? ObstacleLineLength { get; set; }
 
         public string? ImagePath { get; set; } // Path to the uploaded image file
