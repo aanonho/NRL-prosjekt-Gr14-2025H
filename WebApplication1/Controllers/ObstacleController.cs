@@ -27,17 +27,33 @@ namespace WebApplication1.Controllers
         {
             if (imageFile != null && imageFile.Length > 0)
             {
-                // Save the image file to a specific location and get the path
-                var imagePath = Path.Combine("wwwroot/images", imageFile.FileName);
+                var directory = Path.Combine("wwwroot", "images");
+               
+                if (!Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
+                var fileName = Path.GetFileName(imageFile.FileName);
+
+                var imagePath = Path.Combine(directory, fileName);
+
                 using (var stream = new FileStream(imagePath, FileMode.Create))
                 {
                     await imageFile.CopyToAsync(stream);
                 }
 
-                // Set the ImagePath property in the database model
-                validatedData.ImagePath = "/images/" + imageFile.FileName;
+                validatedData.ImagePath = "/images/" + fileName;
             }
-               
+
+            //// Save the image file to a specific location and get the path
+            //var imagePath = Path.Combine("wwwroot/images", imageFile.FileName);
+            //using (var stream = new FileStream(imagePath, FileMode.Create))
+            //{
+            //    await imageFile.CopyToAsync(stream);
+            //}
+
+            //// Set the ImagePath property in the database model
+            //validatedData.ImagePath = "/images/" + imageFile.FileName;
 
             // Determine action based on submitType
             if (submitType == "Submit")

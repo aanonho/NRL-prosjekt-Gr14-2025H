@@ -30,6 +30,8 @@ services:
       ConnectionStrings__DefaultConnection: server=db;port=3306;database=nrl;user=nrl;password=nrlpass
     ports:
       - "8080:8080"
+    volumes:
+      - ./WebApplication1/wwwroot/images:/app/wwwroot/images
 
 volumes:
   mysqldata: {}

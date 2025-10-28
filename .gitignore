@@ -28,3 +28,6 @@ coverage/
 
 *.user
 *.csproj.user
+
+# Ignore uploaded images
+WebApplication1/wwwroot/images/
