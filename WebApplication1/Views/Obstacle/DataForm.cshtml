@@ -278,6 +278,7 @@
                 //     lineMarkers.push(m);
                 // });
 
+                // Custom circle markers for line points
                 latlngsLine.forEach(pt => {                   
                     const circleIcon = L.divIcon ({
                         className: 'circle-marker',
@@ -312,7 +313,13 @@
                 if(latlngsLine.length > 1) // Draw line if more than 1 point
                 {
                     if(line) map.removeLayer(line);
-                    line = L.polyline(latlngsLine, {color: '#000000', weight: 3, dashArray: '5, 10'}).addTo(map);
+
+                    let lineOptions = {color: '#000000', weight: 3};
+                    if (type === 'cable') {
+                        lineOptions.dashArray = '5, 10'; // Dashed line for cable
+                    }
+
+                    line = L.polyline(latlngsLine, lineOptions).addTo(map); 
                 }
 
                 let totalLength = 0;
