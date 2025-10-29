@@ -28,6 +28,21 @@
                     <dd>@(string.IsNullOrWhiteSpace(Model.ObstacleDescription) ? "Not provided" : Model.ObstacleDescription)</dd>
                 </div>
 
+                <!-- Image preview (only show if an image exists) -->
+                <div class="mt-4">
+                    <dt class="font-medium">Uploaded Image</dt>
+                    <dd>
+                        @if (!string.IsNullOrEmpty(Model.ImagePath))
+                        {
+                            <img src="@Model.ImagePath" alt="Obstacle Image" width="200" height="200" />
+                        }
+                        else
+                        {
+                            <p class="text-gray-500">No image uploaded.</p>
+                        }
+                    </dd>
+                </div>
+
                 <div>
                     <dt class="font-medium">Latitude</dt>
                     <dd>@Model.ObstacleLatitude</dd>
@@ -81,7 +96,7 @@
 
         // HelicopterIcon
         var helicopterIcon = L.icon({
-        iconUrl: '/images/helicopter.svg',
+        iconUrl: '/icons/helicopter.svg',
         iconSize: [60, 60],
         iconAnchor: [30, 30]
          });
