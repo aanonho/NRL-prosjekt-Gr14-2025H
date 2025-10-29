@@ -28,10 +28,26 @@ namespace WebApplication1.Controllers
             }
 
             // Add user if not already in list
-            if (!_users.Any(u => u.Email == userData.Email))
+            var existingUser = _users.FirstOrDefault(u => u.Email == userData.Email);
+            if (existingUser != null)
             {
+                // If user exists, check role consistency
+                if (!string.Equals(existingUser.Role, userData.Role, StringComparison.OrdinalIgnoreCase))
+                {
+                    ModelState.AddModelError("Role", "This email is already registered with another role.");
+                    return View(userData);
+                }
+            }
+            else
+            {
+                if (string.IsNullOrWhiteSpace(userData.Organization))
+                {
+                    userData.Organization = "Unknown";
+                }
+
                 _users.Add(userData);
             }
+
 
             // Set as current user
             _currentUser = userData;
@@ -81,17 +97,20 @@ namespace WebApplication1.Controllers
         [HttpGet]
         public IActionResult RegistrarDashboard(string status = "all", string sort = "date_desc")
         {
+            // Get only submitted reports (exclude drafts)
             var reports = ReportStore.GetAll() ?? new List<ReportItem>();
+            reports = reports.Where(r => !r.IsDraft).ToList();
 
-            if
-                (!string.IsNullOrEmpty(status) && status.ToLower() != "all")
+
+            // Filter by status if a valid one is selected
+            if (!string.IsNullOrEmpty(status) && status.ToLower() != "all")
             {
                 reports = reports
                     .Where(r => string.Equals(r.Status, status, StringComparison.OrdinalIgnoreCase))
                     .ToList();
             }
 
-            // Date sorting
+            // Sort by date
             reports = sort == "date_asc"
                 ? reports.OrderBy(r => r.CreatedAt).ToList()
                 : reports.OrderByDescending(r => r.CreatedAt).ToList();
@@ -99,12 +118,37 @@ namespace WebApplication1.Controllers
             return View("RegistrarDashboard", reports);
         }
 
+
         [HttpPost]
-        public IActionResult UpdateReportStatus(Guid id, string status, string message)
+        [ValidateAntiForgeryToken]
+        public IActionResult UpdateReportStatus(Guid id, string status, string? message)
         {
-            ReportStore.UpdateStatus(id, status, message);
+            // Only allow registrar to act on submitted (non-draft) reports
+            var report = ReportStore.GetAll()
+                .FirstOrDefault(r => r.Id == id && !r.IsDraft);
+
+            if (report == null)
+            {
+                TempData["ErrorMessage"] = "Only submitted reports can be reviewed by registrars.";
+                return RedirectToAction("RegistrarDashboard");
+            }
+
+            // Update registrar-specific fields
+            report.Status = status;
+            report.IsDraft = false;
+            report.ReviewedAt = DateTime.Now;
+            report.ReviewMessage = message ?? "";
+
+            // Persist update safely
+            ReportStore.Update(report.Id, report);
+
+            // Show confirmation
+            TempData["SuccessMessage"] = $"Report {status.ToLower()} successfully.";
             return RedirectToAction("RegistrarDashboard");
         }
+
+
+
 
     }
 }

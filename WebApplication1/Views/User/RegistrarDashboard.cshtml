@@ -10,9 +10,22 @@
         <div class="flex items-center justify-between bg-green-600 px-4 py-3 text-gray-700">
             <h1 class="text-xl font-bold sm:text-2xl">Registrar Dashboard</h1>
             <p class="text-sm opacity-90">
-                Total: <strong>@Model?.Count() ?? 0</strong> reports
+                Total: <strong>@Model?.Count() / 0</strong> reports
             </p>
         </div>
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="m-4 rounded-md border border-green-300 bg-green-50 p-3 text-center font-medium text-green-800 shadow-sm">
+                @TempData["SuccessMessage"]
+            </div>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="m-4 rounded-md border border-red-300 bg-red-50 p-3 text-center font-medium text-red-800 shadow-sm">
+                @TempData["ErrorMessage"]
+            </div>
+        }
 
         <!-- Filters -->
         <form method="get" asp-action="RegistrarDashboard" class="grid grid-cols-1 gap-4 border-b p-4 sm:grid-cols-3">
@@ -35,22 +48,28 @@
             </div>
 
             <div class="flex items-end">
-                <button type="submit" class="w-full rounded bg-green-600 px-4 py-2 font-semibold text-gray-700 hover:bg-green-700">
-                    Apply
+                <button type="submit"
+                        class="rounded-md bg-emerald-600 px-4 py-2 font-semibold text-gray-700 hover:bg-emerald-700 focus:ring-2 focus:ring-emerald-500 focus:ring-offset-1 focus:outline-neutral-500">
+                    Apply Filters
                 </button>
             </div>
         </form>
 
         <!-- Table -->
         <div class="overflow-x-auto p-4">
-            @if (Model == null || !Model.Any())
+            @{
+                // Only show submitted reports (not drafts)
+                var submittedReports = Model?.Where(r => !r.IsDraft).ToList() ?? new List<WebApplication1.Models.ReportItem>();
+            }
+
+            @if (!submittedReports.Any())
             {
                 <div class="py-6 text-center text-gray-600">
                     <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto mb-2 h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M13 16h-1v-4h-1m1-4h.01M12 18h.01M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h10l6 6v10a2 2 0 01-2 2z" />
                     </svg>
-                    No reports found. Reports will appear here once they are submitted.
+                    No submitted reports available for review.
                 </div>
             }
             else
@@ -68,8 +87,9 @@
                             <th class="px-3 py-2 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">Actions</th>
                         </tr>
                     </thead>
+
                     <tbody class="divide-y divide-gray-200 bg-white">
-                        @foreach (var r in Model)
+                        @foreach (var r in submittedReports)
                         {
                             var status = r.Status ?? "Pending";
                             var badge = "bg-yellow-100 text-yellow-800";
@@ -79,47 +99,53 @@
                                 badge = "bg-red-100 text-red-800";
 
                             <tr class="hover:bg-gray-50">
-                                <td class="px-3 py-2 text-sm whitespace-nowrap text-gray-700">
-                                    @r.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")
-                                </td>
-                                <td class="px-3 py-2 text-sm whitespace-nowrap text-gray-800">
-                                    @r.Obstacle?.ObstacleName ?? "(no title)"
-                                </td>
-                                <td class="px-3 py-2 whitespace-nowrap">
-                                    <span class="rounded px-2 py-1 text-xs @badge">@status</span>
-                                </td>
-                                <td class="px-3 py-2 text-sm whitespace-nowrap text-gray-700">
-                                    @(string.IsNullOrWhiteSpace(r.Organization) ? "Unknown" : r.Organization)
-                                </td>
-                                <td class="px-3 py-2 text-sm whitespace-nowrap text-gray-700">
-                                    @(r.Obstacle?.ObstacleHeight?.ToString("0.##") ?? "-")
-                                </td>
-                                <td class="px-3 py-2 text-sm whitespace-nowrap text-gray-700">
-                                    @(r.Obstacle?.ObstacleLatitude?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "-")
-                                </td>
-                                <td class="px-3 py-2 text-sm whitespace-nowrap text-gray-700">
-                                    @(r.Obstacle?.ObstacleLongitude?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "-")
-                                </td>
+                                <td class="px-3 py-2 text-sm text-gray-700">@r.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
+                                <td class="px-3 py-2 text-sm text-gray-800">@r.Obstacle?.ObstacleName</td>
+                                <td class="px-3 py-2 text-sm"><span class="rounded px-2 py-1 text-xs @badge">@status</span></td>
+                                <td class="px-3 py-2 text-sm text-gray-700">@(string.IsNullOrWhiteSpace(r.Organization) ? "Unknown" : r.Organization)</td>
+                                <td class="px-3 py-2 text-sm text-gray-700">@r.Obstacle?.ObstacleHeight?.ToString("0.##")</td>
+                                <td class="px-3 py-2 text-sm text-gray-700">@r.Obstacle?.ObstacleLatitude?.ToString(System.Globalization.CultureInfo.InvariantCulture)</td>
+                                <td class="px-3 py-2 text-sm text-gray-700">@r.Obstacle?.ObstacleLongitude?.ToString(System.Globalization.CultureInfo.InvariantCulture)</td>
+
+                                <!-- Actions -->
                                 <td class="px-3 py-2 text-center text-sm whitespace-nowrap">
-                                    <form asp-action="UpdateReportStatus" asp-controller="User" method="post" class="inline-flex gap-2">
-                                        <input type="hidden" name="id" value="@r.Id" />
-                                        <input type="hidden" name="message" value="Reviewed by Registrar" />
-                                        <button type="submit" name="status" value="Approved"
-                                                class="rounded bg-green-600 px-3 py-1 text-xs text-white transition hover:bg-green-700">
-                                            Approve
-                                        </button>
-                                        <button type="submit" name="status" value="Rejected"
-                                                class="rounded bg-red-600 px-3 py-1 text-xs text-white transition hover:bg-red-700">
-                                            Reject
-                                        </button>
-                                    </form>
+                                    <div class="flex flex-col items-center gap-1 sm:flex-row sm:justify-center">
+                                        <a asp-controller="Obstacle" asp-action="Details"
+                                           asp-route-id="@r.Id"
+                                           asp-route-returnUrl="@Url.Action("RegistrarDashboard", "User")"
+                                           class="inline-block rounded-md border border-gray-700 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50">
+                                            View Details
+                                        </a>
+
+
+                                        @if (ViewBag.CurrentUser?.Role == "Registrar" && !r.IsDraft)
+                                        {
+                                            <form asp-action="UpdateReportStatus" asp-controller="User" method="post" class="mt-6 flex flex-col items-center gap-2 sm:flex-row sm:justify-center">
+                                                <input type="hidden" name="id" value="@r.Id" />
+                                                <input type="hidden" name="message" value="Reviewed by Registrar" />
+
+                                                <button type="submit" name="status" value="Approved"
+                                                        class="rounded-md border border-green-600 px-4 py-2 text-sm font-semibold text-green-700 hover:bg-green-50"
+                                                        @(r.Status != "Pending" ? "disabled" : null)>
+                                                    Approve
+                                                </button>
+
+                                                <button type="submit" name="status" value="Rejected"
+                                                        class="rounded-md border border-red-600 px-4 py-2 text-sm font-semibold text-red-700 hover:bg-red-50"
+                                                        @(r.Status != "Pending" ? "disabled" : null)>
+                                                    Reject
+                                                </button>
+                                            </form>
+                                        }
+
+                                    </div>
                                 </td>
                             </tr>
                         }
                     </tbody>
                 </table>
             }
+
         </div>
     </div>
 </div>
-

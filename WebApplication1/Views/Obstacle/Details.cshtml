@@ -1,0 +1,145 @@
+﻿@model WebApplication1.Models.ReportItem
+@using WebApplication1.Models
+@{
+    ViewData["Title"] = "Report Details";
+    var user = ViewBag.CurrentUser as UserData;
+    bool isRegistrar = user?.Role == "Registrar";
+    bool isDraft = Model.IsDraft;
+}
+
+<div class="flex min-h-screen flex-col items-center bg-gray-50 px-4 py-10 sm:px-6 lg:px-8">
+    <div class="w-full max-w-3xl rounded-2xl bg-white p-6 shadow-xl ring-1 ring-gray-200 sm:p-10">
+        <h1 class="mb-8 text-center text-3xl font-bold text-blue-700">
+            Obstacle Details
+        </h1>
+
+        <!-- Unified Form -->
+        <form asp-action="SubmitDraft" asp-controller="Obstacle" method="post" class="space-y-6">
+            <input type="hidden" name="Id" value="@Model.Id" />
+
+            <!-- Title -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Obstacle Type</label>
+                @if (isDraft && !isRegistrar)
+                {
+                    <input type="text" name="ObstacleName" value="@Model.Obstacle?.ObstacleName"
+                           class="mt-1 w-full rounded border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:ring-blue-500" />
+                }
+                else
+                {
+                    <p class="mt-1 rounded border border-gray-200 bg-gray-50 p-2 text-gray-800">@Model.Obstacle?.ObstacleName</p>
+                }
+            </div>
+
+            <!-- Height -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Height (m)</label>
+                @if (isDraft && !isRegistrar)
+                {
+                    <input type="number" step="0.1" name="ObstacleHeight" value="@Model.Obstacle?.ObstacleHeight"
+                           class="mt-1 w-full rounded border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:ring-blue-500" />
+                }
+                else
+                {
+                    <p class="mt-1 rounded border border-gray-200 bg-gray-50 p-2 text-gray-800">@Model.Obstacle?.ObstacleHeight</p>
+                }
+            </div>
+
+            <!-- Description -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Description</label>
+                @if (isDraft && !isRegistrar)
+                {
+                    <textarea name="ObstacleDescription" rows="3"
+                          class="mt-1 w-full rounded border border-gray-700 p-2 shadow-sm focus:border-blue-500 focus:ring-blue-500">@Model.Obstacle?.ObstacleDescription</textarea>
+                }
+                else
+                {
+                    <p class="mt-1 rounded border border-gray-700 bg-gray-50 p-2 text-gray-800">@Model.Obstacle?.ObstacleDescription</p>
+                }
+            </div>
+
+            <!-- Organization -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Organization</label>
+                <p class="mt-1 rounded border border-gray-700 bg-gray-50 p-2 text-gray-800">@Model.Organization</p>
+            </div>
+
+            <!-- Status -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Status</label>
+                <p class="mt-1 rounded border border-gray-700 bg-gray-50 p-2 text-gray-800">@Model.Status</p>
+            </div>
+            @if (!string.IsNullOrWhiteSpace(Model.ReviewMessage))
+            {
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Registrar Comment</label>
+                    <p class="mt-1 rounded border border-gray-300 bg-gray-50 p-2 text-sm text-gray-800">
+                        @Model.ReviewMessage
+                    </p>
+                </div>
+            }
+
+            
+            <!-- Registrar Approval Section -->
+            @if (isRegistrar && !isDraft)
+            {
+                <div class="mt-8 border-t border-gray-500 pt-6">
+                    <label class="mb-2 block text-sm font-medium text-gray-800">
+                        Registrar Comment (optional)
+                    </label>
+                    <textarea name="message"
+                          rows="3"
+                          class="w-full rounded-md border border-gray-500 p-2 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                          placeholder="Write your feedback for the user here...">@Model.ReviewMessage</textarea>
+
+                    <div class="mt-4 flex flex-col justify-center gap-3 sm:flex-row">
+                        <button type="submit"
+                                name="status"
+                                value="Approved"
+                                formaction="@Url.Action("UpdateReportStatus", "User")"
+                                class="w-full rounded-md border border-green-600 bg-green-100 px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-green-200 focus:ring-2 focus:ring-green-400 focus:ring-offset-2 sm:w-auto">
+                             Approve
+                        </button>
+
+                        <button type="submit"
+                                name="status"
+                                value="Rejected"
+                                formaction="@Url.Action("UpdateReportStatus", "User")"
+                                class="w-full rounded-md border border-red-600 bg-red-100 px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-red-200 focus:ring-2 focus:ring-red-400 focus:ring-offset-2 sm:w-auto">
+                             Reject
+                        </button>
+                    </div>
+                </div>
+            }
+
+
+
+
+
+
+            <!-- Draft Save/Submit -->
+            @if (isDraft && !isRegistrar)
+            {
+                <div class="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                    <button type="submit" name="actionType" value="SaveDraft"
+                            class="inline-block w-full rounded-md border border-yellow-500 bg-yellow-100 px-4 py-2 text-sm font-semibold text-gray-700 transition hover:bg-yellow-200 focus:ring-2 focus:ring-2 focus:ring-yellow-600 focus:ring-yellow-400 focus:ring-offset-2 focus:outline sm:w-auto">
+                        Save Draft
+                    </button>
+                    <button type="submit" name="actionType" value="Submit"
+                            class="inline-block w-full rounded-md border border-green-500 bg-green-100 px-4 py-2 text-sm font-semibold text-gray-700 transition hover:bg-green-200 focus:ring-2 focus:ring-2 focus:ring-green-600 focus:ring-green-400 focus:ring-offset-2 focus:outline sm:w-auto">
+                        Submit Report
+                    </button>
+                </div>
+            }
+        </form>
+
+        <!-- Back Button -->
+        <div class="mt-8 text-center">
+            <a href="@(ViewBag.ReturnUrl ?? Url.Action(" UserProfile", "User", new { email = (ViewBag.CurrentUser as WebApplication1.Models.UserData)?.Email }))"
+               class="inline-block rounded-lg bg-gray-800 px-6 py-2 font-semibold text-gray-700 transition hover:bg-gray-900">
+                Back
+            </a>
+        </div>
+    </div>
+</div>

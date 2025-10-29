@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.Eventing.Reader;
+using System.Linq;
 
 
 
@@ -27,9 +30,6 @@ namespace WebApplication1.Models
         public Guid Id { get; set; } = Guid.NewGuid();
        // public ObstacleData Obstacle { get; set; } = new(); // Composition instead of duplication and inheritance
         public bool IsDraft { get; set; } = false;
-        public string? ReviewMessage { get; set; } // registrar comment
-        // Not in the form yet — added now to make the list "future-ready":
-        // Valid values we expect later: "Pending", "Approved", "Rejected".
         public string Status { get; set; } = "Pending";
 
         //Basic linking info
@@ -37,6 +37,10 @@ namespace WebApplication1.Models
         public string? Organization { get; set; } = "Unknown";// Also not in the form yet. We'll default to "Unknown" so the filter still works.
         public string? SubmittedByName { get; set; }
         public string? SubmittedByEmail { get; set; }
+        public string? CreatedBy { get; set; }
+        public DateTime? ReviewedAt { get; set; } // when registrar reviewed it
+        public string? ReviewMessage { get; set; } // registrar comment
+
 
         //Optional nested user info (from partial Userlink)
         public UserLink? UserInfo { get; set; }
