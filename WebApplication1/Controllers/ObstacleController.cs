@@ -173,7 +173,7 @@ namespace WebApplication1.Controllers
             await _context.SaveChangesAsync();
 
                 return RedirectToAction("UserProfile", "User", new { email = currentUser.Email });
-            }
+            
 
             // === FALLBACK ===
             return View(validatedData);

@@ -27,10 +27,8 @@ namespace WebApplication1.Models
         public string? LineCoords { get; set; }         // If line
         */
         public Guid Id { get; set; } = Guid.NewGuid();
-        public ObstacleData Obstacle { get; set; } = new(); // Composition instead of duplication and inheritance
         public bool IsDraft { get; set; } = false;
         public string Status { get; set; } = "Pending";
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
         public ObstacleData ImangePath { get; set; } = new();
         //Basic linking info
         public string? Organization { get; set; } = "Unknown";// Also not in the form yet. We'll default to "Unknown" so the filter still works.

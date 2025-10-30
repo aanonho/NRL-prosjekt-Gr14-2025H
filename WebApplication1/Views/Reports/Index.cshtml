@@ -8,7 +8,7 @@
     <div class="overflow-hidden rounded-lg bg-white shadow-md">
         <!-- Header -->
         <div class="flex items-center justify-between bg-green-500 px-4 py-3 text-white">
-            <h1 class="text-xl font-bold sm:text-2xl">Raports</h1>
+            <h1 class="text-xl font-bold sm:text-2xl">Reports</h1>
             <p class="text-sm opacity-90">
                 Showing <strong>@Model.FilteredCount</strong> of <strong>@Model.TotalCount</strong> reports —
                 <span class="text-green-100">Submitted:</span> <strong>@Model.SubmittedCount</strong>,
@@ -117,7 +117,7 @@
                                     @(r.Obstacle.ObstacleLongitude?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "-")
                                 </td>
                                 <!-- show picture -->
-                                <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-700">
+                                <td class="px-3 py-2 text-sm whitespace-nowrap text-gray-700">
                                     @if (!string.IsNullOrWhiteSpace(r.Obstacle.ImagePath))
                                     {
                                         <a href="@r.Obstacle.ImagePath" target="_blank">

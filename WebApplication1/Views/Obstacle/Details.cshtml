@@ -80,6 +80,32 @@
                 </div>
             }
 
+
+            <!-- Attached Image Section -->
+            @if (Model.Obstacle != null && !string.IsNullOrWhiteSpace(Model.Obstacle.ImagePath))
+            {
+                <div class="mt-6">
+                    <h3 class="mb-3 text-center text-lg font-semibold text-gray-700 sm:text-left">
+                        Attached Image
+                    </h3>
+
+                    <div class="flex flex-col items-center justify-center gap-4 sm:flex-row">
+                        <a href="@Model.Obstacle.ImagePath" target="_blank" class="block max-w-full sm:w-auto">
+                            <img src="@Model.Obstacle.ImagePath"
+                                 alt="Obstacle image"
+                                 class="w-full max-w-sm rounded-lg border border-gray-300 object-contain shadow-md transition hover:shadow-lg sm:max-w-md" />
+                        </a>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="mt-6 text-center text-gray-500 sm:text-left">
+                    <em>No image attached for this report.</em>
+                </div>
+            }
+
+
             
             <!-- Registrar Approval Section -->
             @if (isRegistrar && !isDraft)
