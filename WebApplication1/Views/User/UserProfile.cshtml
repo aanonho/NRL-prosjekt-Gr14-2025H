@@ -1,0 +1,132 @@
+﻿@model IEnumerable<WebApplication1.Models.ReportItem>
+@using WebApplication1.Models
+@{
+    ViewData["Title"] = "User Profile";
+    var user = ViewBag.User as UserData;
+}
+
+<div class="flex min-h-screen flex-col items-center bg-gray-50 px-4 py-10 sm:px-6 lg:px-8">
+    <div class="w-full max-w-3xl rounded-2xl bg-white p-6 shadow-xl ring-1 ring-gray-200 sm:p-10">
+        <h1 class="mb-8 text-center text-3xl font-bold text-blue-700">Pilot Dashboard</h1>
+
+        @if (user != null)
+        {
+            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                @foreach (var field in new[]
+                            {
+                        new { Label = "Name", Value = user.Name },
+                        new { Label = "E-mail", Value = user.Email },
+                        new { Label = "Phone Number", Value = user.Phone },
+                        new { Label = "Address", Value = user.Address },
+                        new { Label = "Role", Value = user.Role },
+                        new { Label = "Organization", Value = user.Organization }
+                        })
+                {
+                    <div>
+                        <label class="mb-1 block font-semibold text-gray-700">@field.Label</label>
+                        <div class="rounded-lg border border-gray-200 bg-gray-50 p-3 shadow-sm">@field.Value</div>
+                    </div>
+                }
+            </div>
+        }
+
+        <div class="mt-10 mb-6"></div> 
+
+        <h2 class="mb-4 text-2xl font-semibold text-gray-800">Submitted Reports</h2>
+
+        @if (Model == null || !Model.Any())
+        {
+            <div class="py-6 text-center text-gray-600">
+                <p>No reports submitted yet.</p>
+            </div>
+        }
+        else
+        {
+            <div class="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
+                <table class="min-w-full divide-y divide-gray-200 bg-white">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                            <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                            <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Title</th>
+                            <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Height (m)</th>
+                            <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Organization</th>
+                            <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        @foreach (var r in Model)
+                        {
+                            var status = r.Status ?? "Pending";
+                            var badge = status.Equals("Approved", StringComparison.OrdinalIgnoreCase)
+                            ? "bg-green-100 text-green-800"
+                            : status.Equals("Rejected", StringComparison.OrdinalIgnoreCase)
+                            ? "bg-red-100 text-red-800"
+                            : status.Equals("Draft", StringComparison.OrdinalIgnoreCase)
+                            ? "bg-gray-100 text-gray-800"
+                            : "bg-yellow-100 text-yellow-800";
+                    
+
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-3 py-2 text-sm text-gray-700">
+                                        @r.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")
+                                    </td>
+
+                                    <td class="px-3 py-2 text-sm">
+                                        <span class="rounded px-2 py-1 text-xs @badge">@status</span>
+                                    </td>
+
+                                    <td class="px-3 py-2 text-sm text-gray-800">
+                                        @(r.Obstacle?.ObstacleName ?? "No title")
+                                    </td>
+
+                                    <td class="px-3 py-2 text-sm text-gray-700">
+                                        @(r.Obstacle?.ObstacleHeight?.ToString("0.##") ?? "-")
+                                    </td>
+
+                                    <td class="px-3 py-2 text-sm text-gray-700">
+                                        @(string.IsNullOrWhiteSpace(r.Organization) ? "Unknown" : r.Organization)
+                                    </td>
+
+                                <td class="px-3 py-2 text-center text-sm whitespace-nowrap">
+                                    <div class="flex flex-col items-center gap-1 sm:flex-row sm:justify-center">
+
+                                        @if (r.IsDraft)
+                                        {
+                                            <!-- Show only Edit Draft for drafts -->
+                                            <a asp-controller="Obstacle" asp-action="Edit" asp-route-id="@r.Id"
+                                               class="inline-block rounded-md border border-blue-500 bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-600 hover:bg-blue-100">
+                                                Edit Draft
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <!-- Show only View Details for submitted reports -->
+                                            <a asp-controller="Obstacle" asp-action="Details"
+                                               asp-route-id="@r.Id"
+                                               asp-route-returnUrl="@Url.Action("UserProfile", "User", new { email = user.Email })"
+                                               class="inline-block rounded-md border border-gray-300 px-3 py-1 text-xs font-semibold text-blue-700 hover:bg-gray-50">
+                                                View Details
+                                            </a>
+                                        }
+
+                                    </div>
+                                </td>
+
+
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+            </div>
+        }
+
+        <div class="mt-10 text-center">
+            <a asp-controller="Home" asp-action="Index"
+               class="inline-block rounded-xl bg-blue-600 px-6 py-2 font-semibold text-gray-700 transition hover:bg-blue-700">
+                Back to Homepage
+            </a>
+        </div>
+    </div>
+</div>

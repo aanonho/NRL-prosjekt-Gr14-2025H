@@ -8,9 +8,11 @@ namespace WebApplication1.DataInfrastructure
         // Constructor to initialize the DbContext with options
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
+
         }
 
         public DbSet<ObstacleData> Obstacles { get; set; }
         public DbSet<ReportItem> ReportStore { get; set; }
+        
     }
 }

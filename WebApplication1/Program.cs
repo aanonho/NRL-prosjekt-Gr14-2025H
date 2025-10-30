@@ -4,11 +4,14 @@ using WebApplication1.DataInfrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseInMemoryDatabase("ObstacleDb"));
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Mock database connection setup
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseInMemoryDatabase("MockData"));
 
 //Henter connection string fra �appsettings.json� filen 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");

@@ -28,5 +28,56 @@ namespace WebApplication1.Models
                 return _items.ToList();
             }
         }
+
+
+        // Gathering reports to a specific user
+        public static List<ReportItem> GetReportsByUser(string email)
+        {
+            lock (_lock)
+            {
+                return _items.Where(item => item.SubmittedByEmail == email).ToList();
+            }
+        }
+
+        // Update status, add message (Registrar)
+        public static void UpdateStatus(Guid id, string newStatus, string? message = null)
+        {
+            lock (_lock)
+            {
+                var report = _items.FirstOrDefault(r => r.Id == id);
+                if (report != null)
+                {
+                    // Update only what registrar is allowed to change
+                    report.Status = newStatus;
+                    report.IsDraft = false;
+                    report.ReviewedAt = DateTime.Now;
+                    report.ReviewMessage = message ?? "";
+
+                    // Force-update stored record safely
+                    var index = _items.FindIndex(r => r.Id == id);
+                    if (index >= 0)
+                    {
+                        _items[index] = report;
+                    }
+                }
+            }
+        }
+
+        
+        public static void Update(Guid id, ReportItem updatedReport)
+        {
+            lock (_lock)
+            {
+                var existing = _items.FirstOrDefault(r => r.Id == id);
+                if (existing != null)
+                {
+                    var index = _items.IndexOf(existing);
+                    _items[index] = updatedReport;
+                }
+            }
+        }
+
+
+
     }
 }
