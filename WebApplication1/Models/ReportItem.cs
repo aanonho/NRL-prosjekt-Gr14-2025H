@@ -1,53 +1,67 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.Eventing.Reader;
-using System.Linq;
-
-
-
-
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WebApplication1.Models
 {
-    // Very simple "report" record used only for listing on the Raports page.
-    // We copy the most relevant fields from ObstacleData and add placeholders
-    // for fields we will support later (Status, Organization).
+    [Table("ReportItem")]
     public partial class ReportItem
     {
-        /*
-        
-        public string? Title { get; set; }              // From ObstacleName
-        public string? Description { get; set; }        // From ObstacleDescription
-        public double? Height { get; set; }             // From ObstacleHeight
-        public double? Latitude { get; set; }           // From ObstacleLatitude
-        public double? Longitude { get; set; }          // From ObstacleLongitude
-        public string? ObstacleType { get; set; }               // From ObstacleType (marker/circle/line)
-        public double? Radius { get; set; }             // Is circle
-        public string? LineCoords { get; set; }         // If line
-        */
-        public Guid Id { get; set; } = Guid.NewGuid();
-        public bool IsDraft { get; set; } = false;
-        public string Status { get; set; } = "Pending";
-        public ObstacleData ImangePath { get; set; } = new();
-        //Basic linking info
-        public string? Organization { get; set; } = "Unknown";// Also not in the form yet. We'll default to "Unknown" so the filter still works.
-        public string? SubmittedByName { get; set; }
-        public string? SubmittedByEmail { get; set; }
-        public string? CreatedBy { get; set; }
-        public DateTime? ReviewedAt { get; set; } // when registrar reviewed it
-        public string? ReviewMessage { get; set; } // registrar comment
+        [Key]
+        [Column("ReportID")]
+        public int ReportID { get; set; }
 
-
-        //Optional nested user info (from partial Userlink)
-        public UserLink? UserInfo { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
-        public ValidatedObstacleData? Obstacle {  get; set; }
 
-        //public static implicit operator ReportItem(ReportItem v)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        [Required]
+        public int PilotID { get; set; }
+
+        [Required]
+        [StringLength(32)]
+        public string Status { get; set; } = "Pending";
+
+        public int? OrganizationID { get; set; }
+
+        [StringLength(100)]
+        public string? SubmittedByName { get; set; }
+
+        [StringLength(150)]
+        public string? SubmittedByEmail { get; set; }
+
+        [StringLength(100)]
+        public string? CreatedBy { get; set; }
+
+        public DateTime? ReviewedAt { get; set; }
+
+        public string? ReviewMessage { get; set; }
+
+        //public int? ObstacleID { get; set; } // FK vers ObstacleData
+        public virtual ObstacleData? ReportObstacle { get; set; }
+
+
+        public bool IsDraft { get; set; } = false;
+
+        [StringLength(255)]
+        public string? ImagePath { get; set; }
+
+        [StringLength(100)]
+        public string? Organization { get; set; } = "Unknown";
+
+        // Not use in DB for now
+        [NotMapped]
+        public UserLink? UserInfo { get; set; }
+
+        // Not use in DB, only for form validations
+        [NotMapped]
+        public ValidatedObstacleData? Obstacle { get; set; }
+
+        public ReportItem() { }
+
+        public ReportItem(DateTime createdAt, string status, int? organizationID)
+        {
+            CreatedAt = createdAt;
+            Status = status;
+            OrganizationID = organizationID;
+        }
     }
 }
-

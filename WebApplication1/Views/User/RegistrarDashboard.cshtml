@@ -125,7 +125,7 @@
                                 <td class="px-3 py-2 text-center text-sm whitespace-nowrap">
                                     <div class="flex flex-col items-center gap-1 sm:flex-row sm:justify-center">
                                         <a asp-controller="Obstacle" asp-action="Details"
-                                           asp-route-id="@r.Id"
+                                           asp-route-id="@r.ReportID"
                                            asp-route-returnUrl="@Url.Action("RegistrarDashboard", "User")"
                                            class="inline-block rounded-md border border-gray-700 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50">
                                             View Details
@@ -135,7 +135,7 @@
                                         @if (ViewBag.CurrentUser?.Role == "Registrar" && !r.IsDraft)
                                         {
                                             <form asp-action="UpdateReportStatus" asp-controller="User" method="post" class="mt-6 flex flex-col items-center gap-2 sm:flex-row sm:justify-center">
-                                                <input type="hidden" name="id" value="@r.Id" />
+                                                <input type="hidden" name="id" value="@r.ReportID" />
                                                 <input type="hidden" name="message" value="Reviewed by Registrar" />
 
                                                 <button type="submit" name="status" value="Approved"

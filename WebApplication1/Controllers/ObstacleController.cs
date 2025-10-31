@@ -13,6 +13,16 @@ namespace WebApplication1.Controllers
             _context = context;
         }
 
+
+        [HttpGet("read")]
+        public IActionResult ReadAll()
+        {
+            var data = _context.Obstacles.ToList();
+            return Ok(data);
+        }
+
+        // Blir kalt etter at vi trykker på "Register Obstacle"
+
         // For showing the form for obstacle data submission
         [HttpGet]
         public ActionResult DataForm()
@@ -22,16 +32,16 @@ namespace WebApplication1.Controllers
 
 
         [HttpGet]
-        public IActionResult Edit(Guid id)
+        public IActionResult Edit(int id)
         {
-            var report = ReportStore.GetAll().FirstOrDefault(r => r.Id == id);
+            var report = ReportStore.GetAll().FirstOrDefault(r => r.ReportID == id);
 
             if (report == null)
             {
                 return RedirectToAction("UserProfile", "User", new { email = UserController.GetCurrentUser()?.Email });
             }
 
-           
+
             var obstacleData = report.Obstacle;
             if (obstacleData == null)
             {
@@ -51,140 +61,86 @@ namespace WebApplication1.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DataForm(ValidatedObstacleData validatedData, IFormFile? imageFile, string submitType)
         {
+            // 🖼️ Handle image upload
             if (imageFile != null && imageFile.Length > 0)
             {
                 var directory = Path.Combine("wwwroot", "images");
-               
                 if (!Directory.Exists(directory))
-                {
                     Directory.CreateDirectory(directory);
-                }
-                var fileName = Path.GetFileName(imageFile.FileName);
 
+                var fileName = Path.GetFileName(imageFile.FileName);
                 var imagePath = Path.Combine(directory, fileName);
 
                 using (var stream = new FileStream(imagePath, FileMode.Create))
-                {
                     await imageFile.CopyToAsync(stream);
-                }
 
                 validatedData.ImagePath = "/images/" + fileName;
             }
 
-            //// Save the image file to a specific location and get the path
-            //var imagePath = Path.Combine("wwwroot/images", imageFile.FileName);
-            //using (var stream = new FileStream(imagePath, FileMode.Create))
-            //{
-            //    await imageFile.CopyToAsync(stream);
-            //}
-
-            //// Set the ImagePath property in the database model
-            //validatedData.ImagePath = "/images/" + imageFile.FileName;
-
-            // Determine action based on submitType
+            // 👤 Get current user
             var currentUser = UserController.GetCurrentUser();
             if (currentUser == null)
                 return RedirectToAction("UserForm", "User");
 
-            // Common metadata setup
+            // Common metadata
             validatedData.ObstacleRegistrationTime = DateTime.Now;
 
-            // Get existing draft (if any)
-            var existing = ReportStore.GetReportsByUser(currentUser.Email)
-                                      .FirstOrDefault(r => r.Id == validatedData.Id);
-
-            // === SUBMIT FINAL REPORT ===
-            if (submitType == "Submit")
+            // Create base ReportItem
+            var report = new ReportItem
             {
-                if (!ModelState.IsValid)
-                    return View(validatedData);
+                CreatedAt = validatedData.ObstacleRegistrationTime,
+                Status = (submitType == "Submit") ? "Pending" : "Draft",
+                OrganizationID = 1,
+                PilotID = 1,
+                IsDraft = submitType != "Submit",
+                CreatedBy = currentUser.Email,
+                SubmittedByEmail = currentUser.Email,
+                SubmittedByName = currentUser.Name,
+                Organization = currentUser.Organization ?? "Unknown"
+            };
 
-                validatedData.IsDraft = false;
-                
-                    
-                if (existing != null)
-                {
-                    // Update existing draft
-                    existing.Obstacle = validatedData;
-                    existing.Status = "Pending";
-                    existing.IsDraft = false;
-                    ReportStore.Update(existing.Id, existing);
-
-                }
-                else
-                {
-                    // Create new submitted report
-                    var newReport = new ReportItem
-                    {
-                        Id = Guid.NewGuid(),
-                        Obstacle = validatedData,
-                        CreatedAt = validatedData.ObstacleRegistrationTime,
-                        CreatedBy = currentUser.Email,
-                        Status = "Pending",
-                        IsDraft = false,
-                        SubmittedByEmail = currentUser.Email,
-                        SubmittedByName = currentUser.Name,
-                        Organization = currentUser.Organization ?? "Unknown"
-                    };
-                    ReportStore.Add(newReport);
-                }
-
-                // Persist obstacle (local db)
-                _context.Add(validatedData);
-                await _context.SaveChangesAsync();
-
-                return RedirectToAction("UserProfile", "User", new { email = currentUser.Email });
-            }
-
-            // === SAVE AS DRAFT ===
-            else if (submitType == "SaveDraft")
-            {
-                validatedData.IsDraft = true;
-
-                if (existing != null)
-                {
-                    // Update draft instead of creating new
-                    existing.Obstacle = validatedData;
-                    existing.Status = "Draft";
-                    existing.IsDraft = true;
-                }
-                else
-                {
-                    // Create new draft
-                    var draft = new ReportItem
-                    {
-                        Id = Guid.NewGuid(),
-                        Obstacle = validatedData,
-                        CreatedAt = validatedData.ObstacleRegistrationTime,
-                        CreatedBy = currentUser.Email,
-                        Status = "Draft",
-                        IsDraft = true,
-                        SubmittedByEmail = currentUser.Email,
-                        SubmittedByName = currentUser.Name,
-                        Organization = currentUser.Organization ?? "Unknown"
-                    };
-                    ReportStore.Add(draft);
-                }
-
-               
-            }
-
-            _context.Add(validatedData);
+            // Save report to DB first (so we get the ReportID)
+            _context.ReportStore.Add(report);
             await _context.SaveChangesAsync();
 
-                return RedirectToAction("UserProfile", "User", new { email = currentUser.Email });
-            
+            // Convert ValidatedObstacleData → ObstacleData
+            var obstacle = new ObstacleData
+            {
+                ObstacleName = validatedData.ObstacleName,
+                ObstacleHeight = validatedData.ObstacleHeight,
+                ObstacleDescription = validatedData.ObstacleDescription,
+                ObstacleLatitude = validatedData.ObstacleLatitude,
+                ObstacleLongitude = validatedData.ObstacleLongitude,
+                ObstacleType = validatedData.ObstacleType,
+                ObstacleRadius = validatedData.ObstacleRadius,
+                ObstacleGeometry = validatedData.ObstacleGeometry,
+                ObstacleLineCoordinates = validatedData.ObstacleLineCoordinates,
+                ObstacleLineLength = validatedData.ObstacleLineLength,
+                ImagePath = validatedData.ImagePath,
+                ObstacleRegistrationTime = validatedData.ObstacleRegistrationTime,
+                IsDraft = report.IsDraft,
+                ReportID = report.ReportID // FK
+            };
 
-            // === FALLBACK ===
-            return View(validatedData);
+            // Save obstacle in DB
+            _context.Obstacles.Add(obstacle);
+            await _context.SaveChangesAsync();
+
+            // Update ReportStore
+            report.ReportObstacle = obstacle;
+            _context.ReportStore.Update(report);
+            await _context.SaveChangesAsync();
+
+            // Redirect to user profile after save
+            return RedirectToAction("UserProfile", "User", new { email = currentUser.Email });
         }
 
 
         [HttpGet]
-        public IActionResult Details(Guid id, string? returnUrl = null)
+        public IActionResult Details(int id, string? returnUrl = null)
         {
             // Try to find the report (search both drafts and submitted)
-            var report = ReportStore.GetAll().FirstOrDefault(r => r.Id == id);
+            var report = ReportStore.GetAll().FirstOrDefault(r => r.ReportID == id);
 
             if (report == null)
             {
@@ -209,9 +165,9 @@ namespace WebApplication1.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult SubmitDraft(Guid id, string actionType, ValidatedObstacleData updatedData)
+        public IActionResult SubmitDraft(int id, string actionType, ValidatedObstacleData updatedData)
         {
-            var report = ReportStore.GetAll().FirstOrDefault(r => r.Id == id);
+            var report = ReportStore.GetAll().FirstOrDefault(r => r.ReportID == id);
             if (report == null)
                 return RedirectToAction("UserProfile", "User");
 
@@ -229,20 +185,20 @@ namespace WebApplication1.Controllers
                 report.Status = "Pending";
             }
 
-            ReportStore.Update(report.Id, report);
+            ReportStore.Update(report.ReportID, report);
 
-            return RedirectToAction("Details", new { id = report.Id });
+            return RedirectToAction("Details", new { id = report.ReportID });
         }
 
 
         // === EDITING AN EXISTING DRAFT ===
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult UpdateDraft(Guid id, string ObstacleName, double ObstacleHeight, double? ObstacleLatitude, double? ObstacleLongitude, string ObstacleDescription, string? submitType)
+        public IActionResult UpdateDraft(int id, string ObstacleName, double ObstacleHeight, double? ObstacleLatitude, double? ObstacleLongitude, string ObstacleDescription, string? submitType)
         {
             var currentUser = UserController.GetCurrentUser();
             var report = ReportStore.GetReportsByUser(currentUser.Email)
-                                    .FirstOrDefault(r => r.Id == id);
+                                    .FirstOrDefault(r => r.ReportID == id);
 
             if (report == null)
             {
@@ -269,9 +225,9 @@ namespace WebApplication1.Controllers
                 TempData["SuccessMessage"] = "Draft updated.";
             }
 
-            return RedirectToAction("Details", "Obstacle", new { id = report.Id });
+            return RedirectToAction("Details", "Obstacle", new { id = report.ReportID });
         }
 
 
     }
-}   
+}
