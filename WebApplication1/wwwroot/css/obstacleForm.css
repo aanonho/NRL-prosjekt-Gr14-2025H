@@ -1,0 +1,46 @@
+﻿/* obstacleForm.css */
+/* Layout containers */
+
+.flex-container {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.form-container {
+    flex: 1 1 300px;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+/* Map container */
+
+.map-container {
+    flex: 2 1 300px;
+}
+
+.map-box {
+    width: 100%;
+    height: 900px;
+    border: 2px solid gray;
+    border-radius: 8px;
+}
+
+/* Image preview */
+
+#imageContainer img {
+    max-height: 15rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+/* Circle markers for line/cable points */
+
+.circle-marker {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+}
