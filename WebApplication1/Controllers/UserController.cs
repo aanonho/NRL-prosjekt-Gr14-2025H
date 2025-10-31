@@ -69,13 +69,13 @@ namespace WebApplication1.Controllers
 
         // Returns the currently "logged in" user
         public static UserData? GetCurrentUser() => _currentUser;
-        
+
         public IActionResult Index()
         {
-         if (_currentUser != null)
-             return RedirectToAction("UserProfile", _currentUser);
-        
-             return RedirectToAction("UserForm");
+            if (_currentUser != null)
+                return RedirectToAction("UserProfile", _currentUser);
+
+            return RedirectToAction("UserForm");
         }
 
         // === USER PROFILE VIEW ===
@@ -121,11 +121,11 @@ namespace WebApplication1.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult UpdateReportStatus(Guid id, string status, string? message)
+        public IActionResult UpdateReportStatus(int id, string status, string? message)
         {
             // Only allow registrar to act on submitted (non-draft) reports
             var report = ReportStore.GetAll()
-                .FirstOrDefault(r => r.Id == id && !r.IsDraft);
+                .FirstOrDefault(r => r.ReportID == id && !r.IsDraft);
 
             if (report == null)
             {
@@ -140,7 +140,7 @@ namespace WebApplication1.Controllers
             report.ReviewMessage = message ?? "";
 
             // Persist update safely
-            ReportStore.Update(report.Id, report);
+            ReportStore.Update(report.ReportID, report);
 
             // Show confirmation
             TempData["SuccessMessage"] = $"Report {status.ToLower()} successfully.";

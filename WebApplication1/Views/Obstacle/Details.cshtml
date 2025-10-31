@@ -15,7 +15,7 @@
 
         <!-- Unified Form -->
         <form asp-action="SubmitDraft" asp-controller="Obstacle" method="post" class="space-y-6">
-            <input type="hidden" name="Id" value="@Model.Id" />
+            <input type="hidden" name="Id" value="@Model.ReportID" />
 
             <!-- Title -->
             <div>
@@ -106,7 +106,7 @@
             }
 
 
-            
+
             <!-- Registrar Approval Section -->
             @if (isRegistrar && !isDraft)
             {
@@ -125,7 +125,7 @@
                                 value="Approved"
                                 formaction="@Url.Action("UpdateReportStatus", "User")"
                                 class="w-full rounded-md border border-green-600 bg-green-100 px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-green-200 focus:ring-2 focus:ring-green-400 focus:ring-offset-2 sm:w-auto">
-                             Approve
+                            Approve
                         </button>
 
                         <button type="submit"
@@ -133,7 +133,7 @@
                                 value="Rejected"
                                 formaction="@Url.Action("UpdateReportStatus", "User")"
                                 class="w-full rounded-md border border-red-600 bg-red-100 px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-red-200 focus:ring-2 focus:ring-red-400 focus:ring-offset-2 sm:w-auto">
-                             Reject
+                            Reject
                         </button>
                     </div>
                 </div>

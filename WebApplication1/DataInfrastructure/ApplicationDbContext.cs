@@ -13,6 +13,22 @@ namespace WebApplication1.DataInfrastructure
 
         public DbSet<ObstacleData> Obstacles { get; set; }
         public DbSet<ReportItem> ReportStore { get; set; }
-        
+
+        // Database migrations
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // Prevent EF to create tables already existing in the DB at each migrations
+
+            modelBuilder.Ignore<ValidatedObstacleData>();
+            modelBuilder.Entity<ReportItem>().Ignore(r => r.Obstacle);
+
+            modelBuilder.Entity<ReportItem>()
+                .HasOne(r => r.ReportObstacle)
+                .WithOne(o => o.ReportItem)
+                .HasForeignKey<ObstacleData>(o => o.ReportID)
+                .OnDelete(DeleteBehavior.Cascade);
+        }
     }
 }

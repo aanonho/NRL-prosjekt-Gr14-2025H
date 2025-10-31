@@ -73,30 +73,30 @@
                             <th class="px-3 py-2 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">Height (m)</th>
                             <th class="px-3 py-2 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">Lat</th>
                             <th class="px-3 py-2 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">Lng</th>
+                            <th class="px-3 py-2 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">Image</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200 bg-white">
                         @foreach (var r in Model.Reports)
                         {
-                            <tr class="hover:bg-gray-50" @(r.IsDraft ? "bg-yellow-100" : "")">
+                            var obstacle = r.ReportObstacle;
+                            <tr class="hover:bg-gray-50 @(r.IsDraft ? "bg-yellow-100" : "")">
                                 <td class="px-3 py-2 text-sm whitespace-nowrap text-gray-700">
                                     @r.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")
                                 </td>
+
                                 <td class="px-3 py-2 text-sm whitespace-nowrap text-gray-800">
-                                    @(!string.IsNullOrWhiteSpace(r.Obstacle.ObstacleName) ? r.Obstacle.ObstacleName : "(no title)")
+                                    @(obstacle?.ObstacleName ?? "(no title)")
                                 </td>
+
                                 <td class="px-3 py-2 whitespace-nowrap">
                                     @{
                                         var status = (r.Status ?? "Pending");
                                         var badge = "bg-yellow-100 text-yellow-800";
                                         if (status.Equals("Approved", System.StringComparison.OrdinalIgnoreCase))
-                                        {
                                             badge = "bg-green-100 text-green-800";
-                                        }
                                         else if (status.Equals("Rejected", System.StringComparison.OrdinalIgnoreCase))
-                                        {
                                             badge = "bg-red-100 text-red-800";
-                                        }
                                     }
                                     <span class="rounded px-2 py-1 text-xs @badge">@status</span>
                                     @if (r.IsDraft)
@@ -104,26 +104,28 @@
                                         <span class="ml-2 rounded bg-yellow-200 px-2 py-1 text-xs text-yellow-900">Draft</span>
                                     }
                                 </td>
+
                                 <td class="px-3 py-2 text-sm whitespace-nowrap text-gray-700">
-                                    @(string.IsNullOrWhiteSpace(r.Organization) ? "Unknown" : r.Organization)
+                                    @(r.Organization ?? "Unknown")
+                                </td>
+
+                                <td class="px-3 py-2 text-sm whitespace-nowrap text-gray-700">
+                                    @(obstacle?.ObstacleHeight?.ToString("0.##") ?? "-")
                                 </td>
                                 <td class="px-3 py-2 text-sm whitespace-nowrap text-gray-700">
-                                    @(r.Obstacle.ObstacleHeight?.ToString("0.##") ?? "-")
+                                    @(obstacle?.ObstacleLatitude?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "-")
                                 </td>
                                 <td class="px-3 py-2 text-sm whitespace-nowrap text-gray-700">
-                                    @(r.Obstacle.ObstacleLatitude?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "-")
+                                    @(obstacle?.ObstacleLongitude?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "-")
                                 </td>
+
                                 <td class="px-3 py-2 text-sm whitespace-nowrap text-gray-700">
-                                    @(r.Obstacle.ObstacleLongitude?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "-")
-                                </td>
-                                <!-- show picture -->
-                                <td class="px-3 py-2 text-sm whitespace-nowrap text-gray-700">
-                                    @if (!string.IsNullOrWhiteSpace(r.Obstacle.ImagePath))
+                                    @if (!string.IsNullOrWhiteSpace(obstacle?.ImagePath))
                                     {
-                                        <a href="@r.Obstacle.ImagePath" target="_blank">
-                                            <img src="@r.Obstacle.ImagePath"
+                                        <a href="@obstacle.ImagePath" target="_blank">
+                                            <img src="@obstacle.ImagePath"
                                                  alt="Obstacle image"
-                                                 style="width: 300px; height: auto; object-fit: contain;"
+                                                 style="width: 200px; height: auto; object-fit: contain;"
                                                  class="rounded border" />
                                         </a>
                                     }
@@ -139,4 +141,4 @@
             }
         </div>
     </div> <!-- /.bg-white card -->
-</div>     <!-- /.container -->
+</div> <!-- /.container -->

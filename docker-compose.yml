@@ -1,10 +1,11 @@
 services:
   db:
     image: mariadb:10.11
+    container_name: nrl-prosjekt-gr14-2025h-db-1
     environment:
       MYSQL_DATABASE: nrl
-      MYSQL_USER: nrl
-      MYSQL_PASSWORD: nrlpass
+      MYSQL_USER: student
+      MYSQL_PASSWORD: studentpass
       MYSQL_ROOT_PASSWORD: rootpass
     ports:
       - "3306:3306"
@@ -27,7 +28,7 @@ services:
       ASPNETCORE_URLS: http://+:8080
       ASPNETCORE_ENVIRONMENT: Development
       # Important: use the service name "db" inside the Compose network
-      ConnectionStrings__DefaultConnection: server=db;port=3306;database=nrl;user=nrl;password=nrlpass
+      ConnectionStrings__DefaultConnection: server=db;port=3306;database=nrl;user=root;password=rootpass
     ports:
       - "8080:8080"
     volumes:

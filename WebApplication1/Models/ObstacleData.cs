@@ -1,28 +1,43 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WebApplication1.Models
 {
+    [Table("ObstacleData")]
     public class ObstacleData
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
+        [Key]
+        [Column("ObstacleID")]
+        public int ObstacleID { get; set; }
 
-        public virtual string? ObstacleName { get; set; }
+        [StringLength(50)]
+        public string? ObstacleName { get; set; }
 
-        public virtual double? ObstacleHeight { get; set; }
+        public double? ObstacleHeight { get; set; }
 
-        public virtual string? ObstacleDescription { get; set; }
+        public string? ObstacleDescription { get; set; }
 
         public double? ObstacleLatitude { get; set; }
+
         public double? ObstacleLongitude { get; set; }
-        public string? ObstacleType { get; set; } // Type of obstacle (e.g., "circle", "line", etc.)    
-        public double? ObstacleRadius { get; set; } // For circular obstacles
-        public string? ObstacleGeometry { get; set; } // JSON representation of the obstacle's geometry
-        public string? ObstacleLineCoordinates { get; set; } // For line obstacles, stores coordinates as a string
+
+        [StringLength(50)]
+        public string? ObstacleType { get; set; }
+
+        public double? ObstacleRadius { get; set; }
+
+        public string? ObstacleGeometry { get; set; }
+
+        public string? ObstacleLineCoordinates { get; set; }
+
+        [StringLength(50)]
         public string? ObstacleLineLength { get; set; }
 
-        public string? ImagePath { get; set; } // Path to the uploaded image file
-        public DateTime ObstacleRegistrationTime { get; set; } = DateTime.UtcNow; //saves in UTC
+        [StringLength(255)]
+        public string? ImagePath { get; set; }
+
+        public DateTime ObstacleRegistrationTime { get; set; } = DateTime.UtcNow;
 
         [NotMapped]
         public DateTime ObstacleRegistrationLocalTime =>
@@ -31,10 +46,11 @@ namespace WebApplication1.Models
                 TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time")
             );
 
-        public bool IsDraft { get; set; } = true; // Report is draft by default
+        public bool IsDraft { get; set; } = true;
 
-        // public string? GeometryGeoJson { get; set; } // Felt som beholder koordinatene til hinderets lokasjon?
+        [ForeignKey("ReportItem")]
+        public int ReportID { get; set; }
 
-
+        public virtual ReportItem? ReportItem { get; set; }
     }
 }
