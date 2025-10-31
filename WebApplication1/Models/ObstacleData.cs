@@ -18,6 +18,8 @@ namespace WebApplication1.Models
 
         public string? ObstacleDescription { get; set; }
 
+        public bool ObstacleHasLight { get; set; }
+
         public double? ObstacleLatitude { get; set; }
 
         public double? ObstacleLongitude { get; set; }
