@@ -113,7 +113,7 @@ namespace WebApplication1.Controllers
                 ObstacleLongitude = validatedData.ObstacleLongitude,
                 ObstacleType = validatedData.ObstacleType,
                 ObstacleRadius = validatedData.ObstacleRadius,
-                ObstacleGeometry = validatedData.ObstacleGeometry,
+                ObstacleGeoJson = validatedData.ObstacleGeoJson,
                 ObstacleLineCoordinates = validatedData.ObstacleLineCoordinates,
                 ObstacleLineLength = validatedData.ObstacleLineLength,
                 ImagePath = validatedData.ImagePath,

@@ -18,26 +18,28 @@ namespace WebApplication1.Models
 
         public string? ObstacleDescription { get; set; }
 
+        public bool ObstacleHasLight { get; set; }
+
         public double? ObstacleLatitude { get; set; }
 
         public double? ObstacleLongitude { get; set; }
 
         [StringLength(50)]
-        public string? ObstacleType { get; set; }
+        public string? ObstacleType { get; set; } // Type of obstacle (e.g., "circle", "line", etc.)  
 
         public double? ObstacleRadius { get; set; }
 
-        public string? ObstacleGeometry { get; set; }
+        public string? ObstacleGeoJson { get; set; } // GeoJSON representation of the obstacle  
 
-        public string? ObstacleLineCoordinates { get; set; }
+        public string? ObstacleLineCoordinates { get; set; } // For line obstacles, stores coordinates as a string
 
         [StringLength(50)]
         public string? ObstacleLineLength { get; set; }
 
         [StringLength(255)]
-        public string? ImagePath { get; set; }
+        public string? ImagePath { get; set; } // Path to the uploaded image file
 
-        public DateTime ObstacleRegistrationTime { get; set; } = DateTime.UtcNow;
+        public DateTime ObstacleRegistrationTime { get; set; } = DateTime.UtcNow; //saves in UTC
 
         [NotMapped]
         public DateTime ObstacleRegistrationLocalTime =>
@@ -46,7 +48,7 @@ namespace WebApplication1.Models
                 TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time")
             );
 
-        public bool IsDraft { get; set; } = true;
+        public bool IsDraft { get; set; } = true; // Report is draft by default
 
         [ForeignKey("ReportItem")]
         public int ReportID { get; set; }
