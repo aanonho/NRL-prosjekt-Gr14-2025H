@@ -168,7 +168,7 @@ namespace WebApplication1.Controllers
 
                
 
-                return RedirectToAction("UserProfile", "User", new { email = currentUser.Email });
+                return RedirectToAction("DataForm", "Obstacle");
             }
             _context.Add(validatedData);
             await _context.SaveChangesAsync();
