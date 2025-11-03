@@ -167,13 +167,12 @@ namespace WebApplication1.Controllers
                 }
 
                
-            }
 
+                return RedirectToAction("UserProfile", "User", new { email = currentUser.Email });
+            }
             _context.Add(validatedData);
             await _context.SaveChangesAsync();
 
-                return RedirectToAction("UserProfile", "User", new { email = currentUser.Email });
-            
 
             // === FALLBACK ===
             return View(validatedData);
