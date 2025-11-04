@@ -45,6 +45,13 @@ input, select, textarea {
     box-sizing: border-box;
 }
 
+.field-validation-error {
+    color: #B91c1c;
+    font-weight:600;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
 /* Checkbox styling */
 input[type="checkbox"] {
     width: 24px;
@@ -84,8 +91,9 @@ input[type="button"] {
     box-sizing: border-box;
 }
 
+/* Status message styles for user feedback (critical actions, warnings, confirmations) */
 .status-critical {
-    background-color: #ff0000;
+    background-color: #990000;
     color: white;
     border-left: 6px solid #b71c1c;
 }
@@ -97,7 +105,7 @@ input[type="button"] {
 }
 
 .status-confirmed {
-    background-color: #2e7d32;
+    background-color: #1b5e20;
     color: white;
     border-left: 6px solid #1b5e20;
 }
@@ -123,7 +131,18 @@ input[type="button"] {
         .button-group button {
             width: 140px;
             flex: 0 0 auto;
-        }
+        }   
+}
+
+@media (max-width: 1024px) {
+    .status-warning,
+    .status-critical,
+    .status-confirmed {
+        display: block !important;
+        width: 100%;
+        box-sizing: border-box;
+        margin-bottom: 1rem;
+    }
 }
 
 
