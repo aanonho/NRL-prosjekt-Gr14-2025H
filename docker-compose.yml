@@ -35,4 +35,5 @@ services:
       - ./WebApplication1/wwwroot/images:/app/wwwroot/images
 
 volumes:
-  mysqldata: {}
+  mysqldata:
+    name: nrl-db-data
