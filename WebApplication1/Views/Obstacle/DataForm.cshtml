@@ -65,6 +65,22 @@
             @Html.AntiForgeryToken()
             <input type="hidden" name="submitType" id="submitType" value="Submit" />
 
+            <div class="status-warning p-4 rounded mb-4">
+                <strong>⚠ Warning:</strong> NB!! TESTING TESTING BOXES.
+            </div>
+
+            <div class="status-critical p-4 rounded mb-4">
+                <strong>⚠ Critical:</strong> You must complete all required fields marked with * before submitting the form. <br> You may leave them blank if you choose to save as a draft.
+            </div>
+
+            <div class="status-warning p-4 rounded mb-4">
+                <strong>⚠ Warning:</strong> This is a warning message.
+            </div>
+
+            <div class="status-confirmed p-4 rounded mb-4">
+                <strong>✔ Saved:</strong> The obstacle has been successfully saved.
+            </div>
+
             <!-- Hidden fields for geometry -->
             <input asp-for="ObstacleGeoJson" id="ObstacleGeoJson" type="hidden" />
             <input asp-for="ObstacleRadius" id="ObstacleRadiusHidden" type="hidden" />

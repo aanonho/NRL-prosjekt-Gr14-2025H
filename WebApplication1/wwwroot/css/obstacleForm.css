@@ -84,6 +84,24 @@ input[type="button"] {
     box-sizing: border-box;
 }
 
+.status-critical {
+    background-color: #ff0000;
+    color: white;
+    border-left: 6px solid #b71c1c;
+}
+
+.status-warning {
+    background-color: #ffd800;
+    color: black;
+    border-left: 6px solid #f57f17;
+}
+
+.status-confirmed {
+    background-color: #2e7d32;
+    color: white;
+    border-left: 6px solid #1b5e20;
+}
+
 /* Media queries for Desktop adjustments*/
 @media (min-width: 1024px) {
     input, select, textarea {
