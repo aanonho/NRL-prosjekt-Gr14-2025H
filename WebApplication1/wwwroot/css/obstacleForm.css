@@ -75,6 +75,25 @@ input[type="button"] {
     border-radius: 8px;
 }
 
+/* Custom button styles */
+.button-dark-blue {
+    background-color: #1d4ed8;
+    color: white;
+}
+
+    .button-dark-blue:hover {
+        background-color: #1e40af;
+    }
+
+.button-dark-red {
+    background-color: #990000;
+    color: white;
+}
+
+    .button-dark-red:hover {
+        background-color: #7f1d1d;
+    }
+
 /* Button spacing */
 .button-group {
     display: flex;
@@ -82,6 +101,14 @@ input[type="button"] {
     gap: 20px;
     margin-top: 16px;
 }
+
+/* Placeholder styling for better contrast*/
+input::placeholder,
+input[type="number"]::placeholder,
+textarea::placeholder {
+    color: #6b7280 !important;
+}
+/*#374151 mørkere grå farge*/
 
 /* Circle markers for line/cable points */
 .circle-marker {
