@@ -106,9 +106,8 @@ input[type="button"] {
 input::placeholder,
 input[type="number"]::placeholder,
 textarea::placeholder {
-    color: #6b7280 !important;
+    color: #374151 !important;
 }
-/*#374151 mørkere grå farge*/
 
 /* Circle markers for line/cable points */
 .circle-marker {
