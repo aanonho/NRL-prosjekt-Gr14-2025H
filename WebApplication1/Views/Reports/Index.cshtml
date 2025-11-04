@@ -4,10 +4,13 @@
     ViewData["Title"] = "Reports";
 }
 
+<!-- Custom page CSS -->
+<link rel="stylesheet" href="~/css/obstacleForm.css" />
+
 <div class="container mx-auto mt-6 px-4">
     <div class="overflow-hidden rounded-lg bg-white shadow-md">
         <!-- Header -->
-        <div class="flex items-center justify-between bg-green-500 px-4 py-3 text-white">
+        <div class="flex items-center justify-between bg-blue-500 px-4 py-3 text-white">
             <h1 class="text-xl font-bold sm:text-2xl">Reports</h1>
             <p class="text-sm opacity-90">
                 Showing <strong>@Model.FilteredCount</strong> of <strong>@Model.TotalCount</strong> reports —
@@ -50,7 +53,7 @@
             </div>
 
             <div class="flex gap-2 sm:col-span-3">
-                <button type="submit" class="rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600">Apply</button>
+                <button type="submit" class="button-dark-blue">Apply</button>
                 <a href="@Url.Action("Index", "Reports")" class="rounded border px-4 py-2">Reset</a>
             </div>
         </form>
@@ -66,14 +69,14 @@
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-3 py-2 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">Date</th>
-                            <th class="px-3 py-2 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">Title</th>
-                            <th class="px-3 py-2 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">Status</th>
-                            <th class="px-3 py-2 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">Organization</th>
-                            <th class="px-3 py-2 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">Height (m)</th>
-                            <th class="px-3 py-2 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">Lat</th>
-                            <th class="px-3 py-2 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">Lng</th>
-                            <th class="px-3 py-2 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">Image</th>
+                            <th class="px-3 py-2 text-left text-xs font-medium tracking-wider text-gray-600 uppercase">Date</th>
+                            <th class="px-3 py-2 text-left text-xs font-medium tracking-wider text-gray-600 uppercase">Title</th>
+                            <th class="px-3 py-2 text-left text-xs font-medium tracking-wider text-gray-600 uppercase">Status</th>
+                            <th class="px-3 py-2 text-left text-xs font-medium tracking-wider text-gray-600 uppercase">Organization</th>
+                            <th class="px-3 py-2 text-left text-xs font-medium tracking-wider text-gray-600 uppercase">Height (m)</th>
+                            <th class="px-3 py-2 text-left text-xs font-medium tracking-wider text-gray-600 uppercase">Lat</th>
+                            <th class="px-3 py-2 text-left text-xs font-medium tracking-wider text-gray-600 uppercase">Lng</th>
+                            <th class="px-3 py-2 text-left text-xs font-medium tracking-wider text-gray-600 uppercase">Image</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200 bg-white">

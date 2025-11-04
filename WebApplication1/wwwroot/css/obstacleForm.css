@@ -94,6 +94,15 @@ input[type="button"] {
         background-color: #7f1d1d;
     }
 
+.button-dark-yellow {
+    background-color: #fefc38;
+    color: white;
+}
+
+    .button-dark-yellow:hover {
+        background-color: #fcdc3a;
+    }
+
 /* Button spacing */
 .button-group {
     display: flex;
