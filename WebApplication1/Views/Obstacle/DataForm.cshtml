@@ -100,7 +100,7 @@
             <!-- Has light checkbox -->
             <div class="sm:col-span-2">
                 <label class="inline-flex items-center">
-                    <input asp-for="ObstacleHasLight" type="checkbox" class="h-4 w-4 border-gray-300 rounded">
+                    <input asp-for="ObstacleHasLight" type="checkbox" class="h-11 w-11 border-gray-300 rounded">
                     <span class="ml-2 text-gray-700">Check the box if obstacle have light</span>
                 </label>            
             </div>
@@ -114,7 +114,7 @@
                 <div id="imageContainer" class="mt-2 hidden">
                     <img id="imagePreview" class="max-h-60 rounded border border-gray-300" />
                     <button type="button" id="removeImageButton"
-                            class="block mt-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded">
+                            class="block mt-2 bg-red-500 hover:bg-red-600 text-white px-4 py-3 rounded">
                         Remove Image
                     </button>
                 </div>
@@ -130,11 +130,11 @@
                 <input asp-for="ObstacleLongitude" id="ObstacleLongitude" type="number" step="any" class="w-full border border-gray-300 rounded p-2" placeholder="Auto-filled (point, mast, area)" readonly />
             </div>
 
-            <div class="sm:col-span-2 flex gap-6 mt-4">
-                <button type="submit" onclick="setSubmitType('Submit')" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded mt-4">
+            <div class="sm:col-span-2 button-group">
+                <button type="submit" onclick="setSubmitType('Submit')" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded">
                     Submit Data
                 </button>
-                <button type="submit" onclick="setSubmitType('SaveDraft'); return true;" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded mt-4">
+                <button type="submit" onclick="setSubmitType('SaveDraft'); return true;" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded">
                     Save Draft
                 </button>
             </div>
