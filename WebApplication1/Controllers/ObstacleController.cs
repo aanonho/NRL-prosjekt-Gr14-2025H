@@ -133,7 +133,7 @@ namespace WebApplication1.Controllers
                 _context.Add(validatedData);
                 await _context.SaveChangesAsync();
 
-                return RedirectToAction("UserProfile", "User", new { email = currentUser.Email });
+                return RedirectToAction("Dataform", "Obstacle");
             }
 
             // === SAVE AS DRAFT ===
