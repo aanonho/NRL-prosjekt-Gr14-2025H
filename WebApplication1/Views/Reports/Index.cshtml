@@ -5,17 +5,18 @@
 }
 
 <!-- Custom page CSS -->
-<link rel="stylesheet" href="~/css/obstacleForm.css" />
+<link rel="stylesheet" href="~/css/shared.css" />
+<link rel="stylesheet" href="~/css/report.css" />
 
 <div class="container mx-auto mt-6 px-4">
     <div class="overflow-hidden rounded-lg bg-white shadow-md">
-        <!-- Header -->
-        <div class="flex items-center justify-between bg-blue-500 px-4 py-3 text-white">
+        <!-- Header -->        
+            <div id="header" class="flex items-center justify-between px-4 py-3 text-white">
             <h1 class="text-xl font-bold sm:text-2xl">Reports</h1>
             <p class="text-sm opacity-90">
                 Showing <strong>@Model.FilteredCount</strong> of <strong>@Model.TotalCount</strong> reports —
-                <span class="text-green-100">Submitted:</span> <strong>@Model.SubmittedCount</strong>,
-                <span class="text-yellow-100">Drafts:</span> <strong>@Model.DraftCount</strong>
+                <span class="text-white">Submitted:</span> <strong>@Model.SubmittedCount</strong>,
+                <span class="text-white">Drafts:</span> <strong>@Model.DraftCount</strong>
             </p>
         </div>
 
@@ -52,9 +53,10 @@
                        class="w-full rounded border border-gray-300 p-2" />
             </div>
 
-            <div class="flex gap-2 sm:col-span-3">
-                <button type="submit" class="button-dark-blue">Apply</button>
-                <a href="@Url.Action("Index", "Reports")" class="rounded border px-4 py-2">Reset</a>
+            <div class="sm:col-span-2 button-group">
+                <button type="submit" class="button-dark-green">Apply</button>
+                <button type="button" class="button-dark-yellow" onclick="location.href='@Url.Action("Index", "Reports")'">Reset</button>
+             @*  GAMMELKODE->  <a href="@Url.Action("Index", "Reports")" class="button-dark-yellow">Reset</a> *@
             </div>
         </form>
 
@@ -143,5 +145,5 @@
                 </table>
             }
         </div>
-    </div> <!-- /.bg-white card -->
+    </> <!-- /.bg-white card -->
 </div> <!-- /.container -->

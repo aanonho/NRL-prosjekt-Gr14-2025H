@@ -1,6 +1,6 @@
 ﻿/* obstacleForm.css */
 
-/* Layout containers */
+/* --- Layout containers --- */
 .flex-container {
     display: flex;
     gap: 20px;
@@ -17,7 +17,7 @@
     border-radius: 8px;
 }
 
-/* Map container */
+/* --- Map container --- */
 .map-container {
     flex: 2 1 300px;
 }
@@ -29,30 +29,14 @@
     border-radius: 8px;
 }
 
-/* Image preview */
+/* --- Image preview --- */
 #imageContainer img {
     max-height: 15rem;
     border-radius: 8px;
     border: 1px solid #ccc;
 }
 
-/* Form elements */
-input, select, textarea {
-    min-height: 44px;
-    padding: 12px;
-    font-size: 16px;
-    border-radius: 6px;
-    box-sizing: border-box;
-}
-
-.field-validation-error {
-    color: #B91c1c;
-    font-weight:600;
-    padding: 4px 8px;
-    border-radius: 4px;
-}
-
-/* Checkbox styling */
+/* --- Checkbox styling --- */
 input[type="checkbox"] {
     width: 24px;
     height: 24px;
@@ -60,62 +44,6 @@ input[type="checkbox"] {
 
 label > input[type="checkbox"] {
     margin-right: 8px;
-}
-
-/* Buttons */
-button,
-input[type="submit"],
-input[type="button"] {
-    min-width: 48px;
-    min-height: 48px;
-    padding: 14px 20px;
-    font-size: 16px;
-    touch-action: manipulation;
-    user-select: none;
-    border-radius: 8px;
-}
-
-/* Custom button styles */
-.button-dark-blue {
-    background-color: #1d4ed8;
-    color: white;
-}
-
-    .button-dark-blue:hover {
-        background-color: #1e40af;
-    }
-
-.button-dark-red {
-    background-color: #990000;
-    color: white;
-}
-
-    .button-dark-red:hover {
-        background-color: #7f1d1d;
-    }
-
-.button-dark-yellow {
-    background-color: #fefc38;
-    color: white;
-}
-
-    .button-dark-yellow:hover {
-        background-color: #fcdc3a;
-    }
-
-/* Button spacing */
-.button-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    margin-top: 16px;
-}
-
-/* Placeholder styling for better contrast*/
-input::placeholder,
-input[type="number"]::placeholder,
-textarea::placeholder {
-    color: #374151 !important;
 }
 
 /* Circle markers for line/cable points */
@@ -126,59 +54,13 @@ textarea::placeholder {
     box-sizing: border-box;
 }
 
-/* Status message styles for user feedback (critical actions, warnings, confirmations) */
-.status-critical {
-    background-color: #990000;
-    color: white;
-    border-left: 6px solid #b71c1c;
-}
-
-.status-warning {
-    background-color: #ffd800;
-    color: black;
-    border-left: 6px solid #f57f17;
-}
-
-.status-confirmed {
-    background-color: #1b5e20;
-    color: white;
-    border-left: 6px solid #1b5e20;
-}
-
-/* Media queries for Desktop adjustments*/
+/* --- Media queries for Desktop adjustments --- */
 @media (min-width: 1024px) {
-    input, select, textarea {
-        padding: 16px;
-        font-size: 14px;
-    }
-
     .form-container {
         max-width: 800px;
-    }
-
-    .button-group {
-        gap: 32px;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: flex-start;
-    }
-
-        .button-group button {
-            width: 140px;
-            flex: 0 0 auto;
-        }   
+    } 
 }
 
-@media (max-width: 1024px) {
-    .status-warning,
-    .status-critical,
-    .status-confirmed {
-        display: block !important;
-        width: 100%;
-        box-sizing: border-box;
-        margin-bottom: 1rem;
-    }
-}
 
 
  
