@@ -1,6 +1,7 @@
 ﻿/* shared.css */
 
 /* --- Form elements --- */
+/* Styles for input, textarea, select */
 input, select, textarea {
     min-height: 44px;
     padding: 12px;
@@ -9,6 +10,7 @@ input, select, textarea {
     box-sizing: border-box;
 }
 
+/* Focus effect when user clicks into a field */
 input:focus,
 textarea:focus,
 select:focus {
@@ -17,6 +19,7 @@ select:focus {
     box-shadow: 0 0 4px #1e40af33;
 }
 
+/* Validation error styling */
 .field-validation-error {
     color: #B91c1c;
     font-weight: 600;
@@ -24,13 +27,14 @@ select:focus {
     border-radius: 4px;
 }
 
-/* Placeholder styling for better contrast*/
+/* Placeholder styling for better contrast */
 input::placeholder,
 input[type="number"]::placeholder,
 textarea::placeholder {
     color: #374151 !important;
 }
 
+/* Red asterisk for required fields */
 .required::after {
     content: " *";
     color: #ef4444;
@@ -95,10 +99,10 @@ input[type="button"] {
     margin-top: 16px;
 }
 
+/* Center button group */
 .center-button {
     justify-content: center !important;
 }
-
 
 /* --- Status message styles for user feedback (critical actions, warnings, confirmations) --- */
 .status-critical {
@@ -119,7 +123,8 @@ input[type="button"] {
     border-left: 6px solid #1b5e20;
 }
 
-/* --- Media queries for Desktop adjustments --- */
+/* --- Media queries --- */
+/* Desktop adjustments */
 @media (min-width: 1024px) {
     input, select, textarea {
         padding: 16px;
@@ -139,6 +144,7 @@ input[type="button"] {
         }
 }
 
+/* Mobile/tablet */
 @media (max-width: 1024px) {
     .status-warning,
     .status-critical,
