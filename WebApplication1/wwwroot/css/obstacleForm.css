@@ -20,11 +20,12 @@
 /* --- Map container --- */
 .map-container {
     flex: 2 1 300px;
+    height: 80vh;
 }
 
 .map-box {
     width: 100%;
-    height: 500px;
+    height: 100%;
     border: 2px solid gray;
     border-radius: 8px;
 }

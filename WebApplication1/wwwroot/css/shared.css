@@ -9,6 +9,14 @@ input, select, textarea {
     box-sizing: border-box;
 }
 
+input:focus,
+textarea:focus,
+select:focus {
+    outline: 3px solid #1e40af;
+    outline-offset: 3px;
+    box-shadow: 0 0 4px #1e40af33;
+}
+
 .field-validation-error {
     color: #B91c1c;
     font-weight: 600;
@@ -21,6 +29,11 @@ input::placeholder,
 input[type="number"]::placeholder,
 textarea::placeholder {
     color: #374151 !important;
+}
+
+.required::after {
+    content: " *";
+    color: #ef4444;
 }
 
 /* --- Buttons --- */
@@ -81,6 +94,11 @@ input[type="button"] {
     gap: 20px;
     margin-top: 16px;
 }
+
+.center-button {
+    justify-content: center !important;
+}
+
 
 /* --- Status message styles for user feedback (critical actions, warnings, confirmations) --- */
 .status-critical {
