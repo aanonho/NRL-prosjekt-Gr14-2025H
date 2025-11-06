@@ -54,24 +54,32 @@ label > input[type="checkbox"] {
     padding: 12px;
     font-size: 16px;
     font-weight: 600;
-    border: 2px solid #1d4ed8;
+    border: 2px solid black;
     border-radius: 8px;
     background-color: white;
     color: black;
     display: flex;
     justify-content: center;
     gap: 8px;
-    cursor: pointer;  
+    cursor: pointer;
 }
 
-/* Icon inside obtsacle buttons */
-.obstacle-button i {
-    font-size: 18px;
-}
+    .obstacle-button:hover {
+        background-color: #3b82f6;
+    }
 
 .obstacle-button.active {
     background-color: #1d4ed8;
     color: white;
+}
+
+/* Icon inside obtsacle buttons for img icons */
+.button-icon {
+    width: 30px;
+    height: 30px;
+    margin-right: 6px;
+    vertical-align: middle;
+/*    filter: invert(1);*/
 }
 
 /* Circle markers for line points */
