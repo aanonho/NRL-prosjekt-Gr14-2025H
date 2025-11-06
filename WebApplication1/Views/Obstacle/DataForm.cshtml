@@ -26,7 +26,7 @@
                 Choose Obstacle:
                 </label>
 
-            <div class="flex gap-2 flex-wrap">
+            <div class="obstacle-button-container">
                 <button type="button" class="obstacle-button" data-type="point">
                     <img src="/icons/point.svg" alt="Point icon" class="button-icon" />
                     Point
@@ -78,19 +78,7 @@
         <form asp-controller="Obstacle" asp-action="DataForm" method="post" enctype="multipart/form-data" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             @Html.AntiForgeryToken()
             <input type="hidden" name="submitType" id="submitType" value="Submit" />
-     
-            <div class="status-critical p-4 rounded mb-4">
-                <strong>⚠ Critical:</strong> 
-            </div>
-
-            <div class="status-warning p-4 rounded mb-4">
-                <strong>⚠ Warning:</strong> You must complete all required fields marked with * before submitting the form. <br> You may leave them blank if you choose to save as a draft.
-            </div>
-
-            <div class="status-confirmed p-4 rounded mb-4">
-                <strong>✔ Saved:</strong> The obstacle has been successfully saved.
-            </div>
-
+ 
             <!-- Hidden fields for geometry -->
             <input asp-for="ObstacleGeoJson" id="ObstacleGeoJson" type="hidden" />
             <input asp-for="ObstacleRadius" id="ObstacleRadiusHidden" type="hidden" />
@@ -164,6 +152,19 @@
                     Save Draft
                 </button>
             </div>
+
+            <div class="status-critical p-4 rounded mb-4">
+                <strong>⚠ Critical:</strong>
+            </div>
+
+            <div class="status-warning p-4 rounded mb-4">
+                <strong>⚠ Warning:</strong> You must complete all required fields marked with * before submitting the form. <br> You may leave them blank if you choose to save as a draft.
+            </div>
+
+            <div class="status-confirmed p-4 rounded mb-4">
+                <strong>✔ Saved:</strong> The obstacle has been successfully saved.
+            </div>
+
         </form>
     </div>
 
