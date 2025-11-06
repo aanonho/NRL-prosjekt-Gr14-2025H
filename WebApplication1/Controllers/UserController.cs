@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebApplication1.Models;
+using WebApplication1.Models.Entities;
 using System.Collections.Generic;
 using System.Linq;
 
