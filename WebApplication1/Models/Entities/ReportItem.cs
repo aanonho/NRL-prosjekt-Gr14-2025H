@@ -46,7 +46,9 @@ namespace WebApplication1.Models
         public string? ImagePath { get; set; }
 
         [StringLength(100)]
-        public string? Organization { get; set; } = "Unknown";
+        public string? Organization { get; set; }
+
+        public Organization? OrganizationRef { get; set; }
 
         // Not use in DB for now
         [NotMapped]
