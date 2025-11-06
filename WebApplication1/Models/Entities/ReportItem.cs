@@ -51,6 +51,7 @@ namespace WebApplication1.Models
         // Not use in DB for now
         [NotMapped]
         public UserLink? UserInfo { get; set; }
+        public Pilot? Pilot { get; set; }
 
         // Not use in DB, only for form validations
         [NotMapped]

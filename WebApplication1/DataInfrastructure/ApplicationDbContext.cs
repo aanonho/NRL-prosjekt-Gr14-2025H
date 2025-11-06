@@ -14,6 +14,11 @@ namespace WebApplication1.DataInfrastructure
 
         public DbSet<ObstacleData> Obstacles { get; set; }
         public DbSet<ReportItem> ReportStore { get; set; }
+        public DbSet<Organization> Organizations { get; set; }
+        public DbSet<UserEntity> Users { get; set; }
+        public DbSet<Pilot> Pilots { get; set; }
+        public DbSet<Registrar> Registrars { get; set; }
+
 
         // Database migrations
         protected override void OnModelCreating(ModelBuilder modelBuilder)
