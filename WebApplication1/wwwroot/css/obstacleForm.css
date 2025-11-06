@@ -7,7 +7,7 @@
     margin-top: 20px;
     flex-wrap: wrap;
 }
-
+ /* Form container styling */
 .form-container {
     flex: 1 1 300px;
     max-width: 600px;
@@ -43,11 +43,38 @@ input[type="checkbox"] {
     height: 24px;
 }
 
+/* Add spacing between checkbox and label text */
 label > input[type="checkbox"] {
     margin-right: 8px;
 }
 
-/* Circle markers for line/cable points */
+/* --- Obstacle type buttons --- */
+.obstacle-button {
+    flex: 1 1 120px;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    border: 2px solid #1d4ed8;
+    border-radius: 8px;
+    background-color: white;
+    color: black;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;  
+}
+
+/* Icon inside obtsacle buttons */
+.obstacle-button i {
+    font-size: 18px;
+}
+
+.obstacle-button.active {
+    background-color: #1d4ed8;
+    color: white;
+}
+
+/* Circle markers for line points */
 .circle-marker {
     display: flex;
     align-items: center;
@@ -56,6 +83,7 @@ label > input[type="checkbox"] {
 }
 
 /* --- Media queries for Desktop adjustments --- */
+/* Adjustments for deskop screens */
 @media (min-width: 1024px) {
     .form-container {
         max-width: 800px;

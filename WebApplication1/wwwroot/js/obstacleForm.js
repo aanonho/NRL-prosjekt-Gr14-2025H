@@ -1,7 +1,7 @@
 ﻿//obstacleForm.js
 
 // Show/hide relevant input fields based on selected obstacle type
-const obstacleTypeSelect = document.getElementById('ObstacleType');
+/*const obstacleTypeSelect = document.getElementById('ObstacleType');*/
 const obstacleTypeHidden = document.getElementById('ObstacleTypeHidden')
 const areaRadiusContainer = document.getElementById('areaRadiusContainer');
 const lineLengthContainer = document.getElementById('lineLengthContainer');
@@ -55,22 +55,39 @@ document.addEventListener('DOMContentLoaded', function () {
     var latlngsLine = [];
     var lineMarkers = [];
 
+    const obstacleButtons = document.querySelectorAll('.obstacle-button');
 
-    // Triggered when the obstacle type changes - stores the selected type
-    obstacleTypeSelect.addEventListener('change', function () {
-        const type = obstacleTypeSelect.value;
+    obstacleButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const type = button.dataset.type;
 
-        // Show/hide radius input for area type
-        areaRadiusContainer.style.display = (type === 'area') ? 'block' : 'none';
+            obstacleTypeHidden.value = type;
 
-        // Show/hide height and length inputs for line/cable types
-        const showLineInputs = (type === 'line' || type === 'cable');
-        lineLengthContainer.style.display = showLineInputs ? 'block' : 'none';
-        lineCoordinatesContainer.style.display = showLineInputs ? 'block' : 'none';
+            // Show/hide height and length inputs for line
+            areaRadiusContainer.style.display = (type === 'area') ? 'block' : 'none';
+            const showLineInputs = (type === 'line');
+            lineLengthContainer.style.display = showLineInputs ? 'block' : 'none';
+            lineCoordinatesContainer.style.display = showLineInputs ? 'block' : 'none';
 
-        // Clear map is type changes
-        clearMapObstacle();
-    });
+            // Clear map is type changes
+            clearMapObstacle();
+        })
+    })
+    // Triggered when the obstacle type changes - stores the selected type (TIL DROPDOWN MENY!)
+    //obstacleTypeSelect.addEventListener('change', function () {
+    //    const type = obstacleTypeSelect.value;
+
+    //    // Show/hide radius input for area type
+    //    areaRadiusContainer.style.display = (type === 'area') ? 'block' : 'none';
+
+    //    // Show/hide height and length inputs for line/cable types
+    //    const showLineInputs = (type === 'line' || type === 'cable');
+    //    lineLengthContainer.style.display = showLineInputs ? 'block' : 'none';
+    //    lineCoordinatesContainer.style.display = showLineInputs ? 'block' : 'none';
+
+    //    // Clear map is type changes
+    //    clearMapObstacle();
+    //});
 
     // Delete obstacle button logic
     const deleteButton = document.getElementById('deleteObstacleButton'); 
@@ -109,12 +126,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     deleteButton.addEventListener('click', clearMapObstacle);
   
-    // Mast icon
-    var mastIcon = L.icon({
-        iconUrl: '/icons/mast.svg',
-        iconSize: [32, 64],
-        iconAnchor: [16, 64]
-    });
+    //// Mast icon
+    //var mastIcon = L.icon({
+    //    iconUrl: '/icons/mast.svg',
+    //    iconSize: [32, 64],
+    //    iconAnchor: [16, 64]
+    //});
 
     // Helicopter icon
     var helicopterIcon = L.icon({
@@ -125,7 +142,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Handle map clicks to draw obstacls
     map.on('click', function (e) {
-        const type = document.getElementById('ObstacleType').value;
+        const type = obstacleTypeHidden.value;
   
         document.getElementById('ObstacleLatitude').value = '';
         document.getElementById('ObstacleLongitude').value = '';
@@ -133,7 +150,7 @@ document.addEventListener('DOMContentLoaded', function () {
         let addedObstacle = false; // True if an obstacle exists and can be deleted
 
         // Point or Mast
-        if (type === 'point' || type === 'mast') // For point and mast, update fields directly
+        if (type === 'point') // For point, update fields directly
         {
             clearMapObstacle(); // Reset map and input fields 
 
@@ -147,13 +164,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 },
                 properties: {}
             });
-
-            if (type === 'point') {
-                obstacleMarker = L.marker(e.latlng).addTo(map); // Add simple marker                 
-            } else {
-                obstacleMarker = L.marker(e.latlng, { icon: mastIcon }).addTo(map);  // Add mast icon marker                      
-            }
-
+            
+            obstacleMarker = L.marker(e.latlng).addTo(map); // Add simple marker                           
             addedObstacle = true;
         }
         // Area
@@ -185,8 +197,8 @@ document.addEventListener('DOMContentLoaded', function () {
             addedObstacle = true;          
         }
 
-        // Line or Cable
-        else if (type === 'line' || type === 'cable') 
+        // Line
+        else if (type === 'line') 
         {                                             
             latlngsLine.push(e.latlng); // Add clicked point to line array   
 
@@ -230,10 +242,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (line) map.removeLayer(line);
 
                 let lineOptions = { color: '#000000', weight: 3 };
-                if (type === 'cable') {
-                    lineOptions.dashArray = '5, 10'; // Dashed line for cable
-                }
-
+                
                 line = L.polyline(latlngsLine, lineOptions).addTo(map);
             }
 
