@@ -71,15 +71,6 @@ namespace WebApplication1.Controllers
                 validatedData.ImagePath = "/images/" + fileName;
             }
 
-            //// Save the image file to a specific location and get the path
-            //var imagePath = Path.Combine("wwwroot/images", imageFile.FileName);
-            //using (var stream = new FileStream(imagePath, FileMode.Create))
-            //{
-            //    await imageFile.CopyToAsync(stream);
-            //}
-
-            //// Set the ImagePath property in the database model
-            //validatedData.ImagePath = "/images/" + imageFile.FileName;
 
             // Determine action based on submitType
             var currentUser = UserController.GetCurrentUser();

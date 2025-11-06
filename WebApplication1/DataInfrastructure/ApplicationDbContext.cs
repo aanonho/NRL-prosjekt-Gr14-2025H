@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MySqlConnector;
 using WebApplication1.Models;
 
 namespace WebApplication1.DataInfrastructure
