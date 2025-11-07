@@ -13,21 +13,21 @@ const imagePreview = document.getElementById('imagePreview');
 const imageContainer = document.getElementById('imageContainer');
 const removeButton = document.getElementById('removeImageButton');
 
-    // Preview when user uploads an image
-fileInput.addEventListener('change', function(event) {
+// Preview when user uploads an image
+fileInput.addEventListener('change', function (event) {
     const file = event.target.files[0];
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = function() {
+    reader.onload = function () {
         imagePreview.src = reader.result;
         imageContainer.classList.remove('hidden');
     };
     reader.readAsDataURL(file);
 });
 
-    // Remove image preview and reset input When user clicks remove button
-removeButton.addEventListener('click', function() {
+// Remove image preview and reset input When user clicks remove button
+removeButton.addEventListener('click', function () {
     fileInput.value = ""; // removes file input
     imagePreview.src = "";
     imageContainer.classList.add('hidden');
@@ -54,8 +54,15 @@ document.addEventListener('DOMContentLoaded', function () {
     var line;
     var latlngsLine = [];
     var lineMarkers = [];
-
     const obstacleButtons = document.querySelectorAll('.obstacle-button');
+    const modal = document.getElementById('obstacleFormModal');
+    const closeModalButton = document.getElementById('closeModal');
+
+    if (closeModalButton) {
+        closeModalButton.addEventListener('click', () => {
+            if (modal) modal.classList.add('hidden');
+        });
+    }
 
     obstacleButtons.forEach(button => {
         button.addEventListener('click', function () {
@@ -90,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function () {
     //});
 
     // Delete obstacle button logic
-    const deleteButton = document.getElementById('deleteObstacleButton'); 
+    const deleteButton = document.getElementById('deleteObstacleButton');
     deleteButton.style.display = 'none';
     function showDeleteButton() {
         deleteButton.style.display = 'inline-block';
@@ -109,11 +116,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function clearMapObstacle() {
         // Remove all drawn layers from map
-        if (obstacleMarker) {map.removeLayer(obstacleMarker); obstacleMarker = null;}
+        if (obstacleMarker) { map.removeLayer(obstacleMarker); obstacleMarker = null; }
         if (circle) { map.removeLayer(circle); circle = null; };
 
         resetLineState();
-      
+
         // Clear all related hidden input fields
         document.getElementById('ObstacleGeoJson').value = '';
         document.getElementById('ObstacleLatitude').value = '';
@@ -125,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     deleteButton.addEventListener('click', clearMapObstacle);
-  
+
     //// Mast icon
     //var mastIcon = L.icon({
     //    iconUrl: '/icons/mast.svg',
@@ -138,14 +145,18 @@ document.addEventListener('DOMContentLoaded', function () {
         iconUrl: '/icons/helicopter.svg',
         iconSize: [60, 60],
         iconAnchor: [30, 30]
-    });      
+    });
 
     // Handle map clicks to draw obstacls
     map.on('click', function (e) {
         const type = obstacleTypeHidden.value;
-  
+
         document.getElementById('ObstacleLatitude').value = '';
         document.getElementById('ObstacleLongitude').value = '';
+
+        if (modal && obstacleTypeHidden.value) {
+            modal.classList.remove('hidden');
+        }
 
         let addedObstacle = false; // True if an obstacle exists and can be deleted
 
@@ -164,7 +175,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 },
                 properties: {}
             });
-            
+
             obstacleMarker = L.marker(e.latlng).addTo(map); // Add simple marker                           
             addedObstacle = true;
         }
@@ -172,13 +183,13 @@ document.addEventListener('DOMContentLoaded', function () {
         else if (type === 'area') {
             clearMapObstacle(); // Reset map and input fields 
 
-            const radiusInput = document.getElementById('ObstacleRadius');          
+            const radiusInput = document.getElementById('ObstacleRadius');
             const radius = parseFloat(radiusInput.value) || 300; // Default radius
 
             circle = L.circle(e.latlng, { color: 'red', fillColor: '#f03', fillOpacity: 0.5, radius: radius }).addTo(map); // Add circle with radius          
 
             // Update hidden fields
-            document.getElementById('ObstacleRadius').value = radius; 
+            document.getElementById('ObstacleRadius').value = radius;
             document.getElementById('ObstacleLatitude').value = e.latlng.lat.toFixed(6);
             document.getElementById('ObstacleLongitude').value = e.latlng.lng.toFixed(6);
             // Create GeoJSON for circle center point with radius property
@@ -194,17 +205,16 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 });
 
-            addedObstacle = true;          
+            addedObstacle = true;
         }
 
         // Line
-        else if (type === 'line') 
-        {                                             
+        else if (type === 'line') {
             latlngsLine.push(e.latlng); // Add clicked point to line array   
 
             lineMarkers.forEach(m => map.removeLayer(m)); // Remove previous line points
             lineMarkers = [];
-                    
+
             // Add custom circle markers for each line point
             latlngsLine.forEach(pt => {
                 const circleIcon = L.divIcon({
@@ -237,12 +247,11 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             // Draw line if more than 1 point
-            if (latlngsLine.length > 1) 
-            {
+            if (latlngsLine.length > 1) {
                 if (line) map.removeLayer(line);
 
                 let lineOptions = { color: '#000000', weight: 3 };
-                
+
                 line = L.polyline(latlngsLine, lineOptions).addTo(map);
             }
 
