@@ -54,8 +54,15 @@ document.addEventListener('DOMContentLoaded', function () {
     var line;
     var latlngsLine = [];
     var lineMarkers = [];
-
     const obstacleButtons = document.querySelectorAll('.obstacle-button');
+    const modal = document.getElementById('obstacleFormModal');
+    const closeModalButton = document.getElementById('closeModal');
+  
+    if (closeModalButton) {
+        closeModalButton.addEventListener('click', () => {
+            if (modal) modal.classList.add('hidden');
+        });
+    }
 
     obstacleButtons.forEach(button => {
         button.addEventListener('click', function () {
@@ -146,6 +153,10 @@ document.addEventListener('DOMContentLoaded', function () {
   
         document.getElementById('ObstacleLatitude').value = '';
         document.getElementById('ObstacleLongitude').value = '';
+
+        if (modal && obstacleTypeHidden.value) {
+            modal.classList.remove('hidden');
+        }
 
         let addedObstacle = false; // True if an obstacle exists and can be deleted
 
