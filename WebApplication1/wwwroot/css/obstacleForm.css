@@ -75,8 +75,9 @@ label > input[type="checkbox"] {
 .obstacle-button-container {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 24px;
     margin-top: 16px;
+    margin-bottom: 30px;
     justify-content: center;
 }
 
@@ -87,8 +88,8 @@ label > input[type="checkbox"] {
 
 /* Icon inside obstacle buttons for img icons */
 .button-icon {
-    width: 30px;
-    height: 30px;
+    width: 26px;
+    height: 26px;
     margin-right: 6px;
     vertical-align: middle;
 /*    filter: invert(1);*/
@@ -119,4 +120,3 @@ label > input[type="checkbox"] {
             flex: 0 0 auto;
         }
 }
-
