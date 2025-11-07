@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApplication1.DataInfrastructure;
 
@@ -11,9 +12,11 @@ using WebApplication1.DataInfrastructure;
 namespace WebApplication1.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251106191801_AddUserOrgPilotRegistrar")]
+    partial class AddUserOrgPilotRegistrar
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -85,7 +88,7 @@ namespace WebApplication1.Migrations
                     b.HasIndex("ReportID")
                         .IsUnique();
 
-                    b.ToTable("ObstacleData", (string)null);
+                    b.ToTable("ObstacleData");
                 });
 
             modelBuilder.Entity("WebApplication1.Models.Entities.Organization", b =>
@@ -240,7 +243,7 @@ namespace WebApplication1.Migrations
 
                     b.HasIndex("PilotID");
 
-                    b.ToTable("ReportItem", (string)null);
+                    b.ToTable("ReportItem");
                 });
 
             modelBuilder.Entity("WebApplication1.Models.Entities.ObstacleData", b =>

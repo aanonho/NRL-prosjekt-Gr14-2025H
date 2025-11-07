@@ -1,17 +1,22 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebApplication1.Models;
+using WebApplication1.Models.Entities;
 using System.Collections.Generic;
 using System.Linq;
+using WebApplication1.DataInfrastructure;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebApplication1.Controllers
 {
     public class UserController : Controller
     {
-        // Mock user list
-        private static List<UserData> _users = new List<UserData>();
+        private readonly ApplicationDbContext _context;
 
-        // Currently "logged in" user (temp)
-        private static UserData? _currentUser = null;
+        public UserController(ApplicationDbContext context)
+        {
+            _context = context;
+        }   
 
         [HttpGet]
         public IActionResult UserForm()
@@ -20,7 +25,7 @@ namespace WebApplication1.Controllers
         }
 
         [HttpPost]
-        public IActionResult UserForm(UserData userData)
+        public async Task<IActionResult> UserForm(UserEntity userData)
         {
             if (!ModelState.IsValid)
             {
@@ -28,7 +33,7 @@ namespace WebApplication1.Controllers
             }
 
             // Add user if not already in list
-            var existingUser = _users.FirstOrDefault(u => u.Email == userData.Email);
+            var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == userData.Email);
             if (existingUser != null)
             {
                 // If user exists, check role consistency
@@ -40,53 +45,53 @@ namespace WebApplication1.Controllers
             }
             else
             {
-                if (string.IsNullOrWhiteSpace(userData.Organization))
+                if (string.IsNullOrWhiteSpace(userData.Organization?.ToString()))
                 {
-                    userData.Organization = "Unknown";
+                    userData.Organization = new Organization { Name = "Unknown" }; // Alternative; set OrgID = null
                 }
 
-                _users.Add(userData);
+                _context.Users.Add(userData);
+                await _context.SaveChangesAsync();
             }
 
 
             // Set as current user
-            _currentUser = userData;
+            TempData["CurrentUserEmail"] = userData.Email;
 
             // Redirect based on role
-            if (userData.Role != null && userData.Role.ToLower() == "registrar")
-            {
-                return RedirectToAction("RegistrarDashboard");
-            }
-            else
-            {
-                return RedirectToAction("UserProfile", new { email = userData.Email });
-            }
+            return userData.Role?.ToLower() == "registrar"
+        ? RedirectToAction("RegistrarDashboard")
+        : RedirectToAction("UserProfile", new { email = userData.Email });
         }
 
 
-        // == SUPPORTING METHODS FOR MOCK AUTHENTICATION ==
-        public static List<UserData> GetRegisteredUsers() => _users;
-
-        // Returns the currently "logged in" user
-        public static UserData? GetCurrentUser() => _currentUser;
-
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            if (_currentUser != null)
-                return RedirectToAction("UserProfile", _currentUser);
+            var email = TempData["CurrentUserEmail"] as string;
+            if (!string.IsNullOrEmpty(email))
+            {
+                // Use Task.FromResult to provide an awaitable task
+                return await Task.FromResult(RedirectToAction("UserProfile", new { email }));
+            }
 
-            return RedirectToAction("UserForm");
+            return await Task.FromResult(RedirectToAction("UserForm"));
         }
 
         // === USER PROFILE VIEW ===
         [HttpGet]
-        public IActionResult UserProfile(string email)
+        public async Task<IActionResult> UserProfile(string email)
         {
-            var user = _users.FirstOrDefault(u => u.Email == email);
+            var user = await _context.Users
+                .Include(u => u.Organization)
+                .FirstOrDefaultAsync(u => u.Email == email);
+
             if (user == null)
                 return RedirectToAction("UserForm");
 
-            var reports = ReportStore.GetReportsByUser(email);
+            var reports = await _context.ReportItems
+                .Where(r => r.SubmittedByEmail == email)
+                .OrderByDescending(r => r.CreatedAt)
+                .ToListAsync();
 
             // Sends user and reports to the view
             ViewBag.User = user;
@@ -95,11 +100,12 @@ namespace WebApplication1.Controllers
 
         // === REGISTRAR VIEW ===
         [HttpGet]
-        public IActionResult RegistrarDashboard(string status = "all", string sort = "date_desc")
+        public async Task<IActionResult> RegistrarDashboard(string status = "all", string sort = "date_desc")
         {
             // Get only submitted reports (exclude drafts)
-            var reports = ReportStore.GetAll() ?? new List<ReportItem>();
-            reports = reports.Where(r => !r.IsDraft).ToList();
+            var reports = await _context.ReportItems
+                .Where(r => !r.IsDraft)
+                .ToListAsync();
 
 
             // Filter by status if a valid one is selected
@@ -121,11 +127,11 @@ namespace WebApplication1.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult UpdateReportStatus(int id, string status, string? message)
+        public async Task<IActionResult> UpdateReportStatus(int id, string status, string? message)
         {
             // Only allow registrar to act on submitted (non-draft) reports
-            var report = ReportStore.GetAll()
-                .FirstOrDefault(r => r.ReportID == id && !r.IsDraft);
+            var report = await _context.ReportItems
+                .FirstOrDefaultAsync(r => r.ReportID == id && !r.IsDraft);
 
             if (report == null)
             {
@@ -140,7 +146,8 @@ namespace WebApplication1.Controllers
             report.ReviewMessage = message ?? "";
 
             // Persist update safely
-            ReportStore.Update(report.ReportID, report);
+            _context.ReportItems.Update(report);
+            await _context.SaveChangesAsync();
 
             // Show confirmation
             TempData["SuccessMessage"] = $"Report {status.ToLower()} successfully.";

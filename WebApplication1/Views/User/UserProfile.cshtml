@@ -1,8 +1,8 @@
 ﻿@model IEnumerable<WebApplication1.Models.ReportItem>
-@using WebApplication1.Models
+@using WebApplication1.Models.Entities
 @{
     ViewData["Title"] = "User Profile";
-    var user = ViewBag.User as UserData;
+    var user = ViewBag.User as UserEntity;
 }
 
 <div class="flex min-h-screen flex-col items-center bg-gray-50 px-4 py-10 sm:px-6 lg:px-8">
@@ -11,19 +11,20 @@
 
         @if (user != null)
         {
+            var fields = new[]
+            {
+                new KeyValuePair<string, string>("Name", user.Name),
+                new KeyValuePair<string, string>("E-mail", user.Email),
+                new KeyValuePair<string, string>("Phone Number", user.Phone),
+                new KeyValuePair<string, string>("Role", user.Role),
+                new KeyValuePair<string, string>("Organization", user.Organization?.Name ?? "Unknown")
+            };
+
             <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                @foreach (var field in new[]
-                            {
-                        new { Label = "Name", Value = user.Name },
-                        new { Label = "E-mail", Value = user.Email },
-                        new { Label = "Phone Number", Value = user.Phone },
-                        new { Label = "Address", Value = user.Address },
-                        new { Label = "Role", Value = user.Role },
-                        new { Label = "Organization", Value = user.Organization }
-                        })
+                @foreach (var field in fields)
                 {
                     <div>
-                        <label class="mb-1 block font-semibold text-gray-700">@field.Label</label>
+                        <label class="mb-1 block font-semibold text-gray-700">@field.Key</label>
                         <div class="rounded-lg border border-gray-200 bg-gray-50 p-3 shadow-sm">@field.Value</div>
                     </div>
                 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using WebApplication1.Models.Entities;
 
 namespace WebApplication1.Models
 {
@@ -45,11 +46,14 @@ namespace WebApplication1.Models
         public string? ImagePath { get; set; }
 
         [StringLength(100)]
-        public string? Organization { get; set; } = "Unknown";
+        public string? Organization { get; set; }
+
+        public Organization? OrganizationRef { get; set; }
 
         // Not use in DB for now
         [NotMapped]
         public UserLink? UserInfo { get; set; }
+        public Pilot? Pilot { get; set; }
 
         // Not use in DB, only for form validations
         [NotMapped]

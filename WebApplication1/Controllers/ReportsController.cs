@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using WebApplication1.Models;
 using WebApplication1.DataInfrastructure;
+using System.Threading.Tasks;
 
 namespace WebApplication1.Controllers
 {
@@ -17,12 +18,12 @@ namespace WebApplication1.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index(string status = "all", string sort = "date_desc", string organization = "")
+        public async Task<IActionResult> Index(string status = "all", string sort = "date_desc", string organization = "")
         {
             // Get Reports from DB
-            var all = _context.ReportStore
+            var all = await _context.ReportItems
                 .Include(r => r.ReportObstacle)
-                .ToList();
+                .ToListAsync();
 
             var filtered = all.AsEnumerable();
 
@@ -73,7 +74,7 @@ namespace WebApplication1.Controllers
         [HttpGet]
         public IActionResult ReportStatus(string status = "all")
         {
-            var allReports = _context.ReportStore.ToList();
+            var allReports = _context.ReportItems.ToList();
 
             var filtered = status.ToLower() switch
             {
@@ -89,7 +90,7 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public IActionResult UpdateStatus(int id, string status, string message)
         {
-            var report = _context.ReportStore.FirstOrDefault(r => r.ReportID == id);
+            var report = _context.ReportItems.FirstOrDefault(r => r.ReportID == id);
             if (report == null)
                 return NotFound();
 
@@ -105,7 +106,7 @@ namespace WebApplication1.Controllers
         [HttpGet]
         public IActionResult Details(int id)
         {
-            var report = _context.ReportStore.FirstOrDefault(r => r.ReportID == id);
+            var report = _context.ReportItems.FirstOrDefault(r => r.ReportID == id);
             if (report == null)
                 return NotFound();
 
