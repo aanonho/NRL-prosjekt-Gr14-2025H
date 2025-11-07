@@ -7,13 +7,15 @@ namespace WebApplication1.Models.Entities
     public class Registrar
     {
         // PK = FK to UserEntity per diagram
-        [Key, ForeignKey(nameof(User))]
+        [Key]
         [Column("UserData_UserID")]
         public int UserID { get; set; }
 
         [StringLength(45)]
         public string? Department { get; set; }
 
-        public UserEntity User { get; set; } = null!;
+        // Navigation property to user
+        [ForeignKey(nameof(UserID))]
+        public virtual UserEntity User { get; set; } = null!;
     }
 }

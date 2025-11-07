@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using WebApplication1.DataInfrastructure;
 using WebApplication1.Models;
 using WebApplication1.Models.Entities;
+using WebApplication1.Helpers;
 
 namespace WebApplication1.Controllers
 {
@@ -36,18 +37,23 @@ namespace WebApplication1.Controllers
 
         // === EDIT EXISTING REPORT (VIEW) ===
         [HttpGet]
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            var report = ReportStore.GetAll().FirstOrDefault(r => r.ReportID == id);
-            if (report == null)
-            {
-                return RedirectToAction("UserProfile", "User", new { email = UserController.GetCurrentUser()?.Email });
-            }
+            var email = UserHelper.GetCurrentUserEmail(this);
+            if (string.IsNullOrEmpty(email))
+                return RedirectToAction("UserForm", "User");
 
-            var obstacleData = report.Obstacle;
-            if (obstacleData == null)
+            var currentUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            if (currentUser == null)
+                return RedirectToAction("UserForm", "User");
+
+            var report = await _context.ReportItems
+                .Include(r => r.ReportObstacle)
+                .FirstOrDefaultAsync(r => r.ReportID == id);
+
+            if (report == null || report.ReportObstacle == null)
             {
-                return RedirectToAction("UserProfile", "User");
+                return RedirectToAction("UserProfile", "User", new { email });
             }
 
             ViewBag.IsEditing = true;
@@ -57,7 +63,7 @@ namespace WebApplication1.Controllers
         // === HANDLE SUBMIT / SAVE DRAFT ===
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DataForm(ValidatedObstacleData validatedData, IFormFile? imageFile, string submitType)
+        public async Task<IActionResult> DataForm(ValidatedObstacleData validatedData, IFormFile? imageFile, string submitType, UserEntity currentUser)
         {
             // 1) Image upload
             if (imageFile != null && imageFile.Length > 0)
@@ -76,17 +82,21 @@ namespace WebApplication1.Controllers
             }
 
             // 2) Current user (required)
-            var currentUser = UserController.GetCurrentUser();
-            if (currentUser == null)
+            var email = UserHelper.GetCurrentUserEmail(this);
+            if (string.IsNullOrEmpty(email))
+                return RedirectToAction("UserForm", "User");
+
+            var dbUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            if (dbUser == null)
                 return RedirectToAction("UserForm", "User");
 
             validatedData.ObstacleRegistrationTime = DateTime.Now;
 
             // 3) Resolve or create Organization
             int? organizationId = null;
-            if (!string.IsNullOrWhiteSpace(currentUser.Organization))
+            if (dbUser.Organization != null && !string.IsNullOrWhiteSpace(dbUser.Organization.Name))
             {
-                var orgName = currentUser.Organization.Trim();
+                var orgName = dbUser.Organization.Name.Trim();
                 if (orgName.Length > 45) orgName = orgName.Substring(0, 45);
 
                 var org = await _context.Organizations.FirstOrDefaultAsync(o => o.Name == orgName);
@@ -100,7 +110,7 @@ namespace WebApplication1.Controllers
             }
 
             // 4) Resolve or create UserEntity (by email) and ensure Pilot exists
-            var emailKey = (currentUser.Email ?? string.Empty).Trim();
+            var emailKey = (dbUser.Email ?? string.Empty).Trim();
             if (emailKey.Length > 45) emailKey = emailKey.Substring(0, 45);
 
             var userEntity = await _context.Users.FirstOrDefaultAsync(u => u.Email == emailKey);
@@ -108,10 +118,10 @@ namespace WebApplication1.Controllers
             {
                 userEntity = new UserEntity
                 {
-                    Name = currentUser.Name,
+                    Name = dbUser.Name,
                     Email = emailKey,
-                    Phone = currentUser.Phone,
-                    Role = string.IsNullOrWhiteSpace(currentUser.Role) ? "Pilot" : currentUser.Role,
+                    Phone = dbUser.Phone,
+                    Role = string.IsNullOrWhiteSpace(dbUser.Role) ? "Pilot" : dbUser.Role,
                     OrganizationID = organizationId
                 };
                 _context.Users.Add(userEntity);
@@ -142,13 +152,13 @@ namespace WebApplication1.Controllers
                 OrganizationID = organizationId,                // nullable FK
                 PilotID = userEntity.UserID,                    // required FK
                 IsDraft = submitType != "Submit",
-                CreatedBy = currentUser.Email,
-                SubmittedByEmail = currentUser.Email,
-                SubmittedByName = currentUser.Name,
-                Organization = currentUser.Organization ?? "Unknown"
+                CreatedBy = dbUser.Email,
+                SubmittedByEmail = dbUser.Email,
+                SubmittedByName = dbUser.Name,
+                Organization = dbUser.Organization != null ? dbUser.Organization.Name : "Unknown"
             };
 
-            _context.ReportStore.Add(report);
+            _context.ReportItems.Add(report);
             await _context.SaveChangesAsync();
 
             // 6) Save the obstacle and link it
@@ -175,7 +185,7 @@ namespace WebApplication1.Controllers
 
             // 7) Update Report with its obstacle record
             report.ReportObstacle = obstacle;
-            _context.ReportStore.Update(report);
+            _context.ReportItems.Update(report);
             await _context.SaveChangesAsync();
 
             // 8) Redirect
@@ -184,21 +194,33 @@ namespace WebApplication1.Controllers
 
         // === DETAILS VIEW ===
         [HttpGet]
-        public IActionResult Details(int id, string? returnUrl = null)
+        public async Task<IActionResult> Details(int id, string? returnUrl = null)
         {
-            var report = ReportStore.GetAll().FirstOrDefault(r => r.ReportID == id);
+            var report = await _context.ReportItems
+                                       .Include(r => r.ReportObstacle)
+                                       .FirstOrDefaultAsync(r => r.ReportID == id);
             if (report == null)
             {
                 return NotFound();
             }
 
-            var loggedUser = UserController.GetCurrentUser();
+            var email = TempData["CurrentUserEmail"] as string;
+            if (string.IsNullOrEmpty(email))
+            {
+                return RedirectToAction("UserForm", "User");
+            }
+
+            var loggedUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            if (loggedUser == null) 
+            {
+                return RedirectToAction("UserForm", "User");
+            }
 
             if (string.IsNullOrEmpty(returnUrl))
             {
-                returnUrl = loggedUser?.Role == "Registrar"
+                returnUrl = loggedUser.Role?.ToLower() == "registrar"
                     ? Url.Action("RegistrarDashboard", "User")
-                    : Url.Action("UserProfile", "User", new { email = loggedUser?.Email });
+                    : Url.Action("UserProfile", "User", new { email = loggedUser.Email });
             }
 
             ViewBag.ReturnUrl = returnUrl;
@@ -210,12 +232,14 @@ namespace WebApplication1.Controllers
         // === SUBMIT DRAFT (FROM DETAILS) ===
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult SubmitDraft(int id, string actionType, ValidatedObstacleData updatedData)
+        public async Task<IActionResult> SubmitDraft(int id, string actionType, ValidatedObstacleData updatedData)
         {
-            var report = ReportStore.GetAll().FirstOrDefault(r => r.ReportID == id);
+            var report = await _context.ReportItems
+                                       .Include(r => r.ReportObstacle)
+                                       .FirstOrDefaultAsync(r => r.ReportID == id);
             if (report == null)
             {
-                var fallbackEmail = UserController.GetCurrentUser()?.Email ?? string.Empty;
+                var fallbackEmail = TempData["CurrentUserEmail"] as string ?? string.Empty;
                 return RedirectToAction("UserProfile", "User", new { email = fallbackEmail });
             }
 
@@ -233,21 +257,26 @@ namespace WebApplication1.Controllers
                 report.Status = "Pending";
             }
 
-            ReportStore.Update(report.ReportID, report);
+            _context.ReportItems.Update(report);
             return RedirectToAction("Details", new { id = report.ReportID });
         }
 
         // === EDITING AN EXISTING DRAFT (FORM POST) ===
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult UpdateDraft(int id, string ObstacleName, double ObstacleHeight, double? ObstacleLatitude, double? ObstacleLongitude, string ObstacleDescription, string? submitType)
+        public async Task<IActionResult> UpdateDraftAsync(int id, string ObstacleName, double ObstacleHeight, double? ObstacleLatitude, double? ObstacleLongitude, string ObstacleDescription, string? submitType)
         {
-            var currentUser = UserController.GetCurrentUser();
-            if (currentUser == null || string.IsNullOrWhiteSpace(currentUser.Email))
+            var email = TempData["CurrentUserEmail"] as string;
+            if (string.IsNullOrEmpty(email))
                 return RedirectToAction("UserForm", "User");
 
-            var report = ReportStore.GetReportsByUser(currentUser.Email!)
-                                    .FirstOrDefault(r => r.ReportID == id);
+            var currentUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            if (currentUser == null)
+                return RedirectToAction("UserForm", "User");
+
+            var report = await _context.ReportItems
+                                       .Include(r => r.ReportObstacle)
+                                       .FirstOrDefaultAsync(r => r.ReportID == id && r.SubmittedByEmail == currentUser.Email);
 
             if (report == null)
             {
@@ -277,6 +306,9 @@ namespace WebApplication1.Controllers
                 report.Status = "Draft";
                 TempData["SuccessMessage"] = "Draft updated.";
             }
+
+            _context.ReportItems.Update(report);
+            await _context.SaveChangesAsync();
 
             return RedirectToAction("Details", "Obstacle", new { id = report.ReportID });
         }

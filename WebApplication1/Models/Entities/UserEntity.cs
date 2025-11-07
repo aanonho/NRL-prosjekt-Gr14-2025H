@@ -26,9 +26,9 @@ namespace WebApplication1.Models.Entities
         // Matches the diagram’s column name
         [Column("Organization_OrganizationID")]
         public int? OrganizationID { get; set; }
-        public Organization? Organization { get; set; }
+        public  virtual Organization? Organization { get; set; }
 
-        public Pilot? Pilot { get; set; }          // 1–1
-        public Registrar? Registrar { get; set; }  // 1–1
+        public virtual Pilot? Pilot { get; set; }          // 1–1
+        public virtual Registrar? Registrar { get; set; }  // 1–1
     }
 }

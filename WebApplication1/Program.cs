@@ -1,17 +1,37 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WebApplication1.DataInfrastructure;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+/*
 //Henter connection string fra �appsettings.json� filen 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+*/
 
+// Henter connection string fra miljøvariabel først, ellers fra config-fil
+var connectionString =
+    builder.Configuration.GetValue<string>("ConnectionStrings__DefaultConnection") ??
+    builder.Configuration.GetConnectionString("DefaultConnection");
+
+// Test to log which connection string is being used
+Console.WriteLine($"[Startup] Using connection string: {connectionString}");
+
+
+/*
 // Entity Framework Core configuration with Mariadb
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+*/
+
+// Using explicit version of MariaDB rather than AutoDetect
+var serverVersion = new MariaDbServerVersion(new Version(10, 11));
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseMySql(connectionString, serverVersion));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

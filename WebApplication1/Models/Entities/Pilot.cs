@@ -18,9 +18,9 @@ namespace WebApplication1.Models.Entities
         [StringLength(45)]
         public string? AircraftType { get; set; }
 
-        public UserEntity User { get; set; } = null!;
+        public virtual UserEntity User { get; set; } = null!;
 
         // Reports written by this pilot
-        public ICollection<ReportItem> Reports { get; set; } = new List<ReportItem>();
+        public virtual ICollection<ReportItem> Reports { get; set; } = new List<ReportItem>();
     }
 }

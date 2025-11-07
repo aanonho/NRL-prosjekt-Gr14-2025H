@@ -85,7 +85,7 @@ namespace WebApplication1.Migrations
                     b.HasIndex("ReportID")
                         .IsUnique();
 
-                    b.ToTable("ObstacleData");
+                    b.ToTable("ObstacleData", (string)null);
                 });
 
             modelBuilder.Entity("WebApplication1.Models.Entities.Organization", b =>
@@ -240,7 +240,7 @@ namespace WebApplication1.Migrations
 
                     b.HasIndex("PilotID");
 
-                    b.ToTable("ReportItem");
+                    b.ToTable("ReportItem", (string)null);
                 });
 
             modelBuilder.Entity("WebApplication1.Models.Entities.ObstacleData", b =>
