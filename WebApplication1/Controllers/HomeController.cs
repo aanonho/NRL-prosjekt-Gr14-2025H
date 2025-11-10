@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using WebApplication1.Models.Entities;
 using WebApplication1.Models;
 using MySqlConnector;
+using WebApplication1.Services;
+
 
 namespace WebApplication1.Controllers
 {
@@ -18,6 +20,7 @@ namespace WebApplication1.Controllers
         }         
         public IActionResult Index()
         {       
+            ViewBag.DevEmail = DevEmailSender.LastMessageHtml;
             return View();
         }
 
@@ -31,5 +34,7 @@ namespace WebApplication1.Controllers
         {           
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+        
     }
+    
 }

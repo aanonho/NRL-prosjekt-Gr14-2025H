@@ -1,0 +1,30 @@
+@model WebApplication1.Controllers.AccountController.LoginVm
+@{ ViewData["Title"] = "Sign in"; }
+<section class="stack" style="max-width:560px;">
+    <h2>Sign in</h2>
+
+    <form asp-action="Login" method="post" class="stack">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="All" class="field-validation-error"></div>
+
+        <div class="field">
+            <label for="Email" class="required">Email</label>
+            <input asp-for="Email" id="Email" inputmode="email" autocomplete="username" placeholder="you@example.com" />
+        </div>
+
+        <div class="field">
+            <label for="Password" class="required">Password</label>
+            <input asp-for="Password" id="Password" type="password" autocomplete="current-password" placeholder="Your password" />
+        </div>
+
+        <div class="field"><label><input asp-for="RememberMe" type="checkbox" /> Remember me</label></div>
+
+        <input asp-for="ReturnUrl" type="hidden" />
+
+        <div class="button-group">
+            <button type="submit" class="button-dark-blue">Sign in</button>
+            <a asp-action="Register" class="button-link button-dark-green">Create account</a>
+            <a asp-action="ForgotPassword" class="button-link button-dark-yellow">Forgot password</a>
+        </div>
+    </form>
+</section>

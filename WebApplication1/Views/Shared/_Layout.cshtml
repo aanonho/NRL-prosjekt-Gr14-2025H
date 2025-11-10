@@ -11,80 +11,93 @@
     <!-- CSS-files -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/WebApplication1.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/shared.css" asp-append-version="true" />
+
+    <style>
+        /* Small helpers used by the landing/auth pages (non-conflicting with Tailwind) */
+        .stack { display:flex; flex-direction:column; gap:16px; }
+        .row { display:flex; gap:20px; flex-wrap:wrap; }
+        .card { border:1px solid #e5e7eb; border-radius:12px; padding:16px; background:#fff; flex:1; min-width:280px; }
+        a.button-link { display:inline-block; text-decoration:none; padding:14px 20px; border-radius:8px; font-weight:600; }
+        .button-group { display:flex; flex-wrap:wrap; gap:20px; margin-top:16px; }
+        .center-button { justify-content:center; }
+        .help { color:#4b5563; font-size:14px; }
+        .break-anywhere { word-break: break-all; overflow-wrap: anywhere; }
+        /* Your shared.css defines colors like .button-dark-blue/.button-dark-green etc. */
+    </style>
 
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body class="bg-gray-50">
 
-    <header>
-        <nav class="bg-white shadow-md" aria-label="Main">
-            <div class="container mx-auto flex items-center justify-between px-4 py-3">
-                <!-- Logo -->
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="flex items-center">
-                    <img src="~/icons/logo.png" alt="Logo" class="h-10" />
-                    <span class="ml-2 text-lg font-bold text-gray-800">Obstacle Registration App</span>
-                </a>
+<header>
+    <nav class="bg-white shadow-md" aria-label="Main">
+        <div class="container mx-auto flex items-center justify-between px-4 py-3">
+            <!-- Logo -->
+            <a href="/Home/Index" class="flex items-center">
+                <img src="~/icons/logo.png" alt="Logo" class="h-10" />
+                <span class="ml-2 text-lg font-bold text-gray-800">Obstacle Registration App</span>
+            </a>
 
-                <!-- Hamburger (mobile) -->
-                <div class="sm:hidden">
-                    <button id="menu-btn" class="text-gray-800 focus:outline-none" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobile-menu">
-                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M4 6h16M4 12h16M4 18h16" />
-                        </svg>
-                    </button>
-                </div>
-
-                <!-- Meny (desktop) -->
-                <ul id="menu" class="hidden space-x-4 font-medium text-gray-800 sm:flex">
-                    <li><a class="hover:text-green-600" asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a class="hover:text-green-600" asp-area="" asp-controller="User" asp-action="UserForm">User Registration</a></li>
-                    <li><a class="hover:text-green-600" asp-area="" asp-controller="Obstacle" asp-action="DataForm">Obstacle Registration</a></li>
-                    <li><a class="hover:text-green-600" asp-area="" asp-controller="Reports" asp-action="Index">Reports</a></li>
-                    <li><a class="hover:text-green-600" asp-area="" asp-controller="User" asp-action="Index">User</a></li>
-                    <li><a class="hover:text-green-600" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a></li>                
-                </ul>
+            <!-- Hamburger (mobile) -->
+            <div class="sm:hidden">
+                <button id="menu-btn" class="text-gray-800 focus:outline-none" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobile-menu">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
             </div>
 
-            <!-- Mobile-meny -->
-            <ul id="mobile-menu" class="hidden flex-col space-y-2 bg-white px-4 pb-4 sm:hidden">
-                <li><a class="block hover:text-green-600" asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                <li><a class="block hover:text-green-600" asp-area="" asp-controller="User" asp-action="UserForm">User Registration</a></li>
-                <li><a class="block hover:text-green-600" asp-area="" asp-controller="Obstacle" asp-action="DataForm">Obstacle Registration</a></li>
-                <li><a class="block hover:text-green-600" asp-area="" asp-controller="Reports" asp-action="Index">Reports</a></li>
-                <li><a class="block hover:text-green-600" asp-area="" asp-controller="User" asp-action="Index">User</a></li>
-                <li><a class="block hover:text-green-600" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a></li>
-                <li><a class="block hover:text-green-600" asp-area="" asp-controller="Home" asp-action="ContactUs">Contact Us</a></li>
+            <!-- Meny (desktop) -->
+            <ul id="menu" class="hidden space-x-4 font-medium text-gray-800 sm:flex">
+                <li><a class="hover:text-green-600" href="/Home/Index">Home</a></li>
+                <li><a class="hover:text-green-600" href="/User/UserForm">User Registration</a></li>
+                <li><a class="hover:text-green-600" href="/Obstacle/DataForm">Obstacle Registration</a></li>
+                <li><a class="hover:text-green-600" href="/Reports/Index">Reports</a></li>
+                <li><a class="hover:text-green-600" href="/User/Index">User</a></li>
+                <li><a class="hover:text-green-600" href="/Home/Privacy">Privacy</a></li>
             </ul>
-        </nav>
-    </header>
-
-    <div class="container mx-auto mt-6 px-4">
-        <main role="main" class="pb-6">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="mt-6 border-t bg-white py-4">
-        <div class="container mx-auto px-4 text-center text-gray-600">
-            &copy; 2025 - Obstacle Registration App (Group 14) -
-            <a asp-area="" asp-controller="Home" asp-action="Privacy" class="text-green-600 hover:underline">Privacy</a>
         </div>
-    </footer>
 
-    <script>
-        // Toggle mobile-meny (checking if the elements exist)
-        const menuBtn = document.getElementById('menu-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
+        <!-- Mobile-meny -->
+        <ul id="mobile-menu" class="hidden flex-col space-y-2 bg-white px-4 pb-4 sm:hidden">
+            <li><a class="block hover:text-green-600" href="/Home/Index">Home</a></li>
+            <li><a class="block hover:text-green-600" href="/User/UserForm">User Registration</a></li>
+            <li><a class="block hover:text-green-600" href="/Obstacle/DataForm">Obstacle Registration</a></li>
+            <li><a class="block hover:text-green-600" href="/Reports/Index">Reports</a></li>
+            <li><a class="block hover:text-green-600" href="/User/Index">User</a></li>
+            <li><a class="block hover:text-green-600" href="/Home/Privacy">Privacy</a></li>
+            <li><a class="block hover:text-green-600" href="/Home/ContactUs">Contact Us</a></li>
+        </ul>
+    </nav>
+</header>
 
-        if (menuBtn && mobileMenu) {
-            menuBtn.addEventListener('click', () => {
-                const isHidden = mobileMenu.classList.toggle('hidden');
-                menuBtn.setAttribute('aria-expanded', String(!isHidden));
-            });
-        }
-    </script>
+<div class="container mx-auto mt-6 px-4">
+    <main role="main" class="pb-6">
+        @RenderBody()
+    </main>
+</div>
 
-    @await RenderSectionAsync("Scripts", required: false)
+<footer class="mt-6 border-t bg-white py-4">
+    <div class="container mx-auto px-4 text-center text-gray-600">
+        &copy; 2025 - Obstacle Registration App (Group 14) -
+        <a href="/Home/Privacy" class="text-green-600 hover:underline">Privacy</a>
+    </div>
+</footer>
+
+<script>
+    // Toggle mobile-meny (checking if the elements exist)
+    const menuBtn = document.getElementById('menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    if (menuBtn && mobileMenu) {
+        menuBtn.addEventListener('click', () => {
+            const isHidden = mobileMenu.classList.toggle('hidden');
+            menuBtn.setAttribute('aria-expanded', String(!isHidden));
+        });
+    }
+</script>
+
+@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

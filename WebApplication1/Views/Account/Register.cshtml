@@ -1,0 +1,31 @@
+@model WebApplication1.Controllers.AccountController.RegisterVm
+@{ ViewData["Title"] = "Create account"; }
+<section class="stack" style="max-width:560px;">
+    <h2>Create account</h2>
+    <p class="help">Use any valid email address and a strong password.</p>
+
+    <form asp-action="Register" method="post" class="stack">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="All" class="field-validation-error"></div>
+
+        <div class="field">
+            <label for="Email" class="required">Email</label>
+            <input asp-for="Email" id="Email" inputmode="email" autocomplete="email" placeholder="you@example.com" />
+        </div>
+
+        <div class="field">
+            <label for="Password" class="required">Password</label>
+            <input asp-for="Password" id="Password" type="password" autocomplete="new-password" placeholder="At least 8 chars, mixed case, number & symbol" />
+        </div>
+
+        <div class="field">
+            <label for="ConfirmPassword" class="required">Confirm password</label>
+            <input asp-for="ConfirmPassword" id="ConfirmPassword" type="password" autocomplete="new-password" placeholder="Retype your password" />
+        </div>
+
+        <div class="button-group">
+            <button type="submit" class="button-dark-green">Create account</button>
+            <a asp-controller="Account" asp-action="Login" class="button-link button-dark-blue">Back to Login</a>
+        </div>
+    </form>
+</section>
