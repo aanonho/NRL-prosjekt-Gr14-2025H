@@ -1,5 +1,10 @@
 ﻿/* shared.css */
 
+/* --- HEADER --- */
+#header {
+    background-color: #3b6ed6;
+    color: white;
+}
 /* --- FORM ELEMENTS --- */
 
 /* Form container styling */
@@ -10,12 +15,6 @@
     background: white;
     padding: 20px;
     border-radius: 8px;
-}
-
-/* Header */
-#header {
-    background-color: #2950bc;
-    color: white;
 }
 
 /* Styles for input, textarea, select fields */
@@ -93,42 +92,42 @@ input[type="button"] {
 
 /* Custom button styles */
 .button-dark-green {
-    background-color: #18633B;
+    background-color: #10652f;
     color: white;
 }
 
     .button-dark-green:hover {
-        background-color: #1f7a4c;
+        background-color: #28a060;
     }
 
 .button-white-green {
     background-color: white;
-    color: #186336;
-    border: 2px solid #186336;
+    color: #10652f;
+    border: 2px solid #10652f;
 }
 
     .button-white-green:hover {
-        background-color: #1f7a4c;
+        background-color: #28a060;
         color: white;
     }
 
 .button-dark-blue {
-    background-color: #1d4ed8;
+    background-color: #2751b9;
     color: white;
 }
 
     .button-dark-blue:hover {
-        background-color: #1e40af;
+        background-color: #3b6ed6;
     }
 
 .button-white-blue {
     background-color: white;
-    color: #1d4ed8;
-    border: 1px solid #1d4ed8;
+    color: #2751b9;
+    border: 1px solid #2751b9;
 }
 
     .button-white-blue:hover {
-        background-color: #1e40af;
+        background-color: #3b6ed6;
         color: white;
     }
 
