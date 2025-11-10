@@ -5,10 +5,17 @@
     var user = ViewBag.User as UserEntity;
 }
 
-<div class="flex min-h-screen flex-col items-center bg-gray-50 px-4 py-10 sm:px-6 lg:px-8">
-    <div class="w-full max-w-3xl rounded-2xl bg-white p-6 shadow-xl ring-1 ring-gray-200 sm:p-10">
-        <h1 class="mb-8 text-center text-3xl font-bold text-blue-700">Pilot Dashboard</h1>
+<!-- Custom page CSS -->
+<link rel="stylesheet" href="~/css/shared.css" />
 
+<div class="container mx-auto mt-6 px-4">
+    <div class="overflow-hidden rounded-lg bg-white shadow-md">
+
+    <div id="header" class="flex items-center justify-between px-4 py-3 text-white">
+        <h1 class="text-xl font-bold sm:text-2xl">Pilot Dashboard</h1>
+    </div>
+
+    <div class="p-6 sm:p-10">
         @if (user != null)
         {
             var fields = new[]
@@ -23,9 +30,9 @@
             <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
                 @foreach (var field in fields)
                 {
-                    <div>
-                        <label class="mb-1 block font-semibold text-gray-700">@field.Key</label>
-                        <div class="rounded-lg border border-gray-200 bg-gray-50 p-3 shadow-sm">@field.Value</div>
+                    <div class="field-container">
+                        <label>@field.Key</label>
+                        <div class="input-box">@field.Value</div>
                     </div>
                 }
             </div>
@@ -123,11 +130,22 @@
             </div>
         }
 
-        <div class="mt-10 text-center">
+            <div class="sm:col-span-2 button-group center-button">
             <a asp-controller="Home" asp-action="Index"
-               class="inline-block rounded-xl bg-blue-600 px-6 py-2 font-semibold text-gray-700 transition hover:bg-blue-700">
+                   class="button-dark-blue px-6 py-3 rounded">
                 Back to Homepage
             </a>
         </div>
     </div>
 </div>
+</div>
+
+   @*   <div class="sm:col-span-2 button-group">
+                <button type="submit" onclick="setSubmitType('Submit')" class="button-dark-blue px-6 py-3 rounded">
+                    Submit Data
+                </button>
+                <button type="submit" onclick="setSubmitType('SaveDraft'); return true;" class="button-dark-blue px-6 py-3 rounded">
+                    Save Draft
+                </button>
+            </div>
+ *@
