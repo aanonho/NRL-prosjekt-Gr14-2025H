@@ -1,6 +1,13 @@
 ﻿/* shared.css */
 
 /* --- Form elements --- */
+
+/* --- Header --- */
+#header {
+    background-color: #2950bc;
+    color: white;
+}
+
 /* Styles for input, textarea, select */
 input, select, textarea {
     min-height: 44px;
@@ -8,6 +15,24 @@ input, select, textarea {
     font-size: 16px;
     border-radius: 6px;
     box-sizing: border-box;
+}
+
+.input-box {
+    min-height: 44px;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 6px;
+    border: 1px solid #6b7280;
+    background-color: #f3f4f6;
+    color: black;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+}
+
+.field-container label {
+    font-weight: 600;
+    color: #374151;
 }
 
 /* Focus effect when user clicks into a field */
