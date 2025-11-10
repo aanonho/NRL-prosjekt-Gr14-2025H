@@ -7,15 +7,6 @@
     margin-top: 20px;
     flex-wrap: wrap;
 }
-/* Form container styling */
-.form-container {
-    width: 100%;
-    max-width: 1000px;
-    margin: 0 auto;
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-}
 
 /* --- Map container --- */
 .map-container {

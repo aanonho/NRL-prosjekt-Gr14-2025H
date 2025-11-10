@@ -1,14 +1,24 @@
 ﻿/* shared.css */
 
-/* --- Form elements --- */
+/* --- FORM ELEMENTS --- */
 
-/* --- Header --- */
+/* Form container styling */
+.form-container {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+/* Header */
 #header {
     background-color: #2950bc;
     color: white;
 }
 
-/* Styles for input, textarea, select */
+/* Styles for input, textarea, select fields */
 input, select, textarea {
     min-height: 44px;
     padding: 12px;
@@ -17,6 +27,7 @@ input, select, textarea {
     box-sizing: border-box;
 }
 
+/* Input box styling */
 .input-box {
     min-height: 44px;
     padding: 12px;
@@ -30,6 +41,7 @@ input, select, textarea {
     align-items: center;
 }
 
+/* Labels for Fields */
 .field-container label {
     font-weight: 600;
     color: #374151;
@@ -65,7 +77,7 @@ textarea::placeholder {
     color: #ef4444;
 }
 
-/* --- Buttons --- */
+/* --- BUTTONS --- */
 button,
 input[type="submit"],
 input[type="button"] {
@@ -81,12 +93,23 @@ input[type="button"] {
 
 /* Custom button styles */
 .button-dark-green {
-    background-color: #14532d;
+    background-color: #18633B;
     color: white;
 }
 
     .button-dark-green:hover {
-        background-color: #186336;
+        background-color: #1f7a4c;
+    }
+
+.button-white-green {
+    background-color: white;
+    color: #186336;
+    border: 2px solid #186336;
+}
+
+    .button-white-green:hover {
+        background-color: #1f7a4c;
+        color: white;
     }
 
 .button-dark-blue {
@@ -96,6 +119,17 @@ input[type="button"] {
 
     .button-dark-blue:hover {
         background-color: #1e40af;
+    }
+
+.button-white-blue {
+    background-color: white;
+    color: #1d4ed8;
+    border: 1px solid #1d4ed8;
+}
+
+    .button-white-blue:hover {
+        background-color: #1e40af;
+        color: white;
     }
 
 .button-dark-red {
@@ -129,7 +163,7 @@ input[type="button"] {
     justify-content: center !important;
 }
 
-/* --- Status message styles for user feedback (critical actions, warnings, confirmations) --- */
+/* --- STATUS MESSAGE STYLE FOR USER FEEDBACK (critical actions, warnings, confirmations) --- */
 .status-critical {
     background-color: #990000;
     color: white;
@@ -148,7 +182,7 @@ input[type="button"] {
     border-left: 6px solid #1b5e20;
 }
 
-/* --- Media queries --- */
+/* --- MEDIA QUERIES --- */
 /* Desktop adjustments */
 @media (min-width: 1024px) {
     input, select, textarea {
@@ -169,7 +203,7 @@ input[type="button"] {
         }
 }
 
-/* Mobile/tablet */
+/* Mobile/tablet adjustments*/
 @media (max-width: 1024px) {
     .status-warning,
     .status-critical,
