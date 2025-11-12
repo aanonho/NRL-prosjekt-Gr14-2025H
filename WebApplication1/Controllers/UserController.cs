@@ -90,6 +90,7 @@ namespace WebApplication1.Controllers
 
             var reports = await _context.ReportItems
                 .Where(r => r.SubmittedByEmail == email)
+                .Include(r => r.ReportObstacle)
                 .OrderByDescending(r => r.CreatedAt)
                 .ToListAsync();
 
@@ -105,6 +106,7 @@ namespace WebApplication1.Controllers
             // Get only submitted reports (exclude drafts)
             var reports = await _context.ReportItems
                 .Where(r => !r.IsDraft)
+                .Include(r => r.ReportObstacle)
                 .ToListAsync();
 
 

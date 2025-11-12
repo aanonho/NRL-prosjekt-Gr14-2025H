@@ -114,12 +114,12 @@
 
                             <tr class="hover:bg-gray-50">
                                 <td class="px-3 py-2 text-sm text-gray-700">@r.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
-                                <td class="px-3 py-2 text-sm text-gray-800">@r.Obstacle?.ObstacleName</td>
+                                <td class="px-3 py-2 text-sm text-gray-800">@r.ReportObstacle?.ObstacleName</td>
                                 <td class="px-3 py-2 text-sm"><span class="rounded px-2 py-1 text-xs @badge">@status</span></td>
                                 <td class="px-3 py-2 text-sm text-gray-700">@(string.IsNullOrWhiteSpace(r.Organization) ? "Unknown" : r.Organization)</td>
-                                <td class="px-3 py-2 text-sm text-gray-700">@r.Obstacle?.ObstacleHeight?.ToString("0.##")</td>
-                                <td class="px-3 py-2 text-sm text-gray-700">@r.Obstacle?.ObstacleLatitude?.ToString(System.Globalization.CultureInfo.InvariantCulture)</td>
-                                <td class="px-3 py-2 text-sm text-gray-700">@r.Obstacle?.ObstacleLongitude?.ToString(System.Globalization.CultureInfo.InvariantCulture)</td>
+                                <td class="px-3 py-2 text-sm text-gray-700">@r.ReportObstacle?.ObstacleHeight?.ToString("0.##")</td>
+                                <td class="px-3 py-2 text-sm text-gray-700">@r.ReportObstacle?.ObstacleLatitude?.ToString(System.Globalization.CultureInfo.InvariantCulture)</td>
+                                <td class="px-3 py-2 text-sm text-gray-700">@r.ReportObstacle?.ObstacleLongitude?.ToString(System.Globalization.CultureInfo.InvariantCulture)</td>
 
                                 <!-- Actions -->
                                 <td class="px-3 py-2 text-center text-sm whitespace-nowrap">
