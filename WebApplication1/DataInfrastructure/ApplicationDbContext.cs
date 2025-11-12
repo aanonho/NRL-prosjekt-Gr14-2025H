@@ -1,14 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WebApplication1.Models;
 using WebApplication1.Models.Entities;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-
 
 namespace WebApplication1.DataInfrastructure
 {
-    // NOTE: This must inherit from IdentityDbContext to create AspNetUsers, AspNetRoles, etc.
-    public class ApplicationDbContext : IdentityDbContext<IdentityUser>
+    public class ApplicationDbContext : DbContext
     {
         // Constructor to initialize the DbContext with options
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)

@@ -25,17 +25,13 @@ services:
       db:
         condition: service_healthy
     environment:
-      ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: "http://0.0.0.0:8080"
+      ASPNETCORE_ENVIRONMENT: Development
       ConnectionStrings__DefaultConnection: server=db;port=3306;database=nrl;user=root;password=rootpass
-      
     ports:
       - "8080:8080"
-      
     volumes:
       - ./WebApplication1/wwwroot/images:/app/wwwroot/images
-      - dpkeys:/home/app/.aspnet/DataProtection-Keys
-      
 
   ef-tools:
     image: mcr.microsoft.com/dotnet/sdk:9.0
@@ -43,19 +39,17 @@ services:
     volumes:
       - .:/src
       - ~/.nuget/packages:/root/.nuget/packages
-      
     depends_on:
       - db
     environment:
-      ConnectionStrings__DefaultConnection: server=db;database=nrl;user=root;password=rootpass;
+      - ConnectionStrings__DefaultConnection=server=db;database=nrl;user=root;password=rootpass;
     entrypoint: >
       bash -c "dotnet tool install --global dotnet-ef &&
       export PATH=$$PATH:/root/.dotnet/tools &&
       exec dotnet ef $${@}" --
 
   ef-add:
-    extends:
-      service: ef-tools
+    extends: ef-tools
     entrypoint: >
       bash -c "dotnet tool install --global dotnet-ef &&
       export PATH=$$PATH:/root/.dotnet/tools &&
@@ -63,11 +57,9 @@ services:
       exec dotnet ef migrations add $$MIGRATION_NAME --project WebApplication1/WebApplication1.csproj --startup-project WebApplication1"
 
   ef-update:
-    extends:
-      service: ef-tools
+    extends: ef-tools
     command: database update --project WebApplication1/WebApplication1.csproj --startup-project WebApplication1
 
 volumes:
   mysqldata:
     name: nrl-db-data
-  dpkeys: {}
