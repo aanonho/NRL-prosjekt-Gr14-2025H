@@ -90,7 +90,7 @@ label > input[type="checkbox"] {
     }
 
     .obstacle-button.active {
-        background-color: #1d4ed8;
+        background-color: #3b6ed6;
         color: white;
     }
 

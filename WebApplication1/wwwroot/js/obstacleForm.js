@@ -76,6 +76,9 @@ document.addEventListener('DOMContentLoaded', function () {
             lineLengthContainer.style.display = showLineInputs ? 'block' : 'none';
             lineCoordinatesContainer.style.display = showLineInputs ? 'block' : 'none';
 
+            obstacleButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+
             // Clear map is type changes
             clearMapObstacle();
         })
@@ -95,6 +98,11 @@ document.addEventListener('DOMContentLoaded', function () {
     //    // Clear map is type changes
     //    clearMapObstacle();
     //});
+
+    const defaultButton = document.querySelector('.obstacle-button[data-type="point"]');
+    if (defaultButton) {
+        defaultButton.click();
+    }
 
     // Delete obstacle button logic
     const deleteButton = document.getElementById('deleteObstacleButton');
@@ -285,11 +293,17 @@ document.addEventListener('DOMContentLoaded', function () {
         if (addedObstacle) showDeleteButton();
     });
 
+    var currentUserLat = null;
+    var CurrentUserlng = null;
+
     // Geolocation: show helicopter marker
     if ('geolocation' in navigator) {
         navigator.geolocation.watchPosition(function (pos) {
             var lat = pos.coords.latitude;
             var lng = pos.coords.longitude;
+
+            currentUserLat = lat; // Saves GPS position
+            CurrentUserlng = lng;
 
             map.setView([lat, lng], 14); // Center map to user location
 
@@ -300,6 +314,29 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     }
+
+
+    document.querySelector('form').addEventListener('submit', function (e) {
+        const type = obstacleTypeHidden.value;
+
+        // If no obstacle type is selected, fall back to user's GPS position
+        if (!type || type === '') {
+            if (currentUserLat && CurrentUserlng) {
+                // Set lat and long from user's current postiton
+                document.getElementById('ObstacleLatitude').value = CurrentUserLat.toFixed(6);
+                document.getElementById('ObstacleLongitude').value = CurrentUserlng.toFixed(6);
+
+                document.getElementById('ObstacleGeoJson').value = JSON.stringify({
+                    type: "Feature",
+                    geometry: {
+                        type: "Point",
+                        coordinates: [CurrentUserlng, currentUserLat]
+                    },
+                    properties: { source: "gps-fallback" }
+                });
+            }
+        }
+    });
 
     // Update map size after load
     window.addEventListener('resize', function () { map.invalidateSize(); });
