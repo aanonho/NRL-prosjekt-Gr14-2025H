@@ -1,8 +1,9 @@
 ﻿//obstacleForm.js
 
+// -- DOM Elements -- //
 // Show/hide relevant input fields based on selected obstacle type
-/*const obstacleTypeSelect = document.getElementById('ObstacleType');*/
 const obstacleTypeHidden = document.getElementById('ObstacleTypeHidden')
+
 const areaRadiusContainer = document.getElementById('areaRadiusContainer');
 const lineLengthContainer = document.getElementById('lineLengthContainer');
 const lineCoordinatesContainer = document.getElementById('lineCoordinatesContainer');
@@ -13,221 +14,171 @@ const imagePreview = document.getElementById('imagePreview');
 const imageContainer = document.getElementById('imageContainer');
 const removeButton = document.getElementById('removeImageButton');
 
-// Preview when user uploads an image
-fileInput.addEventListener('change', function (event) {
-    const file = event.target.files[0];
-    if (!file) return;
+const deleteButton = document.getElementById('deleteObstacleButton');
+const modal = document.getElementById('obstacleFormModal');
+const closeModalButton = document.getElementById('closeModal');
 
-    const reader = new FileReader();
-    reader.onload = function () {
-        imagePreview.src = reader.result;
-        imageContainer.classList.remove('hidden');
-    };
-    reader.readAsDataURL(file);
+const obstacleButtons = document.querySelectorAll('.obstacle-button');
+
+
+// -- Variables -- //
+var map;
+var helicopterMarker;
+var obstacleMarker;
+var circle;
+var line;
+
+var latlngsLine = [];
+var lineMarkers = [];
+
+var currentUserLat = null;
+var currentUserLng = null;
+
+// Helicopter icon
+var helicopterIcon = L.icon({
+    iconUrl: '/icons/helicopter.svg',
+    iconSize: [60, 60],
+    iconAnchor: [30, 30]
 });
 
-// Remove image preview and reset input When user clicks remove button
-removeButton.addEventListener('click', function () {
-    fileInput.value = ""; // removes file input
-    imagePreview.src = "";
-    imageContainer.classList.add('hidden');
-});
+// -- Event Listeners and Functions -- //
+
+// Show image preview when user selects a file
+function setupImageUpload() {
+    fileInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+
+
+        // Read the file and set it as the src of the image preview
+        const reader = new FileReader();
+        reader.onload = () => {
+            imagePreview.src = reader.result;
+            imageContainer.classList.remove('hidden');
+        };
+        reader.readAsDataURL(file);
+    });
+
+    // Remove selected image button logic
+    removeButton.addEventListener('click', function () {
+        fileInput.value = ""; // removes file input
+        imagePreview.src = "";
+        imageContainer.classList.add('hidden');
+    });
+}
 
 // Set submit type (Submit or SaveDraft)
 window.setSubmitType = function (value) {
     document.getElementById('submitType').value = value;
 }
 
-// Leaflet map logic
-document.addEventListener('DOMContentLoaded', function () {
-    var map = L.map('map').setView([58.1467, 7.9956], 12);
+// -- Clear Map Obstacle Function -- //
+function clearMapObstacle() {
+    // Remove all drawn layers from map
+    if (obstacleMarker) { map.removeLayer(obstacleMarker); obstacleMarker = null; }
+    if (circle) { map.removeLayer(circle); circle = null; };
 
-    //OpenStreetMap title layer
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
+    resetLineState();
 
-    var helicopterMarker;
-    var obstacleMarker;
-    var circle;
-    var line;
-    var latlngsLine = [];
-    var lineMarkers = [];
-    const obstacleButtons = document.querySelectorAll('.obstacle-button');
-    const modal = document.getElementById('obstacleFormModal');
-    const closeModalButton = document.getElementById('closeModal');
+    // Clear all related hidden input fields
+    document.getElementById('ObstacleGeoJson').value = '';
+    document.getElementById('ObstacleLatitude').value = '';
+    document.getElementById('ObstacleLongitude').value = '';
+    document.getElementById('ObstacleLineLength').value = '';
+    document.getElementById('ObstacleLineCoordinates').value = '';
 
-    if (closeModalButton) {
-        closeModalButton.addEventListener('click', () => {
-            if (modal) modal.classList.add('hidden');
-        });
+    deleteButton.style.display = 'none';
+}
+
+// Update input field visibility based on selected obstacle type
+function updatedFieldVisibility(type) {
+    
+    areaRadiusContainer.style.display = (type === 'area') ? 'block' : 'none';
+
+    const showLineInputs = (type === 'line');
+    lineLengthContainer.style.display = showLineInputs ? 'block' : 'none';
+    lineCoordinatesContainer.style.display = showLineInputs ? 'block' : 'none';
+
+    document.getElementById('latContainer').style.display = 'none';
+    document.getElementById('lngContainer').style.display = 'none';
+
+    //const showLatLng = (type === 'point' || type === 'area');
+    //document.getElementById('latContainer').style.display = showLatLng ? 'block' : 'none';
+    //document.getElementById('lngContainer').style.display = showLatLng ? 'block' : 'none';
+
+}
+
+// Reset line coordinates to start a new drawing after deletion
+function resetLineState() {
+    latlngsLine = [];
+
+    if (line) {
+        map.removeLayer(line);
+        line = null;
     }
 
+    lineMarkers.forEach(m => map.removeLayer(m));
+    lineMarkers = [];
+}
+
+// Show delete button
+function showDeleteButton() {
+    deleteButton.style.display = 'inline-block';
+}
+
+// Initialize obstacle type buttons
+function initButtons() {
     obstacleButtons.forEach(button => {
         button.addEventListener('click', function () {
             const type = button.dataset.type;
 
             obstacleTypeHidden.value = type;
 
-            // Show/hide height and length inputs for line
-            areaRadiusContainer.style.display = (type === 'area') ? 'block' : 'none';
-            const showLineInputs = (type === 'line');
-            lineLengthContainer.style.display = showLineInputs ? 'block' : 'none';
-            lineCoordinatesContainer.style.display = showLineInputs ? 'block' : 'none';
+            updatedFieldVisibility(type);
 
             obstacleButtons.forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
 
             // Clear map is type changes
             clearMapObstacle();
-        })
-    })
-    // Triggered when the obstacle type changes - stores the selected type (TIL DROPDOWN MENY!)
-    //obstacleTypeSelect.addEventListener('change', function () {
-    //    const type = obstacleTypeSelect.value;
-
-    //    // Show/hide radius input for area type
-    //    areaRadiusContainer.style.display = (type === 'area') ? 'block' : 'none';
-
-    //    // Show/hide height and length inputs for line/cable types
-    //    const showLineInputs = (type === 'line' || type === 'cable');
-    //    lineLengthContainer.style.display = showLineInputs ? 'block' : 'none';
-    //    lineCoordinatesContainer.style.display = showLineInputs ? 'block' : 'none';
-
-    //    // Clear map is type changes
-    //    clearMapObstacle();
-    //});
-
-    const defaultButton = document.querySelector('.obstacle-button[data-type="point"]');
-    if (defaultButton) {
-        defaultButton.click();
-    }
-
-    // Delete obstacle button logic
-    const deleteButton = document.getElementById('deleteObstacleButton');
-    deleteButton.style.display = 'none';
-    function showDeleteButton() {
-        deleteButton.style.display = 'inline-block';
-    }
-
-    // Reset line coordinates to start a new drawing after deletion
-    function resetLineState() {
-        latlngsLine = [];
-        if (line) {
-            map.removeLayer(line);
-            line = null;
-        }
-        lineMarkers.forEach(m => map.removeLayer(m));
-        lineMarkers = [];
-    }
-
-    function clearMapObstacle() {
-        // Remove all drawn layers from map
-        if (obstacleMarker) { map.removeLayer(obstacleMarker); obstacleMarker = null; }
-        if (circle) { map.removeLayer(circle); circle = null; };
-
-        resetLineState();
-
-        // Clear all related hidden input fields
-        document.getElementById('ObstacleGeoJson').value = '';
-        document.getElementById('ObstacleLatitude').value = '';
-        document.getElementById('ObstacleLongitude').value = '';
-        document.getElementById('ObstacleLineLength').value = '';
-        document.getElementById('ObstacleLineCoordinates').value = '';
-
-        deleteButton.style.display = 'none';
-    }
-
-    deleteButton.addEventListener('click', clearMapObstacle);
-
-    //// Mast icon
-    //var mastIcon = L.icon({
-    //    iconUrl: '/icons/mast.svg',
-    //    iconSize: [32, 64],
-    //    iconAnchor: [16, 64]
-    //});
-
-    // Helicopter icon
-    var helicopterIcon = L.icon({
-        iconUrl: '/icons/helicopter.svg',
-        iconSize: [60, 60],
-        iconAnchor: [30, 30]
+        });
     });
 
-    // Handle map clicks to draw obstacls
-    map.on('click', function (e) {
-        const type = obstacleTypeHidden.value;
+    if (closeModalButton) {
+        closeModalButton.addEventListener('click', () => {
+            if (modal) modal.classList.add('hidden');
+        });
+    }
+}
 
-        document.getElementById('ObstacleLatitude').value = '';
-        document.getElementById('ObstacleLongitude').value = '';
+// Update hidden fields for point and area obstacles
+function updateObstacleFields(latlng, radius = null) {
+    const geoJson = {
+        type: "Feature",
+        geometry: {
+            type: "Point",
+            coordinates: [latlng.lng, latlng.lat]
+        },
+        properties: {}
+    };
 
-        if (modal && obstacleTypeHidden.value) {
-            modal.classList.remove('hidden');
-        }
+    if (radius !== null) geoJson.properties.radius = radius;
 
-        let addedObstacle = false; // True if an obstacle exists and can be deleted
+    document.getElementById('ObstacleLatitude').value = latlng.lat.toFixed(6);
+    document.getElementById('ObstacleLongitude').value = latlng.lng.toFixed(6);
+    document.getElementById('ObstacleGeoJson').value = JSON.stringify(geoJson);
+}
 
-        // Point or Mast
-        if (type === 'point') // For point, update fields directly
-        {
-            clearMapObstacle(); // Reset map and input fields 
+// Draw line obstacle and update related fields
+function drawLine(latlngs) {
+    lineMarkers.forEach(m => map.removeLayer(m)); // Remove previous line points
+    lineMarkers = [];
 
-            document.getElementById('ObstacleLatitude').value = e.latlng.lat.toFixed(6);
-            document.getElementById('ObstacleLongitude').value = e.latlng.lng.toFixed(6);
-            document.getElementById('ObstacleGeoJson').value = JSON.stringify({
-                type: "Feature",
-                geometry: {
-                    type: "Point",
-                    coordinates: [e.latlng.lng, e.latlng.lat]
-                },
-                properties: {}
-            });
-
-            obstacleMarker = L.marker(e.latlng).addTo(map); // Add simple marker                           
-            addedObstacle = true;
-        }
-        // Area
-        else if (type === 'area') {
-            clearMapObstacle(); // Reset map and input fields 
-
-            const radiusInput = document.getElementById('ObstacleRadius');
-            const radius = parseFloat(radiusInput.value) || 300; // Default radius
-
-            circle = L.circle(e.latlng, { color: 'red', fillColor: '#f03', fillOpacity: 0.5, radius: radius }).addTo(map); // Add circle with radius          
-
-            // Update hidden fields
-            document.getElementById('ObstacleRadius').value = radius;
-            document.getElementById('ObstacleLatitude').value = e.latlng.lat.toFixed(6);
-            document.getElementById('ObstacleLongitude').value = e.latlng.lng.toFixed(6);
-            // Create GeoJSON for circle center point with radius property
-            document.getElementById('ObstacleGeoJson').value = JSON.stringify(
-                {
-                    "type": "Feature",
-                    geometry: {
-                        "type": "Point",
-                        "coordinates": [e.latlng.lng, e.latlng.lat]
-                    },
-                    properties: {
-                        radius: radius
-                    }
-                });
-
-            addedObstacle = true;
-        }
-
-        // Line
-        else if (type === 'line') {
-            latlngsLine.push(e.latlng); // Add clicked point to line array   
-
-            lineMarkers.forEach(m => map.removeLayer(m)); // Remove previous line points
-            lineMarkers = [];
-
-            // Add custom circle markers for each line point
-            latlngsLine.forEach(pt => {
-                const circleIcon = L.divIcon({
-                    className: 'circle-marker',
-                    html: `
+    // Add custom circle markers for each line point
+    latlngsLine.forEach(pt => {
+        const circleIcon = L.divIcon({
+            className: 'circle-marker',
+            html: `
                         <div style="
                             width:20px;
                             height:20px; 
@@ -247,63 +198,123 @@ document.addEventListener('DOMContentLoaded', function () {
                             "></div>
                         </div>
                         `,
-                    iconSize: [20, 20],
-                    iconAnchor: [10, 10]
-                });
-                const m = L.marker(pt, { icon: circleIcon }).addTo(map);
-                lineMarkers.push(m);
-            });
+            iconSize: [20, 20],
+            iconAnchor: [10, 10]
+        });
+        const m = L.marker(pt, { icon: circleIcon }).addTo(map);
+        lineMarkers.push(m);
+    });
 
-            // Draw line if more than 1 point
-            if (latlngsLine.length > 1) {
-                if (line) map.removeLayer(line);
+    // Draw line if more than 1 point
+    if (latlngsLine.length > 1) {
+        if (line) map.removeLayer(line);
+     
+        line = L.polyline(latlngsLine, { color: '#000000', weight: 3 }).addTo(map);
+    }
 
-                let lineOptions = { color: '#000000', weight: 3 };
+    let totalLength = 0;
 
-                line = L.polyline(latlngsLine, lineOptions).addTo(map);
-            }
+    // Calculate total length of line
+    for (let i = 1; i < latlngsLine.length; i++) {
+        totalLength += latlngsLine[i - 1].distanceTo(latlngsLine[i]); // in meters
+    }
 
-            let totalLength = 0;
 
-            // Calculate total length of line
-            for (let i = 1; i < latlngsLine.length; i++) {
-                totalLength += latlngsLine[i - 1].distanceTo(latlngsLine[i]); // in meters
-            }
+    // Update hidden fields
+    document.getElementById('ObstacleGeoJson').value = JSON.stringify({
+        type: "Feature",
+        geometry: {
+            type: "LineString",
+            coordinates: latlngsLine.map(p => [p.lng, p.lat])
+        },
+        properties: {}
+    });
 
+    document.getElementById('ObstacleLineLength').value = totalLength.toFixed(2); // Update length field
+    document.getElementById('ObstacleLineCoordinates').value =
+        latlngsLine
+            .map(p => `Lat: ${p.lat.toFixed(6)}, Lng: ${p.lng.toFixed(6)}`)
+            .join('\n'); // Update coordinates field from line points
+
+    return totalLength;
+}
+
+
+// -- Initialize Map and Handlers -- //
+document.addEventListener('DOMContentLoaded', function () {
+    map = L.map('map').setView([58.1467, 7.9956], 12);
+
+    // Add OpenStreetMap tile layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    setupImageUpload();
+    initButtons();
+
+    const defaultButton = document.querySelector('.obstacle-button[data-type="point"]');
+    if (defaultButton) {
+        defaultButton.click();
+    }
+
+    // Delete obstacle button logic
+    deleteButton.style.display = 'none';
+    deleteButton.addEventListener('click', clearMapObstacle);
+
+
+    // Handle map clicks to draw obstacls
+    map.on('click', function (e) {
+        const type = obstacleTypeHidden.value;
+        let addedObstacle = false; // True if an obstacle exists and can be deleted
+
+        if (modal && type) modal.classList.remove('hidden');
+        
+        // Point
+        if (type === 'point') // For point, update fields directly
+        {
+            clearMapObstacle(); // Reset map and input fields
+            updateObstacleFields(e.latlng);
+            obstacleMarker = L.marker(e.latlng).addTo(map);
             addedObstacle = true;
 
-            // Update hidden fields
-            document.getElementById('ObstacleGeoJson').value = JSON.stringify({
-                type: "Feature",
-                geometry: {
-                    type: "LineString",
-                    coordinates: latlngsLine.map(p => [p.lng, p.lat])
-                },
-                properties: {}
-            });
+            document.getElementById('latContainer').style.display = 'block';
+            document.getElementById('lngContainer').style.display = 'block';
 
-            document.getElementById('ObstacleLineLength').value = totalLength.toFixed(2); // Update length field
-            document.getElementById('ObstacleLineCoordinates').value =
-                latlngsLine
-                    .map(p => `Lat: ${p.lat.toFixed(6)}, Lng: ${p.lng.toFixed(6)}`)
-                    .join('\n'); // Update coordinates field from line points
+
+        // Area
+        } else if (type === 'area') {
+            clearMapObstacle(); // Reset map and input fields 
+            const radiusInput = document.getElementById('ObstacleRadius');
+            const radius = parseFloat(radiusInput.value) || 300; // Default radius
+
+            circle = L.circle(e.latlng, { color: 'red', fillColor: '#f03', fillOpacity: 0.5, radius: radius }).addTo(map); // Add circle with radius          
+            updateObstacleFields(e.latlng, radius);         
+            addedObstacle = true;
+
+            document.getElementById('latContainer').style.display = 'block';
+            document.getElementById('lngContainer').style.display = 'block';
+
+        // Line
+        } else if (type === 'line') {
+            latlngsLine.push(e.latlng); // Add clicked point to line array   
+            drawLine(latlngsLine);
+            addedObstacle = true;
         }
+
 
         // Show delete button if an obstacle is added
         if (addedObstacle) showDeleteButton();
     });
 
-    var currentUserLat = null;
-    var CurrentUserlng = null;
-
-    // Geolocation: show helicopter marker
+    // -- Geolocation Handling -- //
     if ('geolocation' in navigator) {
         navigator.geolocation.watchPosition(function (pos) {
             var lat = pos.coords.latitude;
             var lng = pos.coords.longitude;
 
             currentUserLat = lat; // Saves GPS position
-            CurrentUserlng = lng;
+            currentUserLng = lng;
 
             map.setView([lat, lng], 14); // Center map to user location
 
@@ -315,27 +326,23 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-
     document.querySelector('form').addEventListener('submit', function (e) {
         const type = obstacleTypeHidden.value;
 
         // If no obstacle type is selected, fall back to user's GPS position
-        if (!type || type === '') {
-            if (currentUserLat && CurrentUserlng) {
+        if (!obstacleTypeHidden.value && currentUserLat && currentUserLng) {          
                 // Set lat and long from user's current postiton
-                document.getElementById('ObstacleLatitude').value = CurrentUserLat.toFixed(6);
-                document.getElementById('ObstacleLongitude').value = CurrentUserlng.toFixed(6);
-
+                document.getElementById('ObstacleLatitude').value = currentUserLat.toFixed(6);
+                document.getElementById('ObstacleLongitude').value = currentUserLng.toFixed(6);
                 document.getElementById('ObstacleGeoJson').value = JSON.stringify({
                     type: "Feature",
                     geometry: {
                         type: "Point",
-                        coordinates: [CurrentUserlng, currentUserLat]
+                        coordinates: [currentUserLng, currentUserLat]
                     },
                     properties: { source: "gps-fallback" }
                 });
-            }
-        }
+            }       
     });
 
     // Update map size after load
