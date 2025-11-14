@@ -19,7 +19,7 @@ const modal = document.getElementById('obstacleFormModal');
 const closeModalButton = document.getElementById('closeModal');
 
 const obstacleButtons = document.querySelectorAll('.obstacle-button');
-
+const locationButton = document.getElementById('locateUserBtn');
 
 // -- Variables -- //
 var map;
@@ -343,6 +343,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     properties: { source: "gps-fallback" }
                 });
             }       
+    });
+
+    // Locate user button logic
+    locationButton.addEventListener('click', function () {
+        if (currentUserLat && currentUserLng) {
+            map.setView([currentUserLat, currentUserLng], 14);
+        }   
     });
 
     // Update map size after load
