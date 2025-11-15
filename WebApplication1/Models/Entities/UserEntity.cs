@@ -23,10 +23,13 @@ namespace WebApplication1.Models.Entities
         [StringLength(45)]
         public string? Role { get; set; }
 
+        [StringLength(256)]
+        public string? PasswordHash { get; set; }
+
         // Matches the diagram’s column name
         [Column("Organization_OrganizationID")]
         public int? OrganizationID { get; set; }
-        public  virtual Organization? Organization { get; set; }
+        public virtual Organization? Organization { get; set; }
 
         public virtual Pilot? Pilot { get; set; }          // 1–1
         public virtual Registrar? Registrar { get; set; }  // 1–1

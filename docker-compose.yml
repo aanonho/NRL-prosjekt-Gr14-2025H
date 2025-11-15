@@ -44,14 +44,14 @@ services:
     environment:
       - ConnectionStrings__DefaultConnection=server=db;database=nrl;user=root;password=rootpass;
     entrypoint: >
-      bash -c "dotnet tool install --global dotnet-ef &&
+      bash -c "dotnet tool install --global dotnet-ef --version 9.0.9 &&
       export PATH=$$PATH:/root/.dotnet/tools &&
       exec dotnet ef $${@}" --
 
   ef-add:
     extends: ef-tools
     entrypoint: >
-      bash -c "dotnet tool install --global dotnet-ef &&
+      bash -c "dotnet tool install --global dotnet-ef --version 9.0.9 &&
       export PATH=$$PATH:/root/.dotnet/tools &&
       MIGRATION_NAME=$${MIGRATION_NAME:-Init} &&
       exec dotnet ef migrations add $$MIGRATION_NAME --project WebApplication1/WebApplication1.csproj --startup-project WebApplication1"
