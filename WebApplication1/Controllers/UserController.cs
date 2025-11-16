@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using WebApplication1.Models;
 using WebApplication1.Models.Entities;
 using System.Collections.Generic;
 using System.Linq;
 using WebApplication1.DataInfrastructure;
 using System.Threading.Tasks;
+using System;
 using Microsoft.EntityFrameworkCore;
 
 namespace WebApplication1.Controllers
@@ -16,52 +19,103 @@ namespace WebApplication1.Controllers
         public UserController(ApplicationDbContext context)
         {
             _context = context;
-        }   
+        }
 
         [HttpGet]
         public IActionResult UserForm()
         {
-            return View();
+            return View(new UserData());
         }
 
         [HttpPost]
-        public async Task<IActionResult> UserForm(UserEntity userData)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UserForm(UserData userData)
         {
             if (!ModelState.IsValid)
             {
                 return View(userData);
             }
 
-            // Add user if not already in list
-            var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == userData.Email);
+            var normalizedEmail = userData.Email!.Trim();
+            var normalizedRole = userData.Role!.Trim();
+            var isRegistrar = IsRegistrarRole(normalizedRole);
+            var isPilot = IsPilotRole(normalizedRole);
+
+            var organization = await ResolveOrganizationAsync(userData.Organization);
+
+            var existingUser = await _context.Users
+                .Include(u => u.Organization)
+                .Include(u => u.Pilot)
+                .Include(u => u.Registrar)
+                .FirstOrDefaultAsync(u => u.Email == normalizedEmail);
+
+            var passwordHasher = new PasswordHasher<UserEntity>();
+
             if (existingUser != null)
             {
-                // If user exists, check role consistency
-                if (!string.Equals(existingUser.Role, userData.Role, StringComparison.OrdinalIgnoreCase))
+                if (!string.Equals(existingUser.Role, normalizedRole, StringComparison.OrdinalIgnoreCase))
                 {
                     ModelState.AddModelError("Role", "This email is already registered with another role.");
                     return View(userData);
                 }
+
+                existingUser.Name = userData.Name?.Trim();
+                existingUser.Email = normalizedEmail;
+                existingUser.Phone = userData.Phone?.Trim();
+                existingUser.Role = normalizedRole;
+                existingUser.PasswordHash = passwordHasher.HashPassword(existingUser, userData.Password!);
+
+                if (organization == null)
+                {
+                    existingUser.Organization = null;
+                    existingUser.OrganizationID = null;
+                }
+                else
+                {
+                    existingUser.Organization = organization;
+                }
+
+                if (isPilot && existingUser.Pilot == null)
+                {
+                    existingUser.Pilot = new Pilot { User = existingUser };
+                }
+
+                if (isRegistrar && existingUser.Registrar == null)
+                {
+                    existingUser.Registrar = new Registrar { User = existingUser };
+                }
             }
             else
             {
-                if (string.IsNullOrWhiteSpace(userData.Organization?.ToString()))
+                var newUser = new UserEntity
                 {
-                    userData.Organization = new Organization { Name = "Unknown" }; // Alternative; set OrgID = null
+                    Name = userData.Name?.Trim(),
+                    Email = normalizedEmail,
+                    Phone = userData.Phone?.Trim(),
+                    Role = normalizedRole,
+                    Organization = organization
+                };
+
+                newUser.PasswordHash = passwordHasher.HashPassword(newUser, userData.Password!);
+
+                if (isPilot)
+                {
+                    newUser.Pilot = new Pilot { User = newUser };
                 }
 
-                _context.Users.Add(userData);
-                await _context.SaveChangesAsync();
+                if (isRegistrar)
+                {
+                    newUser.Registrar = new Registrar { User = newUser };
+                }
+
+                _context.Users.Add(newUser);
             }
 
+            await _context.SaveChangesAsync();
 
-            // Set as current user
-            TempData["CurrentUserEmail"] = userData.Email;
+            TempData["SuccessMessage"] = "Account saved successfully. Please sign in.";
 
-            // Redirect based on role
-            return userData.Role?.ToLower() == "registrar"
-        ? RedirectToAction("RegistrarDashboard")
-        : RedirectToAction("UserProfile", new { email = userData.Email });
+            return RedirectToAction("Login", "Account");
         }
 
 
@@ -78,25 +132,32 @@ namespace WebApplication1.Controllers
         }
 
         // === USER PROFILE VIEW ===
+        [Authorize]
         [HttpGet]
-        public async Task<IActionResult> UserProfile(string email)
+        public async Task<IActionResult> UserProfile(string? email)
         {
+            var resolvedEmail = ResolveEmail(email);
+            if (string.IsNullOrWhiteSpace(resolvedEmail))
+            {
+                return RedirectToAction("Login", "Account", new { returnUrl = Url.Action("UserProfile", "User") });
+            }
+
+            var normalizedEmail = resolvedEmail.Trim();
+            var normalizedEmailLower = normalizedEmail.ToLowerInvariant();
+
             var user = await _context.Users
                 .Include(u => u.Organization)
-                .FirstOrDefaultAsync(u => u.Email == email);
+                .FirstOrDefaultAsync(u => u.Email != null && u.Email.ToLower() == normalizedEmailLower);
 
             if (user == null)
+            {
+                TempData["ErrorMessage"] = "User profile could not be found.";
                 return RedirectToAction("UserForm");
+            }
 
-            var reports = await _context.ReportItems
-                .Where(r => r.SubmittedByEmail == email)
-                .Include(r => r.ReportObstacle)
-                .OrderByDescending(r => r.CreatedAt)
-                .ToListAsync();
+            var viewModel = UserProfileViewModel.FromEntity(user);
 
-            // Sends user and reports to the view
-            ViewBag.User = user;
-            return View(reports);
+            return View(viewModel);
         }
 
         // === REGISTRAR VIEW ===
@@ -156,8 +217,64 @@ namespace WebApplication1.Controllers
             return RedirectToAction("RegistrarDashboard");
         }
 
+        private async Task<Organization?> ResolveOrganizationAsync(string? organizationName)
+        {
+            if (string.IsNullOrWhiteSpace(organizationName))
+            {
+                return null;
+            }
 
+            var normalizedName = organizationName.Trim();
+            var loweredName = normalizedName.ToLower();
 
+            var existingOrganization = await _context.Organizations
+                .FirstOrDefaultAsync(o => o.Name.ToLower() == loweredName);
+
+            if (existingOrganization != null)
+            {
+                return existingOrganization;
+            }
+
+            var newOrganization = new Organization
+            {
+                Name = normalizedName
+            };
+
+            _context.Organizations.Add(newOrganization);
+            return newOrganization;
+        }
+
+        private static bool IsRegistrarRole(string role) =>
+            string.Equals(role, "registrar", StringComparison.OrdinalIgnoreCase);
+
+        private static bool IsPilotRole(string role) =>
+            string.Equals(role, "pilot", StringComparison.OrdinalIgnoreCase);
+
+        private string? ResolveEmail(string? email)
+        {
+            var identityEmail = User?.Identity?.Name;
+            if (!string.IsNullOrWhiteSpace(identityEmail))
+            {
+                return identityEmail;
+            }
+
+            if (!string.IsNullOrWhiteSpace(email))
+            {
+                return email;
+            }
+
+            if (TempData.ContainsKey("CurrentUserEmail"))
+            {
+                var tempEmail = TempData.Peek("CurrentUserEmail") as string;
+                if (!string.IsNullOrWhiteSpace(tempEmail))
+                {
+                    return tempEmail;
+                }
+            }
+
+            return null;
+        }
 
     }
 }
+

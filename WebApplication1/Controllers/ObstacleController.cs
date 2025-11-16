@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,7 @@ using WebApplication1.Helpers;
 
 namespace WebApplication1.Controllers
 {
+    [Authorize]
     public class ObstacleController : Controller
     {
         private readonly ApplicationDbContext _context; // Database context
@@ -21,6 +23,7 @@ namespace WebApplication1.Controllers
             _context = context;
         }
 
+        [AllowAnonymous]
         [HttpGet("read")]
         public IActionResult ReadAll()
         {
@@ -32,6 +35,11 @@ namespace WebApplication1.Controllers
         [HttpGet]
         public ActionResult DataForm()
         {
+            if (User.IsInRole("Registrar"))
+            {
+                ViewBag.IsRegistrarViewer = true;
+            }
+
             return View();
         }
 
@@ -63,8 +71,16 @@ namespace WebApplication1.Controllers
         // === HANDLE SUBMIT / SAVE DRAFT ===
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DataForm(ValidatedObstacleData validatedData, IFormFile? imageFile, string submitType, UserEntity currentUser)
+        public async Task<IActionResult> DataForm(ValidatedObstacleData validatedData, IFormFile? imageFile, string submitType)
         {
+            if (!User.IsInRole("Pilot"))
+            {
+                TempData["ErrorMessage"] = "Only pilots can create or save obstacle reports.";
+                return RedirectToAction("Index", "Reports");
+            }
+
+            submitType ??= "Submit";
+
             // 1) Image upload
             if (imageFile != null && imageFile.Length > 0)
             {
@@ -189,7 +205,11 @@ namespace WebApplication1.Controllers
             await _context.SaveChangesAsync();
 
             // 8) Redirect
-            return RedirectToAction("UserProfile", "User", new { email = currentUser.Email ?? string.Empty });
+            TempData["SuccessMessage"] = string.Equals(submitType, "Submit", StringComparison.OrdinalIgnoreCase)
+                ? "Report submitted successfully."
+                : "Draft saved successfully.";
+
+            return RedirectToAction("Index", "Reports");
         }
 
         // === DETAILS VIEW ===
@@ -211,7 +231,7 @@ namespace WebApplication1.Controllers
             }
 
             var loggedUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
-            if (loggedUser == null) 
+            if (loggedUser == null)
             {
                 return RedirectToAction("UserForm", "User");
             }

@@ -1,141 +1,58 @@
-﻿@model IEnumerable<WebApplication1.Models.ReportItem>
-@using WebApplication1.Models.Entities
+﻿@model WebApplication1.Models.UserProfileViewModel
 @{
     ViewData["Title"] = "User Profile";
-    var user = ViewBag.User as UserEntity;
 }
 
-<!-- Custom page CSS -->
 <link rel="stylesheet" href="~/css/shared.css" />
 
 <div class="container mx-auto mt-6 px-4">
     <div class="overflow-hidden rounded-lg bg-white shadow-md">
+        <div id="header" class="flex items-center justify-between px-4 py-3 text-white">
+            <h1 class="text-xl font-bold sm:text-2xl">Personal Information</h1>
+            <span class="text-sm font-medium opacity-90">@Model.RoleDisplay</span>
+        </div>
 
-    <div id="header" class="flex items-center justify-between px-4 py-3 text-white">
-        <h1 class="text-xl font-bold sm:text-2xl">Pilot Dashboard</h1>
-    </div>
-
-    <div class="p-6 sm:p-10">
-        @if (user != null)
-        {
-            var fields = new[]
+        <div class="p-6 sm:p-10">
+            @if (!Model.HasUser)
             {
-                new KeyValuePair<string, string>("Name", user.Name),
-                new KeyValuePair<string, string>("E-mail", user.Email),
-                new KeyValuePair<string, string>("Phone Number", user.Phone),
-                new KeyValuePair<string, string>("Role", user.Role),
-                new KeyValuePair<string, string>("Organization", user.Organization?.Name ?? "Unknown")
-            };
-
-            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                @foreach (var field in fields)
-                {
+                <div class="rounded border border-yellow-300 bg-yellow-50 p-4 text-center text-yellow-800">
+                    We couldn't load your profile details. Please try signing in again.
+                </div>
+            }
+            else
+            {
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
                     <div class="field-container">
-                        <label>@field.Key</label>
-                        <div class="input-box">@field.Value</div>
+                        <label>Name</label>
+                        <div class="input-box">@(!string.IsNullOrWhiteSpace(Model.Name) ? Model.Name : "Unknown")</div>
                     </div>
-                }
+                    <div class="field-container">
+                        <label>E-mail</label>
+                        <div class="input-box">@Model.Email</div>
+                    </div>
+                    <div class="field-container">
+                        <label>Phone Number</label>
+                        <div class="input-box">@(!string.IsNullOrWhiteSpace(Model.Phone) ? Model.Phone : "Unavailable")</div>
+                    </div>
+                    <div class="field-container">
+                        <label>Role</label>
+                        <div class="input-box">@Model.RoleDisplay</div>
+                    </div>
+                    <div class="field-container">
+                        <label>Organization</label>
+                        <div class="input-box">@Model.OrganizationDisplay</div>
+                    </div>
+                </div>
+            }
+
+            <div class="mt-10 flex flex-col gap-3 sm:flex-row sm:justify-end">
+                <a asp-controller="Reports" asp-action="Index" class="button-dark-blue px-6 py-3 rounded text-center">
+                    View Reports
+                </a>
+                <a asp-controller="Home" asp-action="Index" class="button-white-blue px-6 py-3 rounded text-center">
+                    Back to Homepage
+                </a>
             </div>
-        }
-
-        <div class="mt-10 mb-6"></div>
-
-        <h2 class="mb-4 text-2xl font-semibold text-gray-800">Submitted Reports</h2>
-
-        @if (Model == null || !Model.Any())
-        {
-            <div class="py-6 text-center text-gray-600">
-                <p>No reports submitted yet.</p>
-            </div>
-        }
-        else
-        {
-            <div class="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
-                <table class="min-w-full divide-y divide-gray-200 bg-white">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-3 py-2 text-left text-xs font-medium text-gray-600 uppercase">Date</th>
-                            <th class="px-3 py-2 text-left text-xs font-medium text-gray-600 uppercase">Status</th>
-                            <th class="px-3 py-2 text-left text-xs font-medium text-gray-600 uppercase">Title</th>
-                            <th class="px-3 py-2 text-left text-xs font-medium text-gray-600 uppercase">Height (m)</th>
-                            <th class="px-3 py-2 text-left text-xs font-medium text-gray-600 uppercase">Organization</th>
-                            <th class="px-3 py-2 text-left text-xs font-medium text-gray-600 uppercase">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200">
-                        @foreach (var r in Model)
-                        {
-                            var status = r.Status ?? "Pending";
-                            var badge = status.Equals("Approved", StringComparison.OrdinalIgnoreCase)
-                            ? "bg-green-100 text-green-800"
-                            : status.Equals("Rejected", StringComparison.OrdinalIgnoreCase)
-                            ? "bg-red-100 text-red-800"
-                            : status.Equals("Draft", StringComparison.OrdinalIgnoreCase)
-                            ? "bg-gray-100 text-gray-800"
-                            : "bg-yellow-100 text-yellow-800";
-
-
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-3 py-2 text-sm text-gray-700">
-                                    @r.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")
-                                </td>
-
-                                <td class="px-3 py-2 text-sm">
-                                    <span class="rounded px-2 py-1 text-xs @badge">@status</span>
-                                </td>
-
-                                <td class="px-3 py-2 text-sm text-gray-800">
-                                    @(r.ReportObstacle?.ObstacleName ?? "No title")
-                                </td>
-
-                                <td class="px-3 py-2 text-sm text-gray-700">
-                                    @(r.ReportObstacle?.ObstacleHeight?.ToString("0.##") ?? "-")
-                                </td>
-
-                                <td class="px-3 py-2 text-sm text-gray-700">
-                                    @(string.IsNullOrWhiteSpace(r.Organization) ? "Unknown" : r.Organization)
-                                </td>
-
-                                <td class="px-3 py-2 text-center text-sm whitespace-nowrap">
-                                    <div class="flex flex-col items-center gap-1 sm:flex-row sm:justify-center">
-
-                                        @if (r.IsDraft)
-                                        {
-                                            <!-- Show only Edit Draft for drafts -->
-                                            <a asp-controller="Obstacle" asp-action="Edit" asp-route-id="@r.ReportID"
-                                               class="inline-block rounded-md border border-blue-500 bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-600 hover:bg-blue-100">
-                                                Edit Draft
-                                            </a>
-                                        }
-                                        else
-                                        {
-                                            <!-- Show only View Details for submitted reports -->
-                                            <a asp-controller="Obstacle" asp-action="Details"
-                                               asp-route-id="@r.ReportID"
-                                               asp-route-returnUrl="@Url.Action("UserProfile", "User", new { email = user.Email })"
-                                               class="inline-block rounded-md border border-gray-300 px-3 py-1 text-xs font-semibold text-blue-700 hover:bg-gray-50">
-                                                View Details
-                                            </a>
-                                        }
-
-                                    </div>
-                                </td>
-
-
-                            </tr>
-                        }
-                    </tbody>
-
-                </table>
-            </div>
-        }
-            <div class="sm:col-span-2 button-group center-button">
-            <a asp-controller="Home" asp-action="Index"
-                   class="button-dark-blue px-6 py-3 rounded">
-                Back to Homepage
-            </a>
         </div>
     </div>
 </div>
-</div>
-
