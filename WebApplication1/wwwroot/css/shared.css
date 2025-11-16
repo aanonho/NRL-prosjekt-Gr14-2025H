@@ -40,6 +40,23 @@ input, select, textarea {
     align-items: center;
 }
 
+/*.flex {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;  
+}
+
+.field-box {
+    flex: 1 1 auto;
+    min-width: 200px;
+}
+
+.input-small {
+    width: 150px;
+    padding: 8px;
+}
+*/
+
 /* Labels for Fields */
 .field-container label {
     font-weight: 600;

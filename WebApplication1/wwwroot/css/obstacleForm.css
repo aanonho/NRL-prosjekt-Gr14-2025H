@@ -41,6 +41,22 @@ label > input[type="checkbox"] {
     margin-right: 8px;
 }
 
+/* --- Locate button styling --- */
+.locate-btn {
+    position: absolute;
+    top: 10px;
+    left: 60px;
+    z-index: 1000;
+    padding: 10px 16px;   
+    border: 2px solid #333;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+}
+.locate-btn:hover {
+    background-color: #2a4eb8;
+}
+ /* --- Obstacle type button container --- */
 .obstacle-button-container {
     position: absolute;
     top: 10px;
@@ -90,7 +106,7 @@ label > input[type="checkbox"] {
     }
 
     .obstacle-button.active {
-        background-color: #1d4ed8;
+        background-color: #3b6ed6;
         color: white;
     }
 
