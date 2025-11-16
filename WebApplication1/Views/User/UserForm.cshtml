@@ -13,6 +13,8 @@
     @* Made to take data from UserForm to User page *@
     <form asp-action="UserForm" method="post" novalidate class="mx-auto grid grid-cols-1 gap-6 sm:grid-cols-2">
 
+        <div asp-validation-summary="ModelOnly" class="sm:col-span-2 text-sm text-red-600"></div>
+
         <div class="flex flex-col">
             <label asp-for="Name" class="mb-1 font-medium text-gray-700 required">Name</label>
             <input asp-for="Name" class="rounded border border-gray-300 p-2" />
@@ -53,11 +55,23 @@
             <span asp-validation-for="Organization" class="text-sm text-red-500"></span>
         </div>
 
+        <div class="flex flex-col">
+            <label asp-for="Password" class="mb-1 font-medium text-gray-700 required">Password</label>
+            <input asp-for="Password" type="password" autocomplete="new-password" class="rounded border border-gray-300 p-2" />
+            <span asp-validation-for="Password" class="text-sm text-red-500"></span>
+        </div>
+
+        <div class="flex flex-col">
+            <label asp-for="ConfirmPassword" class="mb-1 font-medium text-gray-700 required">Confirm Password</label>
+            <input asp-for="ConfirmPassword" type="password" autocomplete="new-password" class="rounded border border-gray-300 p-2" />
+            <span asp-validation-for="ConfirmPassword" class="text-sm text-red-500"></span>
+        </div>
+
         <div class="status-warning p-4 rounded mb-4">
             <strong>⚠ Warning:</strong> You must complete all required fields marked with <strong>*</strong> before submitting the form.
         </div>
 
-         <div class="sm:col-span-2 button-group center-button">                    
+        <div class="sm:col-span-2 button-group center-button">
             <button type="submit" onclick="setSubmitType('Submit')" class="button-dark-blue" px-6 py-3 rounded">
                 Register
             </button>

@@ -1,0 +1,59 @@
+﻿@model WebApplication1.Models.LoginViewModel
+
+@{
+    ViewData["Title"] = "Sign in";
+}
+
+<link rel="stylesheet" href="~/css/shared.css" />
+
+<div class="container mx-auto mt-8 py-8 px-4 bg-white form-container max-w-xl">
+    <h1 class="mb-6 text-center text-2xl font-bold text-gray-800 sm:text-3xl">Sign in to your account</h1>
+    <p class="mb-6 text-center text-gray-600">Enter your credentials to access reports and obstacle forms.</p>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="mb-6 rounded border border-green-200 bg-green-50 p-3 text-sm text-green-700">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="mb-6 rounded border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <form asp-action="Login" method="post" class="space-y-6">
+        <div asp-validation-summary="ModelOnly" class="text-sm text-red-600"></div>
+        <input type="hidden" asp-for="ReturnUrl" />
+
+        <div class="flex flex-col">
+            <label asp-for="Email" class="mb-1 font-medium text-gray-700">Email</label>
+            <input asp-for="Email" class="rounded border border-gray-300 p-2" autocomplete="email" />
+            <span asp-validation-for="Email" class="text-sm text-red-500"></span>
+        </div>
+
+        <div class="flex flex-col">
+            <label asp-for="Password" class="mb-1 font-medium text-gray-700">Password</label>
+            <input asp-for="Password" class="rounded border border-gray-300 p-2" autocomplete="current-password" />
+            <span asp-validation-for="Password" class="text-sm text-red-500"></span>
+        </div>
+
+        <div class="flex items-center justify-between">
+            <label class="inline-flex items-center text-sm text-gray-700">
+                <input asp-for="RememberMe" class="mr-2" />
+                @Html.DisplayNameFor(m => m.RememberMe)
+            </label>
+            <a asp-controller="User" asp-action="UserForm" class="text-sm text-blue-600 hover:underline">Need an account?</a>
+        </div>
+
+        <div>
+            <button type="submit" class="button-dark-blue w-full">Sign in</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

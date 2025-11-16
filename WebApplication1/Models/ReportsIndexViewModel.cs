@@ -17,5 +17,9 @@ namespace WebApplication1.Models
 
         public int DraftCount => Reports.Count(r => r.IsDraft); // field for drafts
         public int SubmittedCount => Reports.Count(r => !r.IsDraft); // field for submitted reports
+
+        public bool IsPilotView { get; set; }
+        public bool IsRegistrarView { get; set; }
+        public string? CurrentUserEmail { get; set; }
     }
 }

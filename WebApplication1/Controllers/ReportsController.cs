@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace WebApplication1.Controllers
 {
+    [Authorize]
     public class ReportsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -20,52 +22,86 @@ namespace WebApplication1.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(string status = "all", string sort = "date_desc", string organization = "")
         {
-            // Get Reports from DB
-            var all = await _context.ReportItems
+            var isPilot = User.IsInRole("Pilot");
+            var isRegistrar = User.IsInRole("Registrar");
+
+            var currentEmail = User?.Identity?.Name;
+            if (string.IsNullOrWhiteSpace(currentEmail) && TempData.ContainsKey("CurrentUserEmail"))
+            {
+                currentEmail = TempData.Peek("CurrentUserEmail") as string;
+            }
+
+            if (!string.IsNullOrWhiteSpace(currentEmail))
+            {
+                currentEmail = currentEmail.Trim();
+            }
+
+            var query = _context.ReportItems
                 .Include(r => r.ReportObstacle)
-                .ToListAsync();
+                .AsQueryable();
 
-            var filtered = all.AsEnumerable();
+            if (isPilot)
+            {
+                if (!string.IsNullOrWhiteSpace(currentEmail))
+                {
+                    var normalizedEmail = currentEmail.ToLowerInvariant();
+                    query = query.Where(r => r.SubmittedByEmail != null && r.SubmittedByEmail.ToLower() == normalizedEmail);
+                }
+                else
+                {
+                    query = query.Where(r => false);
+                }
+            }
 
-            // --- Filter by status ---
+            var accessibleReports = await query.ToListAsync();
+            var filtered = accessibleReports.AsEnumerable();
+
             var statusNormalized = (status ?? "all").Trim();
             if (!string.IsNullOrWhiteSpace(statusNormalized) &&
                 !statusNormalized.Equals("all", StringComparison.OrdinalIgnoreCase))
             {
                 if (statusNormalized.Equals("draft", StringComparison.OrdinalIgnoreCase))
+                {
                     filtered = filtered.Where(r => r.IsDraft);
+                }
                 else if (statusNormalized.Equals("submitted", StringComparison.OrdinalIgnoreCase))
+                {
                     filtered = filtered.Where(r => !r.IsDraft);
+                }
                 else
+                {
                     filtered = filtered.Where(r =>
                         string.Equals(r.Status, statusNormalized, StringComparison.OrdinalIgnoreCase));
+                }
             }
 
-            // --- Filter by organization ---
             if (!string.IsNullOrWhiteSpace(organization))
             {
                 var org = organization.Trim();
                 filtered = filtered.Where(r =>
-                    (r.Organization ?? "").Contains(org, StringComparison.OrdinalIgnoreCase));
+                    (r.Organization ?? string.Empty).Contains(org, StringComparison.OrdinalIgnoreCase));
             }
 
-            // --- Sorting ---
             var sortNormalized = (sort ?? "date_desc").Trim().ToLowerInvariant();
             filtered = sortNormalized switch
             {
                 "date_asc" => filtered.OrderBy(r => r.CreatedAt),
-                _ => filtered.OrderByDescending(r => r.CreatedAt) // default
+                _ => filtered.OrderByDescending(r => r.CreatedAt)
             };
 
-            // --- Prepare view model ---
+            var filteredList = filtered.ToList();
+
             var vm = new ReportsIndexViewModel
             {
-                Reports = filtered.ToList(),
+                Reports = filteredList,
                 Status = statusNormalized,
                 Sort = sortNormalized,
-                Organization = organization ?? "",
-                TotalCount = all.Count,
-                FilteredCount = filtered.Count()
+                Organization = organization ?? string.Empty,
+                TotalCount = accessibleReports.Count,
+                FilteredCount = filteredList.Count,
+                IsPilotView = isPilot && !isRegistrar,
+                IsRegistrarView = isRegistrar,
+                CurrentUserEmail = currentEmail
             };
 
             return View(vm);
