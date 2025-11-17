@@ -21,5 +21,7 @@ namespace WebApplication1.Models
         public bool IsPilotView { get; set; }
         public bool IsRegistrarView { get; set; }
         public string? CurrentUserEmail { get; set; }
+
+      //  public bool ObstacleHasLight { get; set; } // filter for obstacle light presence
     }
 }

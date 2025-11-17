@@ -171,7 +171,8 @@ namespace WebApplication1.Controllers
                 CreatedBy = dbUser.Email,
                 SubmittedByEmail = dbUser.Email,
                 SubmittedByName = dbUser.Name,
-                Organization = dbUser.Organization != null ? dbUser.Organization.Name : "Unknown"
+                Organization = dbUser.Organization != null ? dbUser.Organization.Name : "Unknown",
+                HasLights = validatedData.ObstacleHasLight
             };
 
             _context.ReportItems.Add(report);
@@ -193,6 +194,7 @@ namespace WebApplication1.Controllers
                 ImagePath = validatedData.ImagePath,
                 ObstacleRegistrationTime = validatedData.ObstacleRegistrationTime,
                 IsDraft = report.IsDraft,
+                ObstacleHasLight = validatedData.ObstacleHasLight,
                 ReportID = report.ReportID // FK
             };
 
