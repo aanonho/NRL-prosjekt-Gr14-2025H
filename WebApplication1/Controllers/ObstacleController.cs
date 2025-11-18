@@ -33,14 +33,50 @@ namespace WebApplication1.Controllers
 
         // === SHOW FORM ===
         [HttpGet]
-        public ActionResult DataForm()
+        public async Task<ActionResult> DataForm(int? id)
         {
             if (User.IsInRole("Registrar"))
             {
                 ViewBag.IsRegistrarViewer = true;
             }
 
-            return View();
+            if (!id.HasValue)
+            {
+                return View(new ObstacleData());
+            }
+
+            var email = UserHelper.GetCurrentUserEmail(this);
+            if (string.IsNullOrEmpty(email))
+            {
+                return RedirectToAction("UserForm", "User");
+            }
+
+            var report = await _context.ReportItems
+                .Include(r => r.ReportObstacle)
+                .FirstOrDefaultAsync(r => r.ReportID == id.Value);
+
+            if (report == null || report.ReportObstacle == null)
+            {
+                TempData["ErrorMessage"] = "Report not found.";
+                return RedirectToAction("Index", "Reports");
+            }
+
+            var normalizedEmail = email.Trim().ToLowerInvariant();
+            var submittedEmail = (report.SubmittedByEmail ?? string.Empty).Trim().ToLowerInvariant();
+
+            if (User.IsInRole("Pilot") && !User.IsInRole("Registrar") && normalizedEmail != submittedEmail)
+            {
+                TempData["ErrorMessage"] = "You can only edit reports that you submitted.";
+                return RedirectToAction("Index", "Reports");
+            }
+
+            ViewBag.IsEditing = true;
+            ViewBag.ReportIsDraft = report.IsDraft;
+
+            report.ReportObstacle.IsDraft = report.IsDraft;
+            report.ReportObstacle.ReportID = report.ReportID;
+
+            return View(report.ReportObstacle);
         }
 
         // === EDIT EXISTING REPORT (VIEW) ===
@@ -81,7 +117,105 @@ namespace WebApplication1.Controllers
 
             submitType ??= "Submit";
 
-            // 1) Image upload
+            // 1) Current user (required)
+            var email = UserHelper.GetCurrentUserEmail(this);
+            if (string.IsNullOrEmpty(email))
+                return RedirectToAction("UserForm", "User");
+
+            var dbUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            if (dbUser == null)
+                return RedirectToAction("UserForm", "User");
+
+            var isEditing = validatedData.ReportID > 0;
+
+            // Editing existing report/obstacle
+            if (isEditing)
+            {
+                var editReport = await _context.ReportItems
+                    .Include(r => r.ReportObstacle)
+                    .FirstOrDefaultAsync(r => r.ReportID == validatedData.ReportID);
+
+                if (editReport == null || editReport.ReportObstacle == null)
+                {
+                    TempData["ErrorMessage"] = "Report not found.";
+                    return RedirectToAction("Index", "Reports");
+                }
+
+                var normalizedEmail = (dbUser.Email ?? string.Empty).Trim().ToLowerInvariant();
+                var submittedEmail = (editReport.SubmittedByEmail ?? string.Empty).Trim().ToLowerInvariant();
+
+                if (normalizedEmail != submittedEmail)
+                {
+                    TempData["ErrorMessage"] = "You can only edit reports that you submitted.";
+                    return RedirectToAction("Index", "Reports");
+                }
+
+                if (imageFile != null && imageFile.Length > 0)
+                {
+                    var directory = Path.Combine("wwwroot", "images");
+                    if (!Directory.Exists(directory))
+                        Directory.CreateDirectory(directory);
+
+                    var fileName = Path.GetFileName(imageFile.FileName);
+                    var imagePath = Path.Combine(directory, fileName);
+
+                    using (var stream = new FileStream(imagePath, FileMode.Create))
+                        await imageFile.CopyToAsync(stream);
+
+                    validatedData.ImagePath = "/images/" + fileName;
+                }
+
+                var editObstacle = editReport.ReportObstacle;
+
+                editObstacle.ObstacleName = validatedData.ObstacleName;
+                editObstacle.ObstacleHeight = validatedData.ObstacleHeight;
+                editObstacle.ObstacleDescription = validatedData.ObstacleDescription;
+                editObstacle.ObstacleHasLight = validatedData.ObstacleHasLight;
+                editObstacle.ObstacleLatitude = validatedData.ObstacleLatitude;
+                editObstacle.ObstacleLongitude = validatedData.ObstacleLongitude;
+                editObstacle.ObstacleType = validatedData.ObstacleType;
+                editObstacle.ObstacleRadius = validatedData.ObstacleRadius;
+                editObstacle.ObstacleGeoJson = validatedData.ObstacleGeoJson;
+                editObstacle.ObstacleLineCoordinates = validatedData.ObstacleLineCoordinates;
+                editObstacle.ObstacleLineLength = validatedData.ObstacleLineLength;
+                editObstacle.ImagePath = validatedData.ImagePath ?? editObstacle.ImagePath;
+
+                var normalizedSubmitType = submitType.Trim();
+
+                if (editReport.IsDraft)
+                {
+                    if (string.Equals(normalizedSubmitType, "Submit", StringComparison.OrdinalIgnoreCase))
+                    {
+                        editReport.IsDraft = false;
+                        editReport.Status = "Pending";
+                        editObstacle.IsDraft = false;
+                        TempData["SuccessMessage"] = "Report submitted successfully.";
+                    }
+                    else
+                    {
+                        editReport.IsDraft = true;
+                        editReport.Status = "Draft";
+                        editObstacle.IsDraft = true;
+                        TempData["SuccessMessage"] = "Draft updated.";
+                    }
+                }
+                else
+                {
+                    editReport.IsDraft = false;
+                    editObstacle.IsDraft = false;
+                    TempData["SuccessMessage"] = "Changes saved.";
+                }
+
+                _context.ReportItems.Update(editReport);
+                _context.Obstacles.Update(editObstacle);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction("Index", "Reports");
+            }
+
+            // === Creating a new report ===
+
+            // 2) Image upload
             if (imageFile != null && imageFile.Length > 0)
             {
                 var directory = Path.Combine("wwwroot", "images");
@@ -96,15 +230,6 @@ namespace WebApplication1.Controllers
 
                 validatedData.ImagePath = "/images/" + fileName;
             }
-
-            // 2) Current user (required)
-            var email = UserHelper.GetCurrentUserEmail(this);
-            if (string.IsNullOrEmpty(email))
-                return RedirectToAction("UserForm", "User");
-
-            var dbUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
-            if (dbUser == null)
-                return RedirectToAction("UserForm", "User");
 
             validatedData.ObstacleRegistrationTime = DateTime.Now;
 
