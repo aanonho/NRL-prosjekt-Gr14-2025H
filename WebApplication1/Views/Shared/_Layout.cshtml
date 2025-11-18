@@ -21,7 +21,7 @@
             <div class="container mx-auto flex items-center justify-between px-4 py-3">
                 <!-- Logo -->
                 <a asp-area="" asp-controller="Home" asp-action="Index" class="flex items-center">
-                    <img src="~/icons/logo.png" alt="Logo" class="h-10" />
+                 @*    <img src="~/icons/logo.png" alt="Logo" class="h-10" /> *@
                     <span class="ml-2 text-lg font-bold text-gray-800">Obstacle Registration App</span>
                 </a>
 
@@ -37,6 +37,25 @@
 
                 <!-- Meny (desktop) -->
                 <ul id="menu" class="hidden space-x-4 font-medium text-gray-800 sm:flex">
+                    @if (User?.Identity?.IsAuthenticated ?? false)
+                    {             
+                        @if (User.IsInRole("Pilot") || User.IsInRole("Registrar"))
+                        {
+                            <li><a class="block hover:text-green-600" asp-area="" asp-controller="Obstacle" asp-action="DataForm" asp-route-id="">Obstacle Registration</a></li>
+                        }
+                        <li><a class="block hover:text-green-600" asp-area="" asp-controller="Reports" asp-action="Index">Reports</a></li>
+                  @*       <li><a class="block hover:text-green-600" asp-area="" asp-controller="User" asp-action="UserProfile">User Profile</a></li> *@                                            
+                        <li><a class="block hover:text-green-600" asp-area="" asp-controller="User" asp-action="UserProfile">My Profile</a></li>
+                        <li><form asp-area="" asp-controller="Account" asp-action="Logout" method="post" class="inline">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="block w-full text-left hover:text-green-600">Sign out</button>
+                            </form>
+                        </li>
+                    }
+                </ul>
+                </div>
+
+@*                 <ul id="menu" class="hidden space-x-4 font-medium text-gray-800 sm:flex">
                     <li><a class="hover:text-green-600" asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
                     @if (!(User?.Identity?.IsAuthenticated ?? false) || User.IsInRole("Pilot") || User.IsInRole("Registrar"))
                     {
@@ -59,9 +78,34 @@
                         </li>
                     }
                 </ul>
-            </div>
+            </div> *@
 
             <!-- Mobile-meny -->
+            <ul id="mobile-menu" class="hidden flex-col space-y-2 bg-white px-4 pb-4 sm:hidden">
+                @if (User?.Identity?.IsAuthenticated ?? false)
+                {
+                    <li><a class="block hover:text-green-600" asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+                                                
+                @if (User.IsInRole("Pilot") || User.IsInRole("Registrar"))
+                {
+                    <li><a class="block hover:text-green-600" asp-area="" asp-controller="Obstacle" asp-action="DataForm" asp-route-id="">Obstacle Registration</a></li>
+                }
+                <li><a class="block hover:text-green-600" asp-area="" asp-controller="Reports" asp-action="Index">Reports</a></li>
+                <li><a class="block hover:text-green-600" asp-area="" asp-controller="User" asp-action="Index">User</a></li>
+              
+                        <li><a class="block hover:text-green-600" asp-area="" asp-controller="User" asp-action="UserForm">Register</a></li>
+                        <li><a class="block hover:text-green-600" asp-area="" asp-controller="Account" asp-action="Login">Sign in</a></li>
+                        <li>
+                            <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" class="inline">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="block w-full text-left hover:text-green-600">Sign out</button>
+                            </form>
+                        </li>                   
+                }                                                
+            </ul>
+
+
+  @*           <!-- Mobile-meny -->
             <ul id="mobile-menu" class="hidden flex-col space-y-2 bg-white px-4 pb-4 sm:hidden">
                 <li><a class="block hover:text-green-600" asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
                 @if (!(User?.Identity?.IsAuthenticated ?? false) || User.IsInRole("Pilot") || User.IsInRole("Registrar"))
@@ -84,7 +128,7 @@
                         </form>
                     </li>
                 }
-            </ul>
+            </ul> *@
         </nav>
     </header>
 
