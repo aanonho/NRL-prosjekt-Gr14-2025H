@@ -43,8 +43,7 @@
                         <li><a class="hover:text-green-600" asp-area="" asp-controller="Obstacle" asp-action="DataForm" asp-route-id="">Obstacle Registration</a></li>
                     }
                     <li><a class="hover:text-green-600" asp-area="" asp-controller="Reports" asp-action="Index">Reports</a></li>
-                    <li><a class="hover:text-green-600" asp-area="" asp-controller="User" asp-action="Index">User</a></li>
-                    <li><a class="hover:text-green-600" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a></li>
+                    <li><a class="hover:text-green-600" asp-area="" asp-controller="User" asp-action="Index">User</a></li>   
                     @if (!(User?.Identity?.IsAuthenticated ?? false))
                     {
                         <li><a class="hover:text-green-600" asp-area="" asp-controller="User" asp-action="UserForm">Register</a></li>
@@ -70,9 +69,7 @@
                     <li><a class="block hover:text-green-600" asp-area="" asp-controller="Obstacle" asp-action="DataForm" asp-route-id="">Obstacle Registration</a></li>
                 }
                 <li><a class="block hover:text-green-600" asp-area="" asp-controller="Reports" asp-action="Index">Reports</a></li>
-                <li><a class="block hover:text-green-600" asp-area="" asp-controller="User" asp-action="Index">User</a></li>
-                <li><a class="block hover:text-green-600" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a></li>
-                <li><a class="block hover:text-green-600" asp-area="" asp-controller="Home" asp-action="ContactUs">Contact Us</a></li>
+                <li><a class="block hover:text-green-600" asp-area="" asp-controller="User" asp-action="Index">User</a></li>          
                 @if (!(User?.Identity?.IsAuthenticated ?? false))
                 {
                     <li><a class="block hover:text-green-600" asp-area="" asp-controller="User" asp-action="UserForm">Register</a></li>

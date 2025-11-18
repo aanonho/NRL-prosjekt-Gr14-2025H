@@ -45,12 +45,14 @@
                 <input asp-for="RememberMe" class="mr-2" />
                 @Html.DisplayNameFor(m => m.RememberMe)
             </label>
-            <a asp-controller="User" asp-action="UserForm" class="text-sm text-blue-600 hover:underline">Need an account?</a>
+         @*    <a asp-controller="User" asp-action="UserForm" class="text-sm text-blue-600 hover:underline">Need an account?</a> *@
         </div>
 
-        <div>
-            <button type="submit" class="button-dark-blue w-full">Sign in</button>
+        <div class="button-group center-button">
+            <button type="submit" class="button-dark-blue px-6 py-3 rounded">Sign in</button>
+             <a asp-controller="User" asp-action="UserForm" class="button-dark-green inline-block px-6 py-3 rounded">Create new account</a>
         </div>
+        
     </form>
 </div>
 

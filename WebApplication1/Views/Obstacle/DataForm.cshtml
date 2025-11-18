@@ -169,7 +169,11 @@
                 </div>
             </div>
 
-            <div class="sm:col-span-2 button-group">
+            <div class="status-warning p-4 rounded mb-4">
+                <strong>⚠ Warning:</strong> You must complete all required fields marked with <strong>*</strong> before submitting the form. <br> You may leave them blank if you choose to save as a draft.
+            </div>
+
+            <div class="sm:col-span-2 button-group center-button">
                 @if (isEditing)
                 {
                     if (isDraft)
@@ -198,19 +202,7 @@
                     </button>
                 }
             </div>
-
-            <div class="status-critical p-4 rounded mb-4">
-                <strong>⚠ Critical:</strong>
-            </div>
-
-            <div class="status-warning p-4 rounded mb-4">
-                <strong>⚠ Warning:</strong> You must complete all required fields marked with <strong>*</strong> before submitting the form. <br> You may leave them blank if you choose to save as a draft.
-            </div>
-
-            <div class="status-confirmed p-4 rounded mb-4">
-                <strong>✔ Saved:</strong> The obstacle has been successfully saved.
-            </div>
-
+                        
         </form>
     </div>
 </div>
