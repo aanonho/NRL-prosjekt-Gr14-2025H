@@ -72,9 +72,12 @@
         </div>
 
         <div class="sm:col-span-2 button-group center-button">
-            <button type="submit" onclick="setSubmitType('Submit')" class="button-dark-blue" px-6 py-3 rounded">
+            <button type="submit" onclick="setSubmitType('Submit')" class="button-dark-green" px-6 py-3 rounded">
                 Register
             </button>
+            <a asp-controller="Account" asp-action="Login" class="button-white-blue px-6 py-3 rounded inline-block">
+                <span> ⬅️ Back to Home Page</span>
+            </a>
         </div>
 
     </form>

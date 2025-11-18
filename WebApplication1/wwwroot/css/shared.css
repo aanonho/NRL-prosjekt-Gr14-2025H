@@ -96,12 +96,16 @@ textarea::placeholder {
 /* --- BUTTONS --- */
 button,
 input[type="submit"],
-input[type="button"] {
+input[type="button"],
+a.button-dark-blue,
+a.button-white-blue,
+a.button-dark-green {
     min-width: 48px;
     min-height: 48px;
     padding: 14px 20px;
     font-size: 16px;
     font-weight: 600;
+    display: inline-block;
     touch-action: manipulation;
     user-select: none;
     border-radius: 8px;
@@ -171,7 +175,8 @@ input[type="button"] {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
-    margin-top: 16px;
+    margin-top: 32px;
+    margin-bottom: 32px;
 }
 
 /* Center button group */
@@ -180,13 +185,22 @@ input[type="button"] {
 }
 
 /* --- STATUS MESSAGE STYLE FOR USER FEEDBACK (critical actions, warnings, confirmations) --- */
+.status-critical,
+.status-warning,
+.status-confirmed {
+    max-width: 800px;
+    margin: 0 auto 1rem auto;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+    
 .status-critical {
     background-color: #990000;
     color: white;
     border-left: 6px solid #b71c1c;
 }
 
-.status-warning {
+.status-warning { 
     background-color: #ffd800;
     color: black;
     border-left: 6px solid #f57f17;
