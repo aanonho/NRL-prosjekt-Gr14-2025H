@@ -14,7 +14,7 @@
 
     @await RenderSectionAsync("Styles", required: false)
 </head>
-<body class="bg-gray-50">
+<body class="bg-gray-50 flex flex-col min-h-screen">
 
     <header>
         <nav class="bg-white shadow-md" aria-label="Main">
@@ -88,16 +88,15 @@
         </nav>
     </header>
 
-    <div class="container mx-auto mt-6 px-4">
+    <div class="flex-1 container mx-auto mt-6 px-4">
         <main role="main" class="pb-6">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="mt-6 border-t bg-white py-4">
+    <footer class="mt-auto border-t bg-white py-4">
         <div class="container mx-auto px-4 text-center text-gray-600">
-            &copy; 2025 - Obstacle Registration App (Group 14) -
-            <a asp-area="" asp-controller="Home" asp-action="Privacy" class="text-green-600 hover:underline">Privacy</a>
+            &copy; 2025 - Obstacle Registration App (Group 14)           
         </div>
     </footer>
 
