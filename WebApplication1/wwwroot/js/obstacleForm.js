@@ -90,9 +90,24 @@ function clearMapObstacle() {
     deleteButton.style.display = 'none';
 }
 
+function setActiveObstacleType(type, shouldClearMap = true) {
+    if (!type) return;
+
+    obstacleTypeHidden.value = type;
+    updatedFieldVisibility(type);
+
+    obstacleButtons.forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.type === type);
+    });
+
+    if (shouldClearMap) {
+        clearMapObstacle();
+    }
+}
+
 // Update input field visibility based on selected obstacle type
 function updatedFieldVisibility(type) {
-    
+
     areaRadiusContainer.style.display = (type === 'area') ? 'block' : 'none';
 
     const showLineInputs = (type === 'line');
@@ -131,16 +146,7 @@ function initButtons() {
     obstacleButtons.forEach(button => {
         button.addEventListener('click', function () {
             const type = button.dataset.type;
-
-            obstacleTypeHidden.value = type;
-
-            updatedFieldVisibility(type);
-
-            obstacleButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-
-            // Clear map is type changes
-            clearMapObstacle();
+            setActiveObstacleType(type);
         });
     });
 
@@ -148,6 +154,78 @@ function initButtons() {
         closeModalButton.addEventListener('click', () => {
             if (modal) modal.classList.add('hidden');
         });
+    }
+}
+
+function hydrateExistingObstacle() {
+    if (!obstacleTypeHidden || !obstacleTypeHidden.value) {
+        return;
+    }
+
+    const type = obstacleTypeHidden.value;
+    setActiveObstacleType(type, false);
+
+    let latValue = parseFloat(document.getElementById('ObstacleLatitude').value);
+    let lngValue = parseFloat(document.getElementById('ObstacleLongitude').value);
+
+    if ((Number.isNaN(latValue) || Number.isNaN(lngValue)) && document.getElementById('ObstacleGeoJson')?.value) {
+        try {
+            const parsedGeo = JSON.parse(document.getElementById('ObstacleGeoJson').value);
+            if (parsedGeo?.geometry?.coordinates?.length >= 2) {
+                lngValue = parseFloat(parsedGeo.geometry.coordinates[0]);
+                latValue = parseFloat(parsedGeo.geometry.coordinates[1]);
+
+                if (!Number.isNaN(latValue) && !Number.isNaN(lngValue)) {
+                    document.getElementById('ObstacleLatitude').value = latValue.toFixed(6);
+                    document.getElementById('ObstacleLongitude').value = lngValue.toFixed(6);
+                }
+
+                if (type === 'area' && typeof parsedGeo?.properties?.radius === 'number') {
+                    document.getElementById('ObstacleRadius').value = parsedGeo.properties.radius;
+                }
+            }
+        } catch (err) {
+            console.warn('Unable to parse stored GeoJSON for obstacle', err);
+        }
+    }
+
+    if ((type === 'point' || type === 'area') && !Number.isNaN(latValue) && !Number.isNaN(lngValue)) {
+        const latlng = L.latLng(latValue, lngValue);
+        if (type === 'area') {
+            const radius = parseFloat(document.getElementById('ObstacleRadius').value) || 300;
+            circle = L.circle(latlng, { color: 'red', fillColor: '#f03', fillOpacity: 0.5, radius: radius }).addTo(map);
+            updateObstacleFields(latlng, radius);
+        } else {
+            obstacleMarker = L.marker(latlng).addTo(map);
+            updateObstacleFields(latlng);
+        }
+
+        map.setView(latlng, 14);
+        document.getElementById('latContainer').style.display = 'block';
+        document.getElementById('lngContainer').style.display = 'block';
+        showDeleteButton();
+        return;
+    }
+
+    if (type === 'line') {
+        const geoJsonRaw = document.getElementById('ObstacleGeoJson').value;
+        if (!geoJsonRaw) return;
+
+        try {
+            const parsed = JSON.parse(geoJsonRaw);
+            const coords = parsed?.geometry?.coordinates;
+
+            if (Array.isArray(coords)) {
+                latlngsLine = coords.map(pt => L.latLng(pt[1], pt[0]));
+                drawLine(latlngsLine);
+                if (latlngsLine.length > 0) {
+                    map.fitBounds(L.latLngBounds(latlngsLine));
+                    showDeleteButton();
+                }
+            }
+        } catch (e) {
+            console.warn('Unable to parse stored obstacle geometry', e);
+        }
     }
 }
 
@@ -208,7 +286,7 @@ function drawLine(latlngs) {
     // Draw line if more than 1 point
     if (latlngsLine.length > 1) {
         if (line) map.removeLayer(line);
-     
+
         line = L.polyline(latlngsLine, { color: '#000000', weight: 3 }).addTo(map);
     }
 
@@ -253,14 +331,16 @@ document.addEventListener('DOMContentLoaded', function () {
     setupImageUpload();
     initButtons();
 
-    const defaultButton = document.querySelector('.obstacle-button[data-type="point"]');
-    if (defaultButton) {
-        defaultButton.click();
-    }
-
     // Delete obstacle button logic
     deleteButton.style.display = 'none';
     deleteButton.addEventListener('click', clearMapObstacle);
+
+    const defaultButton = document.querySelector('.obstacle-button[data-type="point"]');
+    if (obstacleTypeHidden && obstacleTypeHidden.value) {
+        hydrateExistingObstacle();
+    } else if (defaultButton) {
+        defaultButton.click();
+    }
 
 
     // Handle map clicks to draw obstacls
@@ -269,7 +349,7 @@ document.addEventListener('DOMContentLoaded', function () {
         let addedObstacle = false; // True if an obstacle exists and can be deleted
 
         if (modal && type) modal.classList.remove('hidden');
-        
+
         // Point
         if (type === 'point') // For point, update fields directly
         {
@@ -282,20 +362,20 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('lngContainer').style.display = 'block';
 
 
-        // Area
+            // Area
         } else if (type === 'area') {
             clearMapObstacle(); // Reset map and input fields 
             const radiusInput = document.getElementById('ObstacleRadius');
             const radius = parseFloat(radiusInput.value) || 300; // Default radius
 
             circle = L.circle(e.latlng, { color: 'red', fillColor: '#f03', fillOpacity: 0.5, radius: radius }).addTo(map); // Add circle with radius          
-            updateObstacleFields(e.latlng, radius);         
+            updateObstacleFields(e.latlng, radius);
             addedObstacle = true;
 
             document.getElementById('latContainer').style.display = 'block';
             document.getElementById('lngContainer').style.display = 'block';
 
-        // Line
+            // Line
         } else if (type === 'line') {
             latlngsLine.push(e.latlng); // Add clicked point to line array   
             drawLine(latlngsLine);
@@ -330,26 +410,26 @@ document.addEventListener('DOMContentLoaded', function () {
         const type = obstacleTypeHidden.value;
 
         // If no obstacle type is selected, fall back to user's GPS position
-        if (!obstacleTypeHidden.value && currentUserLat && currentUserLng) {          
-                // Set lat and long from user's current postiton
-                document.getElementById('ObstacleLatitude').value = currentUserLat.toFixed(6);
-                document.getElementById('ObstacleLongitude').value = currentUserLng.toFixed(6);
-                document.getElementById('ObstacleGeoJson').value = JSON.stringify({
-                    type: "Feature",
-                    geometry: {
-                        type: "Point",
-                        coordinates: [currentUserLng, currentUserLat]
-                    },
-                    properties: { source: "gps-fallback" }
-                });
-            }       
+        if (!obstacleTypeHidden.value && currentUserLat && currentUserLng) {
+            // Set lat and long from user's current postiton
+            document.getElementById('ObstacleLatitude').value = currentUserLat.toFixed(6);
+            document.getElementById('ObstacleLongitude').value = currentUserLng.toFixed(6);
+            document.getElementById('ObstacleGeoJson').value = JSON.stringify({
+                type: "Feature",
+                geometry: {
+                    type: "Point",
+                    coordinates: [currentUserLng, currentUserLat]
+                },
+                properties: { source: "gps-fallback" }
+            });
+        }
     });
 
     // Locate user button logic
     locationButton.addEventListener('click', function () {
         if (currentUserLat && currentUserLng) {
             map.setView([currentUserLat, currentUserLng], 14);
-        }   
+        }
     });
 
     // Update map size after load
