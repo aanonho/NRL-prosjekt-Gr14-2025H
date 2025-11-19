@@ -117,9 +117,9 @@ function updatedFieldVisibility(type) {
     document.getElementById('latContainer').style.display = 'none';
     document.getElementById('lngContainer').style.display = 'none';
 
-    //const showLatLng = (type === 'point' || type === 'area');
-    //document.getElementById('latContainer').style.display = showLatLng ? 'block' : 'none';
-    //document.getElementById('lngContainer').style.display = showLatLng ? 'block' : 'none';
+    const showLatLng = (type === 'point' || type === 'area');
+    document.getElementById('latContainer').style.display = showLatLng ? 'block' : 'none';
+    document.getElementById('lngContainer').style.display = showLatLng ? 'block' : 'none';
 
 }
 
@@ -389,6 +389,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // -- Geolocation Handling -- //
     if ('geolocation' in navigator) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+            currentUserLat = position.coords.latitude;
+            currentUserLng = position.coords.longitude;
+
+            if (!helicopterMarker) {
+                helicopterMarker = L.marker([currentUserLat, currentUserLng], { icon: helicopterIcon }).addTo(map);
+            }
+        });
+
         navigator.geolocation.watchPosition(function (pos) {
             var lat = pos.coords.latitude;
             var lng = pos.coords.longitude;
@@ -406,30 +415,80 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    //document.querySelector('form').addEventListener('submit', function (e) {
+    //    const type = obstacleTypeHidden.value;
+
+    //    // If no obstacle type is selected, fall back to user's GPS position
+    //    if (!obstacleTypeHidden.value && currentUserLat && currentUserLng) {
+    //        // Set lat and long from user's current postiton
+    //        document.getElementById('ObstacleLatitude').value = currentUserLat.toFixed(6);
+    //        document.getElementById('ObstacleLongitude').value = currentUserLng.toFixed(6);
+    //        document.getElementById('ObstacleGeoJson').value = JSON.stringify({
+    //            type: "Feature",
+    //            geometry: {
+    //                type: "Point",
+    //                coordinates: [currentUserLng, currentUserLat]
+    //            },
+    //            properties: { source: "gps-fallback" }
+    //        });
+    //    }
+    //});
+
     document.querySelector('form').addEventListener('submit', function (e) {
         const type = obstacleTypeHidden.value;
 
-        // If no obstacle type is selected, fall back to user's GPS position
-        if (!obstacleTypeHidden.value && currentUserLat && currentUserLng) {
-            // Set lat and long from user's current postiton
-            document.getElementById('ObstacleLatitude').value = currentUserLat.toFixed(6);
-            document.getElementById('ObstacleLongitude').value = currentUserLng.toFixed(6);
+        // Hvis ingen type valgt og GPS tilgjengelig, fallback til punkt
+        if (!type && currentUserLat && currentUserLng) {
+            obstacleTypeHidden.value = "point";
+            updatedFieldVisibility("point");
+        }
+
+        // Hent inputs
+        const latInput = document.getElementById('ObstacleLatitude');
+        const lngInput = document.getElementById('ObstacleLongitude');
+
+        if (obstacleTypeHidden.value === "point" || obstacleTypeHidden.value === "area") {
+            // Hvis lat/lng mangler, fyll med GPS
+            if ((!latInput.value || !lngInput.value) && currentUserLat && currentUserLng) {
+                latInput.value = currentUserLat.toFixed(6);
+                lngInput.value = currentUserLng.toFixed(6);
+            }
+
+            const lat = parseFloat(latInput.value);
+            const lng = parseFloat(lngInput.value);
+
+            let radius = null;
+            if (obstacleTypeHidden.value === "area") {
+                radius = parseFloat(document.getElementById('ObstacleRadius').value) || 300;
+            }
+
             document.getElementById('ObstacleGeoJson').value = JSON.stringify({
                 type: "Feature",
-                geometry: {
-                    type: "Point",
-                    coordinates: [currentUserLng, currentUserLat]
-                },
-                properties: { source: "gps-fallback" }
+                geometry: { type: "Point", coordinates: [lng, lat] },
+                properties: radius !== null ? { radius: radius } : {}
             });
         }
+
+        if (obstacleTypeHidden.value === "line" && latlngsLine.length > 0) {
+            document.getElementById('ObstacleGeoJson').value = JSON.stringify({
+                type: "Feature",
+                geometry: { type: "LineString", coordinates: latlngsLine.map(p => [p.lng, p.lat]) },
+                properties: {}
+            });
+
+            document.getElementById('ObstacleLineLength').value = drawLine(latlngsLine);
+            document.getElementById('ObstacleLineCoordinates').value =
+                latlngsLine.map(p => `Lat: ${p.lat.toFixed(6)}, Lng: ${p.lng.toFixed(6)}`).join('\n');
+        }
     });
+
 
     // Locate user button logic
     locationButton.addEventListener('click', function () {
         if (currentUserLat && currentUserLng) {
             map.setView([currentUserLat, currentUserLng], 14);
         }
+
     });
 
     // Update map size after load
