@@ -63,7 +63,7 @@
         statusBadge = "bg-orange-100 text-orange-800";
     }
 
-    bool disableEditing = isEditing && !isDraft;
+    bool disableEditing = isEditing && !isDraft && !reportStatus.Equals("More info required", StringComparison.OrdinalIgnoreCase);
 }
 
 <div class="flex-container">
@@ -110,7 +110,7 @@
             <input asp-for="ObstacleType" id="ObstacleTypeHidden" type="hidden" />
 
             <input asp-for="ImagePath" type="hidden" />
-      
+
             <div asp-validation-summary="None"></div>
 
             <div class="mb-4 sm:col-span-2" id="latContainer" style="display:none;">
@@ -204,11 +204,11 @@
                     <strong>⚠ Warning:</strong> You must complete all required fields marked with <strong>*</strong> before submitting the form. <br> You may leave them blank if you choose to save as a draft.
                 </div>
             }
-         
+
             <div class="sm:col-span-2 button-group center-button">
                 @if (isEditing)
                 {
-                    if (isDraft)
+                    if (isDraft || reportStatus.Equals("More info required", StringComparison.OrdinalIgnoreCase))
                     {
                         <button type="submit" onclick="setSubmitType('Submit')" class="button-dark-green px-6 py-3 rounded">
                             Submit Data
@@ -218,7 +218,7 @@
                         </button>
                     }
                     else
-                    {                       
+                    {
                         <a asp-controller="Reports" asp-action="Index" class="button-white-blue px-6 py-3 rounded inline-block">
                             <span>⬅️ Go Back</span>
                         </a>
@@ -234,7 +234,7 @@
                     </button>
                 }
             </div>
-                        
+
         </form>
     </div>
 </div>

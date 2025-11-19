@@ -1,19 +1,5 @@
 ﻿/* shared.css */
 
-
-.button-text-left {
-    display: flex;
-    align-items: flex-start; /* Tekst høyere opp */
-    height: 48px;
-    padding: 0px 16px; /* juster topp/bunn-padding etter behov */
-    font-size: 16px;
-    font-weight: 600;
-    border-radius: 8px;
-    cursor: pointer;
-    text-align: left;
-}
-
-
 /* --- HEADER --- */
 #header {
     background-color: #3b6ed6;
@@ -107,6 +93,16 @@ textarea::placeholder {
     color: #ef4444;
 }
 
+/* Forgot password link*/
+.forgot-password-link {
+    color: #2751b9;
+    font-size: 0.875rem;
+    text-decoration: none;
+}
+.forgot-password-link:hover{
+    color: #3b6ed6;
+}
+
 /* --- BUTTONS --- */
 button,
 input[type="submit"],
@@ -193,12 +189,28 @@ a.button-white-green{
     margin-bottom: 32px;
 }
 
-.button-small {
+.button-logout {
+    display: flex;
+    align-items: flex-start;
+    height: 48px;
+    padding-left: 0px;
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-right: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: left;
+}
+
+/*.button-small {
     min-width: auto;
     min-height: auto;
     padding: 0.4rem 1rem;
     font-size: 14px;
-}
+}*/
+
 /* Center button group */
 .center-button {
     justify-content: center !important;

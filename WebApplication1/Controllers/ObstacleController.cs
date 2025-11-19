@@ -346,7 +346,7 @@ namespace WebApplication1.Controllers
 
             // 8) Redirect
             TempData["SuccessMessage"] = string.Equals(submitType, "Submit", StringComparison.OrdinalIgnoreCase)
-                ? "Report submitted successfully."
+                ? "Your report has been submitted successfully."
                 : "Draft saved successfully.";
 
             return RedirectToAction("Index", "Reports");

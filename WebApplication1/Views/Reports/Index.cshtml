@@ -104,8 +104,7 @@
                             <th class="px-3 py-2 text-left text-xs font-medium tracking-wider text-gray-600 uppercase">Status</th>
                             <th class="px-3 py-2 text-left text-xs font-medium tracking-wider text-gray-600 uppercase">Organization</th>
                             <th class="px-3 py-2 text-left text-xs font-medium tracking-wider text-gray-600 uppercase">Height (m)</th>
-                            <th class="px-3 py-2 text-left text-xs font-medium tracking-wider text-gray-600 uppercase">Lat</th>
-                            <th class="px-3 py-2 text-left text-xs font-medium tracking-wider text-gray-600 uppercase">Lng</th>
+                            <th class="px-3 py-2 text-left text-xs font-medium tracking-wider text-gray-600 uppercase">Coordinates</th>                  
                             <th class="px-3 py-2 text-left text-xs font-medium tracking-wider text-gray-600 uppercase">Image</th>
                             @if (Model.IsPilotView || Model.IsRegistrarView)
                             {
@@ -150,12 +149,24 @@
                                     @(obstacle?.ObstacleHeight?.ToString("0.##") ?? "-")
                                 </td>
                                 <td class="px-3 py-2 text-sm whitespace-nowrap text-gray-700">
-                                    @(obstacle?.ObstacleLatitude?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "-")
-                                </td>
-                                <td class="px-3 py-2 text-sm whitespace-nowrap text-gray-700">
-                                    @(obstacle?.ObstacleLongitude?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "-")
-                                </td>
-
+                                    @if (!string.IsNullOrWhiteSpace(obstacle?.ObstacleLineCoordinates))
+                                    {
+                                        @Html.Raw(
+                                            obstacle.ObstacleLineCoordinates
+                                            .Replace("\n", "<br />")
+                                            .Replace(", Lng:","&nbsp;&nbsp;&nbsp;&nbsp;&nbspLng:"))                                    
+                                    }
+                                    else if (obstacle?.ObstacleLatitude != null && obstacle?.ObstacleLongitude != null)
+                                    {
+                                        <span>Lat: @(obstacle?.ObstacleLatitude?.ToString(System.Globalization.CultureInfo.InvariantCulture)),</span>
+                                        <span style="margin-left:10px;">Lng: @(obstacle?.ObstacleLongitude?.ToString(System.Globalization.CultureInfo.InvariantCulture))</span>
+                                    }          
+                                    else
+                                    {
+                                        <span>-</span>
+                                    }
+                                </td>                                                                                        
+                           
                                 <td class="px-3 py-2 text-sm whitespace-nowrap text-gray-700">
                                     @if (!string.IsNullOrWhiteSpace(obstacle?.ImagePath))
                                     {
