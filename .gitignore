@@ -20,7 +20,6 @@ dist/
 
 # Environment
 .env
-.env.*
 
 # Test results
 TestResults/
