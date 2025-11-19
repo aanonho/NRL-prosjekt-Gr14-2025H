@@ -333,6 +333,7 @@ namespace WebApplication1.Controllers
                 ImagePath = validatedData.ImagePath,
                 ObstacleRegistrationTime = validatedData.ObstacleRegistrationTime,
                 IsDraft = report.IsDraft,
+                ObstacleHasLight = validatedData.ObstacleHasLight,
                 ReportID = report.ReportID // FK
             };
 
