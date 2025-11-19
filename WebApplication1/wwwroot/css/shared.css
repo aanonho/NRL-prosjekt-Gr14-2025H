@@ -93,6 +93,16 @@ textarea::placeholder {
     color: #ef4444;
 }
 
+/* Forgot password link*/
+.forgot-password-link {
+    color: #2751b9;
+    font-size: 0.875rem;
+    text-decoration: none;
+}
+.forgot-password-link:hover{
+    color: #3b6ed6;
+}
+
 /* --- BUTTONS --- */
 button,
 input[type="submit"],
