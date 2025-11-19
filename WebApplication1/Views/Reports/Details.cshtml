@@ -1,0 +1,159 @@
+﻿@model WebApplication1.Models.ReportItem
+
+@{
+    ViewData["Title"] = "Report Details";
+    var isRegistrar = User.IsInRole("Registrar");
+    var status = Model.Status ?? "Pending";
+    var badgeClass = "bg-yellow-100 text-yellow-800";
+    if (status.Equals("Approved", System.StringComparison.OrdinalIgnoreCase))
+    {
+        badgeClass = "bg-green-100 text-green-800";
+    }
+    else if (status.Equals("Rejected", System.StringComparison.OrdinalIgnoreCase))
+    {
+        badgeClass = "bg-red-100 text-red-800";
+    }
+    else if (status.Equals("More info required", System.StringComparison.OrdinalIgnoreCase))
+    {
+        badgeClass = "bg-orange-100 text-orange-800";
+    }
+}
+
+<link rel="stylesheet" href="~/css/shared.css" />
+
+<div class="container mx-auto mt-8 px-4">
+    <div class="mb-6 flex items-center justify-between">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-800">Report Details</h1>
+            <p class="text-sm text-gray-600">Submitted on @Model.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</p>
+        </div>
+        <span class="rounded px-3 py-1 text-sm font-semibold @badgeClass">@status</span>
+    </div>
+
+    <div class="rounded-lg bg-white shadow">
+        <div class="border-b px-6 py-4">
+            <h2 class="text-lg font-semibold text-gray-800">Report information</h2>
+        </div>
+        <div class="grid gap-6 px-6 py-4 md:grid-cols-2">
+            <div>
+                <p class="text-sm font-semibold text-gray-700">Submitted by</p>
+                <p class="text-gray-800">@Model.SubmittedByName (@Model.SubmittedByEmail)</p>
+            </div>
+            <div>
+                <p class="text-sm font-semibold text-gray-700">Organization</p>
+                <p class="text-gray-800">@(!string.IsNullOrWhiteSpace(Model.Organization) ? Model.Organization : "Unknown")</p>
+            </div>
+            <div>
+                <p class="text-sm font-semibold text-gray-700">Reviewed at</p>
+                <p class="text-gray-800">@(Model.ReviewedAt?.ToLocalTime().ToString("dd.MM.yyyy HH:mm") ?? "Not reviewed")</p>
+            </div>
+            @if (!string.IsNullOrWhiteSpace(Model.ReviewMessage))
+            {
+                <div class="md:col-span-2">
+                    <p class="text-sm font-semibold text-gray-700">Registrar message</p>
+                    <p class="mt-1 rounded border border-gray-200 bg-gray-50 p-3 text-gray-800">@Model.ReviewMessage</p>
+                </div>
+            }
+        </div>
+    </div>
+
+    @if (Model.ReportObstacle != null)
+    {
+        <div class="mt-6 rounded-lg bg-white shadow">
+            <div class="border-b px-6 py-4">
+                <h2 class="text-lg font-semibold text-gray-800">Obstacle information</h2>
+            </div>
+            <div class="grid gap-6 px-6 py-4 md:grid-cols-2">
+                <div>
+                    <p class="text-sm font-semibold text-gray-700">Name</p>
+                    <p class="text-gray-800">@Model.ReportObstacle.ObstacleName</p>
+                </div>
+                <div>
+                    <p class="text-sm font-semibold text-gray-700">Height (m)</p>
+                    <p class="text-gray-800">@Model.ReportObstacle.ObstacleHeight</p>
+                </div>
+                <div>
+                    <p class="text-sm font-semibold text-gray-700">Latitude</p>
+                    <p class="text-gray-800">@Model.ReportObstacle.ObstacleLatitude</p>
+                </div>
+                <div>
+                    <p class="text-sm font-semibold text-gray-700">Longitude</p>
+                    <p class="text-gray-800">@Model.ReportObstacle.ObstacleLongitude</p>
+                </div>
+                <div class="md:col-span-2">
+                    <p class="text-sm font-semibold text-gray-700">Description</p>
+                    <p class="mt-1 rounded border border-gray-200 bg-gray-50 p-3 text-gray-800">@Model.ReportObstacle.ObstacleDescription</p>
+                </div>
+                @if (!string.IsNullOrWhiteSpace(Model.ReportObstacle.ImagePath))
+                {
+                    <div class="md:col-span-2">
+                        <p class="text-sm font-semibold text-gray-700">Image</p>
+                        <a href="@Model.ReportObstacle.ImagePath" target="_blank" class="mt-2 inline-block">
+                            <img src="@Model.ReportObstacle.ImagePath" alt="Obstacle image" class="max-h-80 rounded border" />
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    <div class="mt-6">
+        @if (isRegistrar && !Model.IsDraft)
+        {
+            <form asp-action="UpdateStatus"
+                  asp-controller="Reports"
+                  method="post"
+                  class="w-full max-w-xl">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.ReportID" />
+
+                <label class="mb-2 block text-sm font-semibold text-gray-700" for="message">
+                    Message to pilot (optional)
+                </label>
+                <textarea name="message"
+                      id="message"
+                      rows="3"
+                      class="w-full rounded-md border border-gray-300 p-2"
+                      placeholder="Share context about this decision">@Model.ReviewMessage</textarea>
+
+                <div class="mt-4 flex items-center justify-between gap-4 flex-wrap">
+                    <a href="@Url.Action("Index", "Reports")" class="button-white-blue">
+                        Back to list
+                    </a>
+
+                    <div style="display:flex; gap:0.75rem; justify-content:flex-end; flex-wrap:wrap;">
+                        <button type="submit"
+                                name="status"
+                                value="Approved"
+                                class="button-dark-green"
+                                style="width:auto; padding:0.4rem 1.2rem; font-size:0.9rem;">
+                            Approve
+                        </button>
+
+                        <button type="submit"
+                                name="status"
+                                value="Rejected"
+                                class="button-dark-red"
+                                style="width:auto; padding:0.4rem 1.2rem; font-size:0.9rem;">
+                            Reject
+                        </button>
+
+                        <button type="submit"
+                                name="status"
+                                value="More info required"
+                                class="button-dark-yellow"
+                                style="width:auto; padding:0.4rem 1.2rem; font-size:0.9rem;">
+                            Ask for more information
+                        </button>
+                    </div>
+                </div>
+            </form>
+        }
+        else
+        {
+            <a href="@Url.Action("Index", "Reports")" class="button-white-blue">
+                Back to list
+            </a>
+        }
+    </div>
+</div>

@@ -43,8 +43,25 @@
 </div>
 
 @{
+
     bool isEditing = ViewBag.IsEditing != null && (bool)ViewBag.IsEditing;
+
     bool isDraft = Model?.IsDraft ?? true;
+    string reportStatus = ViewBag.ReportStatus as string ?? (isDraft ? "Draft" : "Pending");
+    string reviewMessage = ViewBag.ReviewMessage as string ?? string.Empty;
+    string statusBadge = "bg-yellow-100 text-yellow-800";
+    if (reportStatus.Equals("Approved", System.StringComparison.OrdinalIgnoreCase))
+    {
+        statusBadge = "bg-green-100 text-green-800";
+    }
+    else if (reportStatus.Equals("Rejected", System.StringComparison.OrdinalIgnoreCase))
+    {
+        statusBadge = "bg-red-100 text-red-800";
+    }
+    else if (reportStatus.Equals("More info required", System.StringComparison.OrdinalIgnoreCase))
+    {
+        statusBadge = "bg-orange-100 text-orange-800";
+    }
 }
 
 <div class="flex-container">
@@ -58,6 +75,17 @@
         <h1 class="text-2xl sm:text-3xl font-bold mb-6 text-center">
             @(isEditing ? "Edit Obstacle Report" : "Obstacle Registration Form")
         </h1>
+
+        @if (isEditing)
+        {
+            <div class="mb-4 flex items-center justify-center gap-2 text-sm">
+                <span class="rounded px-3 py-1 font-semibold @statusBadge">@reportStatus</span>
+                @if (!string.IsNullOrWhiteSpace(reviewMessage))
+                {
+                    <span class="text-gray-700">— @reviewMessage</span>
+                }
+            </div>
+        }
 
         <!-- Delete obstacle button -->
         <div class="mb-4 sm:col-span-2">
@@ -187,8 +215,8 @@
                     }
                     else
                     {
-                        <button type="submit" onclick="setSubmitType('SaveChanges'); return true;" class="button-dark-green px-6 py-3 rounded">
-                            Save Changes
+                        <button type="submit" onclick="setSubmitType('Submit'); return true;" class="button-dark-blue px-6 py-3 rounded">
+                            Submit Data
                         </button>
                         <a asp-controller="Reports" asp-action="Index" class="button-white-blue px-6 py-3 rounded inline-block">
                             <span>⬅️ Go Back</span>

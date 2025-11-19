@@ -123,10 +123,12 @@ namespace WebApplication1.Controllers
             return View(filtered.ToList());
         }
 
+        [Authorize(Roles = "Registrar")]
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult UpdateStatus(int id, string status, string message)
         {
-            var report = _context.ReportItems.FirstOrDefault(r => r.ReportID == id);
+            var report = _context.ReportItems.FirstOrDefault(r => r.ReportID == id && !r.IsDraft);
             if (report == null)
                 return NotFound();
 
@@ -142,9 +144,31 @@ namespace WebApplication1.Controllers
         [HttpGet]
         public IActionResult Details(int id)
         {
-            var report = _context.ReportItems.FirstOrDefault(r => r.ReportID == id);
+            var isRegistrar = User.IsInRole("Registrar");
+            var isPilot = User.IsInRole("Pilot");
+
+            var report = _context.ReportItems
+                                  .Include(r => r.ReportObstacle)
+                                  .FirstOrDefault(r => r.ReportID == id);
             if (report == null)
                 return NotFound();
+
+            if (!isRegistrar && isPilot)
+            {
+                var currentEmail = User?.Identity?.Name;
+                if (string.IsNullOrWhiteSpace(currentEmail) && TempData.ContainsKey("CurrentUserEmail"))
+                {
+                    currentEmail = TempData.Peek("CurrentUserEmail") as string;
+                }
+
+                var normalizedEmail = (currentEmail ?? string.Empty).Trim().ToLowerInvariant();
+                var submittedEmail = (report.SubmittedByEmail ?? string.Empty).Trim().ToLowerInvariant();
+
+                if (normalizedEmail != submittedEmail)
+                {
+                    return Forbid();
+                }
+            }
 
             return View(report);
         }
