@@ -135,9 +135,9 @@
                                         else if (status.Equals("Rejected", System.StringComparison.OrdinalIgnoreCase))
                                             badge = "bg-red-100 text-red-800";
                                         else if (status.Equals("More info required", System.StringComparison.OrdinalIgnoreCase))
-                                            badge = "bg-orange-100 text-orange-800";
+                                            badge = "bg-yellow-200 text-yellow-900";
                                         else if (r.IsDraft)
-                                            badge = "bg-yellow-100 text-yellow-800";
+                                            badge = "bg-gray-50 text-gray-800 border border-gray-200";                                           
                                     }
                                     <span class="rounded px-2 py-1 text-xs @badge">@status</span>
                                 </td>

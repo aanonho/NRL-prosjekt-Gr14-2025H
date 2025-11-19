@@ -1,5 +1,19 @@
 ﻿/* shared.css */
 
+
+.button-text-left {
+    display: flex;
+    align-items: flex-start; /* Tekst høyere opp */
+    height: 48px;
+    padding: 0px 16px; /* juster topp/bunn-padding etter behov */
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: left;
+}
+
+
 /* --- HEADER --- */
 #header {
     background-color: #3b6ed6;
@@ -179,6 +193,12 @@ a.button-white-green{
     margin-bottom: 32px;
 }
 
+.button-small {
+    min-width: auto;
+    min-height: auto;
+    padding: 0.4rem 1rem;
+    font-size: 14px;
+}
 /* Center button group */
 .center-button {
     justify-content: center !important;

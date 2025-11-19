@@ -48,7 +48,12 @@
                         <li><a class="block hover:text-green-600" asp-area="" asp-controller="User" asp-action="UserProfile">My Profile</a></li>
                         <li><form asp-area="" asp-controller="Account" asp-action="Logout" method="post" class="inline">
                                 @Html.AntiForgeryToken()
-                                <button type="submit" class="block w-full text-left hover:text-green-600">Sign out</button>
+                           @*      <button type="submit" class="block w-full text-left hover:text-green-600">Sign out</button> *@
+                                <button type="submit" class="button-text-left hover:text-green-600">
+                                    Sign out
+                                </button>
+
+
                             </form>
                         </li>
                     }
