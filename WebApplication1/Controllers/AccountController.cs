@@ -90,6 +90,18 @@ namespace WebApplication1.Controllers
 
             TempData["CurrentUserEmail"] = normalizedEmail;
 
+            if (user.Role == "Pilot")
+            {                           
+                return RedirectToAction("Dataform", "Obstacle");                
+            }
+
+            if (user.Role == "Registrar")
+            {
+            
+                return RedirectToAction("Index", "Reports");
+             
+            }
+
             return RedirectToLocal(model.ReturnUrl);
         }
 
@@ -102,6 +114,7 @@ namespace WebApplication1.Controllers
             TempData.Remove("CurrentUserEmail");
             return RedirectToAction("Index", "Home");
         }
+
 
         private IActionResult RedirectToLocal(string? returnUrl)
         {

@@ -15,7 +15,7 @@
     }
     else if (status.Equals("More info required", System.StringComparison.OrdinalIgnoreCase))
     {
-        badgeClass = "bg-orange-100 text-orange-800";
+        badgeClass = "bg-yellow-200 text-yellow-900";
     }
 }
 
@@ -115,26 +115,19 @@
                       rows="3"
                       class="w-full rounded-md border border-gray-300 p-2"
                       placeholder="Share context about this decision">@Model.ReviewMessage</textarea>
-
-                <div class="mt-4 flex items-center justify-between gap-4 flex-wrap">
-                    <a href="@Url.Action("Index", "Reports")" class="button-white-blue">
-                        Back to list
-                    </a>
-
-                    <div style="display:flex; gap:0.75rem; justify-content:flex-end; flex-wrap:wrap;">
+              
+                    <div class="mt-4 button-group center-button">
                         <button type="submit"
                                 name="status"
                                 value="Approved"
-                                class="button-dark-green"
-                                style="width:auto; padding:0.4rem 1.2rem; font-size:0.9rem;">
+                                class="button-dark-green">
                             Approve
                         </button>
 
                         <button type="submit"
                                 name="status"
                                 value="Rejected"
-                                class="button-dark-red"
-                                style="width:auto; padding:0.4rem 1.2rem; font-size:0.9rem;">
+                                class="button-dark-red">
                             Reject
                         </button>
 
@@ -146,7 +139,13 @@
                             Ask for more information
                         </button>
                     </div>
-                </div>
+
+
+                <div class="mt-4 button-group center-button">
+                    <a href="@Url.Action("Index", "Reports")" class="button-white-blue">
+                        Back to list
+                    </a>     
+                    </div>
             </form>
         }
         else

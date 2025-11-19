@@ -17,8 +17,8 @@ namespace WebApplication1.Controllers
             _connectionString = config.GetConnectionString("DefaultConnection")!;
         }         
         public IActionResult Index()
-        {       
-            return RedirectToAction("Login", "Account");
+        {
+            return RedirectToAction("Dataform", "Obstacle");
         }   
     
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

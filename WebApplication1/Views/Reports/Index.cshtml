@@ -19,6 +19,13 @@
             </p>
         </div>
 
+        @if (Model.IsPilotView && !string.IsNullOrWhiteSpace(Model.CurrentUserEmail))
+        {
+            <div class="mx-4 mb-4 border border-gray-300 bg-yellow-100 px-4 py-2 text-sm shadow-sm">
+                Showing reports submitted by <strong>@Model.CurrentUserEmail</strong>.
+            </div>
+        }
+
         @if (TempData["SuccessMessage"] != null)
         {
            @*  <div class="m-4 rounded-md border border-green-300 bg-green-50 p-3 text-center font-medium text-green-800 shadow-sm">
@@ -39,13 +46,7 @@
                 @TempData["ErrorMessage"]
             </div> *@         
         }
-        @if (Model.IsPilotView && !string.IsNullOrWhiteSpace(Model.CurrentUserEmail))
-        {
-            <div class="mx-4 mb-4 border border-gray-300 bg-yellow-100 px-4 py-2 text-sm shadow-sm">
-                Showing reports submitted by <strong>@Model.CurrentUserEmail</strong>.
-            </div>
-        }
-
+       
         <!-- Filters -->
         <form method="get" class="grid grid-cols-1 gap-4 border-b p-4 sm:grid-cols-3">
             <!-- Status -->
@@ -134,9 +135,9 @@
                                         else if (status.Equals("Rejected", System.StringComparison.OrdinalIgnoreCase))
                                             badge = "bg-red-100 text-red-800";
                                         else if (status.Equals("More info required", System.StringComparison.OrdinalIgnoreCase))
-                                            badge = "bg-orange-100 text-orange-800";
+                                            badge = "bg-yellow-200 text-yellow-900";
                                         else if (r.IsDraft)
-                                            badge = "bg-yellow-100 text-yellow-800";
+                                            badge = "bg-gray-50 text-gray-800 border border-gray-200";                                           
                                     }
                                     <span class="rounded px-2 py-1 text-xs @badge">@status</span>
                                 </td>
@@ -178,7 +179,7 @@
                                             var isApproved = string.Equals(r.Status, "Approved", System.StringComparison.OrdinalIgnoreCase);
                                         }
 
-                                        @* PILOT: kan redigere så lenge rapporten IKKE er Approved *@
+                                        @* PILOT: kan redigere så lenge rapporten IKKE er Approved 
                                         @if (!isApproved && Model.IsPilotView)
                                         {
                                             <a href="@Url.Action("DataForm", "Obstacle", new { id = r.ReportID })"
@@ -187,22 +188,42 @@
                                                 <span>Edit</span>
                                             </a>
                                         }
-
+                                        *@
+                                    
+                                        @if (Model.IsPilotView)
+                                        {
+                                            if (r.IsDraft || r.Status == "More info required")
+                                            {
+                                                <a class="button-white-green inline-block px-3 py-2 text-xs"
+                                                   href="@Url.Action("DataForm", "Obstacle", new { id = r.ReportID })">
+                                                    Edit
+                                                </a>                                          
+                                            }
+                                            else
+                                            {
+                                                <a class="button-white-blue inline-block px-3 py-2 text-xs"
+                                                    href="@Url.Action("Dataform", "Obstacle", new { id = r.ReportID })">
+                                                    View
+                                                </a>                                                                                                
+                                            }
+                                        }
                                         @* REGISTRAR: kan alltid Review så lenge det ikke er draft *@
                                         @if (Model.IsRegistrarView && !r.IsDraft)
                                         {
-                                            <a class="button-white-blue inline-block px-3 py-2 text-xs"
+                                            <a class="button-dark-blue inline-block px-3 py-2 text-xs"
                                                href="@Url.Action("Details", "Reports", new { id = r.ReportID })">
                                                 Review
                                             </a>
                                         }
                                     </td>
 
-                                    // <td class="px-3 py-2 text-sm whitespace-nowrap text-gray-700">
-                                    //     <a class="white inline-block px-3 py-2 text-xs" href="@Url.Action("DataForm", "Obstacle", new { id = r.ReportID })">
-                                    //         Edit
-                                    //     </a>
-                                    // </td>
+                                    @*
+                                    <td class="px-3 py-2 text-sm whitespace-nowrap text-gray-700">
+                                        <a class="white inline-block px-3 py-2 text-xs" href="@Url.Action("DataForm", "Obstacle", new { id = r.ReportID })">
+                                            Edit
+                                        </a>
+                                    </td>
+                                    *@
                                 }
                             </tr>
                         }
