@@ -188,8 +188,8 @@ a.button-dark-green {
 .status-critical,
 .status-warning,
 .status-confirmed {
-    max-width: 800px;
-    margin: 0 auto 1rem auto;
+    max-width: 600px;
+    margin: 1rem auto 1rem auto;
     padding: 1rem;
     box-sizing: border-box;
 }
@@ -207,9 +207,9 @@ a.button-dark-green {
 }
 
 .status-confirmed {
-    background-color: #1b5e20;
+    background-color: #227a2b;
     color: white;
-    border-left: 6px solid #1b5e20;
+    border-left: 6px solid #145214;
 }
 
 /* --- MEDIA QUERIES --- */

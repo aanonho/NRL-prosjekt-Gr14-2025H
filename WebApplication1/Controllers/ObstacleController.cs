@@ -203,7 +203,7 @@ namespace WebApplication1.Controllers
                 {
                     editReport.IsDraft = false;
                     editObstacle.IsDraft = false;
-                    TempData["SuccessMessage"] = "Changes saved.";
+                    TempData["SuccessMessage"] = " The changes have been successfully saved.";
                 }
 
                 _context.ReportItems.Update(editReport);

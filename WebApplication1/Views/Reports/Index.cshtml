@@ -21,15 +21,23 @@
 
         @if (TempData["SuccessMessage"] != null)
         {
-            <div class="m-4 rounded-md border border-green-300 bg-green-50 p-3 text-center font-medium text-green-800 shadow-sm">
+           @*  <div class="m-4 rounded-md border border-green-300 bg-green-50 p-3 text-center font-medium text-green-800 shadow-sm">
                 @TempData["SuccessMessage"]
+            </div>*@
+
+            <div class="status-confirmed p-4 rounded mb-6 mb-4">
+                <strong>✔ Saved:</strong> @TempData["SuccessMessage"]
             </div>
-        }
+        }            
         @if (TempData["ErrorMessage"] != null)
         {
-            <div class="m-4 rounded-md border border-red-300 bg-red-50 p-3 text-center font-medium text-red-800 shadow-sm">
-                @TempData["ErrorMessage"]
+          
+            <div class="status-critical p-4 rounded mb-4">
+                <strong>⚠ Critical:</strong> @TempData["ErrorMessage"]
             </div>
+           @*  <div class="m-4 rounded-md border border-red-300 bg-red-50 p-3 text-center font-medium text-red-800 shadow-sm">
+                @TempData["ErrorMessage"]
+            </div> *@         
         }
         @if (Model.IsPilotView && !string.IsNullOrWhiteSpace(Model.CurrentUserEmail))
         {
@@ -166,10 +174,11 @@
                                     <td class="px-3 py-2 text-sm whitespace-nowrap text-gray-700">
                                         <a href="@Url.Action("DataForm", "Obstacle", new { id = r.ReportID })"
                                            class="inline-flex items-center space-x-4 py-1 rounded hover:text-green-600">
-                                            <img src="~/icons/editIcon.svg" alt="Edit" style="width: 40px; height: 40px;" />
+                                            <img src="~/icons/editIcon.svg" alt="Edit" style="width: 30px; height: 30px;" />
                                             <span>Edit</span>
                                         </a>
                                     </td>
+
                                     // <td class="px-3 py-2 text-sm whitespace-nowrap text-gray-700">
                                     //     <a class="white inline-block px-3 py-2 text-xs" href="@Url.Action("DataForm", "Obstacle", new { id = r.ReportID })">
                                     //         Edit
