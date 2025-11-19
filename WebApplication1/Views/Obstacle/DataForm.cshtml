@@ -62,6 +62,8 @@
     {
         statusBadge = "bg-orange-100 text-orange-800";
     }
+
+    bool disableEditing = isEditing && !isDraft;
 }
 
 <div class="flex-container">
@@ -108,8 +110,7 @@
             <input asp-for="ObstacleType" id="ObstacleTypeHidden" type="hidden" />
 
             <input asp-for="ImagePath" type="hidden" />
-
-
+      
             <div asp-validation-summary="None"></div>
 
             <div class="mb-4 sm:col-span-2" id="latContainer" style="display:none;">
@@ -197,10 +198,13 @@
                 </div>
             </div>
 
-            <div class="status-warning p-4 rounded mb-4">
-                <strong>⚠ Warning:</strong> You must complete all required fields marked with <strong>*</strong> before submitting the form. <br> You may leave them blank if you choose to save as a draft.
-            </div>
-
+            @if (!isEditing || isDraft)
+            {
+                <div class="status-warning p-4 rounded mb-4">
+                    <strong>⚠ Warning:</strong> You must complete all required fields marked with <strong>*</strong> before submitting the form. <br> You may leave them blank if you choose to save as a draft.
+                </div>
+            }
+         
             <div class="sm:col-span-2 button-group center-button">
                 @if (isEditing)
                 {
@@ -214,10 +218,7 @@
                         </button>
                     }
                     else
-                    {
-                        <button type="submit" onclick="setSubmitType('Submit'); return true;" class="button-dark-blue px-6 py-3 rounded">
-                            Submit Data
-                        </button>
+                    {                       
                         <a asp-controller="Reports" asp-action="Index" class="button-white-blue px-6 py-3 rounded inline-block">
                             <span>⬅️ Go Back</span>
                         </a>
@@ -238,6 +239,22 @@
     </div>
 </div>
 
+@if (disableEditing)
+{
+    <div class="status-warning-top">
+        <strong>⚠ Warning:</strong> You cannot edit this obstacle report because it has already been submitted for review.
+    </div>
+
+    <script>
+        // Disable all form inputs if editing is disabled
+        document.addEventListener('DOMContentLoaded', function () {
+            const formElements = document.querySelectorAll('form input, form textarea, form select, form button');
+            formElements.forEach(element => {
+                element.disabled = true;
+            });
+        });
+    </script>
+}
 
 
 @section Scripts {

@@ -99,7 +99,8 @@ input[type="submit"],
 input[type="button"],
 a.button-dark-blue,
 a.button-white-blue,
-a.button-dark-green {
+a.button-dark-green,
+a.button-white-green{
     min-width: 48px;
     min-height: 48px;
     padding: 14px 20px;
@@ -146,7 +147,6 @@ a.button-dark-green {
     color: #2751b9;
     border: 1px solid #2751b9;
 }
-
     .button-white-blue:hover {
         background-color: #3b6ed6;
         color: white;
@@ -192,6 +192,23 @@ a.button-dark-green {
     margin: 1rem auto 1rem auto;
     padding: 1rem;
     box-sizing: border-box;
+}
+
+.status-warning-top {
+    position: fixed;
+    top: 0px;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background-color: #ffd800;
+    color: black;
+    border-left: 6px solid #f57f17;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+body.has-top-alert {
+    padding-top: 4rem; /* Adjust based on the height of the top alert */
 }
     
 .status-critical {
