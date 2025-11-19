@@ -23,7 +23,8 @@ Bruk denne til å lage din egen lokale .env: **cp .env.example .env**
 Du kan bruke standardverdier, som skolen har lagt ut, eller lage dine egne.
 Poenget er at alle som utvikler eller skal kjøre systemet putter inn verdier her.
 
-**Hvorfor har vi gjort det slik?** På grunn av - Sikkerhet: Passord og andre hemmelige ting ligger ikke i kildekode eller docker-compose.yml, og blir ikke lagt ut på GitHub. De finnes nå kun i lokale .env-filer.
+**Hvorfor har vi gjort det slik?** På grunn av:
+- Sikkerhet: Passord og andre hemmelige ting ligger ikke i kildekode eller docker-compose.yml, og blir ikke lagt ut på GitHub. De finnes nå kun i lokale .env-filer.
 - Det er god praksis: Bruk av miljøvariabler og .env er standard praksis for webapplikasjoner og Docker. Dette gjør det enklere å kjøre samme kode i ulike miljøer.
 Fleksibilitet
 - Hver utvikler (eller sensor) kan bruke egne lokale passord/brukere uten å endre kode eller få passord.
@@ -31,7 +32,7 @@ Fleksibilitet
  
  Dette er kanskje ikke nødvendig i et lite skoleprosjekt, vi ville vise at vi tenker på sikkerhet og vet hva som er god praksis.
 
-### Kom i gang - Steg 2 Start systemet (web + database)
+### Kom i gang - Steg 3 Start systemet (web + database)
 
 Fra rotmappen (der docker-compose.yml ligger):
 docker compose up --build
@@ -44,3 +45,114 @@ docker compose up --build
 Når alt er oppe, er applikasjonen tilgjengelig på:
 
 **http://localhost:8080**
+
+## Systemarkitektur – hvordan systemet er bygget
+
+### Lagdeling og hovedkomponenter
+
+Systemet følger en klassisk lagdelt struktur oppå ASP.NET Core MVC:
+### Presentasjonslag (UI): 
+  - ASP.NET Core MVC med controllere i mappen WebApplication1/Controllers
+  - Razor Views i WebApplication1/Views
+  - Statisk front-end (CSS, JavaScript, bilder) i WebApplication1/wwwroot
+
+### Domene- og forretningslag:
+  - Domeneentiteter i WebApplication1/Models/Entities. Eksempel: UserEntity, Pilot, Registrar, Organization, ObstacleData, ReportItem
+  - View-modeller i WebApplication1/Models for å tilpasse data til konkrete views. Eksempel: LoginViewModel, UserProfileViewModel, ReportsIndexViewModel, ValidatedObstacleData
+  - Valideringslogikk og forretningsregler implementert i disse modellene og i controllerne
+
+### Datatilgangslag:
+  - ApplicationDbContext i WebApplication1/DataInfrastructure/ApplicationDbContext.cs
+  - Bruker Entity Framework Core (Pomelo MySQL-provider) for å mappe C#-klasser til tabeller i MariaDB
+  - Håndterer relasjoner mellom brukere, piloter, registerførere, organisasjoner, hindere og rapporter
+
+Infrastruktur:
+  - docker-compose.yml i rotmappen definerer:
+    - db (MariaDB-database)
+    - webapplication1 (ASP.NET Core webapplikasjonen)
+  - WebApplication1/Dockerfile beskriver hvordan webapplikasjonen bygges som Docker-image
+  - .env.example (mal for miljøvariabler) og .env (lokal konfigurasjon) brukes til å styre database-navn, brukere og passord
+
+Så kort forklart:
+- Presentasjonslag: håndterer alt brukerinteraksjon (views, skjema, kart).
+- Domene- og forretningslag: inneholder begreper som “hinder”, “rapport”, “pilot”, “registrarfører” og reglene som gjelder for disse.
+- Datatilgangslag: kobler domenet til databasen og sørger for lesing/skriving av data på en strukturert måte.
+- Infrastruktur: Docker og miljøvariabler gjør at vi kan kjøre hele systemet med få kommandoer og uten manuell databaseoppsett.
+
+## Viktig mappestruktur i repoet
+
+### Rot:
+- docker-compose.yml – definisjon av database og webapplikasjon i Docker
+- .env.example – mal for miljøvariabler til databasen
+- .gitignore – sørger for at sensitive filer (som .env) og genererte filer (bin, obj, opplastede bilder) ikke sjekkes inn
+- docs/ – tester og dokumentasjon:
+
+- WebApplication1.sln – Visual Studio / dotnet-løsning
+
+- WebApplication1.Tests:
+  - Eget testprosjekt for enhetstesting. Inneholder blant annet ObstacleDataTests.cs som tester validering på hindermodellen
+
+### WebApplication1:
+- Program.cs – konfigurerer:
+  - logging
+  - databasekobling (EF Core med MariaDB)
+  - autentisering og autorisasjon (cookies, roller)
+  - routing, statiske filer, HTTPS/HSTS
+
+- DataInfrastructure/ApplicationDbContext.cs – EF Core DbContext
+
+- Controllers – controllere for hovedfunksjonene:
+- HomeController
+- AccountController (innlogging/utlogging)
+- UserController (brukerhåndtering og registerførerdashboard)
+- ObstacleController (innmelding av hindere via kart)
+- ReportsController (liste, detaljer og statusendring for rapporter)
+
+- Models – domene- og view-modeller (blant annet Entities-mappen)
+
+- Views – Razor-views for pilot, registerfører, login osv.
+
+- wwwroot – statiske filer:
+  - CSS (for eksempel shared.css, obstacleForm.css, report.css)
+  - JavaScript (for eksempel obstacleForm.js for kartlogikk)
+  - bilder (inkludert opplastede hinderbilder, som er ekskludert fra Git)
+
+ ---
+
+### Kort testguide for sensor/veileder
+
+1. Start systemet: Klon repoet
+
+2. Kopier .env.dev til .env og fyll inn databaseparametere
+
+3. Kjør docker compose up --build
+
+4. Gå til http://localhost:8080
+
+4. Opprett bruker: Opprett minst én pilot og én registerfører (eller én bruker med begge roller)
+
+4. Test pilotflyt:
+ - Lag bruker som pilot
+ - Log inn
+ - Gå til Obstacle registration
+ - Registrer et hinder via kartet og send inn
+ - Prøv flere hindertyper
+ - Legg til bilder
+ - Prøv å sende draft uten alle detaljer
+ - Trykk på "Reports" og se oversikten av alle rapportene dine
+ - Trykk på "Edit" og legg til flere detaljer på draften du lagde og submit
+
+5. Test registerførerflyt:
+- Lag bruker som registerfører
+- Log inn
+- Gå til "Reports" for å se alle rapporter sendt inn
+- Åpne en rapport ved å trykke på "Review"
+- Endre status, legg til kommentar og lagre
+- Sjekk at statusen oppdateres både på dashboard og i rapportoversikten
+
+6. Logg gjerne inn igjen som pilot for å se endringene
+
+7. Test autorisering:
+- Prøv å logge inn uten å lage en bruker først
+- Prøv å sende inn rapport som registerfører
+- Prøv å endre på en rapport som er sendt inn som pilot 
