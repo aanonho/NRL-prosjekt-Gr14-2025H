@@ -2,11 +2,16 @@ services:
   db:
     image: mariadb:10.11
     container_name: nrl-prosjekt-gr14-2025h-db-1
+    
+    # Bruker .env for å hente passord, slik at passord ikke er offentlig
+    env_file:
+      - .env
+
     environment:
-      MYSQL_DATABASE: nrl
-      MYSQL_USER: student
-      MYSQL_PASSWORD: studentpass
-      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     ports:
       - "3306:3306"
     healthcheck:
@@ -24,10 +29,15 @@ services:
     depends_on:
       db:
         condition: service_healthy
+
+    env_file:
+      - .env
+
     environment:
       ASPNETCORE_URLS: "http://0.0.0.0:8080"
       ASPNETCORE_ENVIRONMENT: Development
-      ConnectionStrings__DefaultConnection: server=db;port=3306;database=nrl;user=root;password=rootpass
+      # ASP.NET connection string bruker .env for sikkerhet
+      ConnectionStrings__DefaultConnection: "server=db;port=3306;database=${MYSQL_DATABASE};user=root;password=${MYSQL_ROOT_PASSWORD}"
     ports:
       - "8080:8080"
     volumes:
@@ -41,8 +51,12 @@ services:
       - ~/.nuget/packages:/root/.nuget/packages
     depends_on:
       - db
+    
+    env_file:
+      - .env
+
     environment:
-      - ConnectionStrings__DefaultConnection=server=db;database=nrl;user=root;password=rootpass;
+      - ConnectionStrings__DefaultConnection=server=db;database=${MYSQL_DATABASE};user=root;password=${MYSQL_ROOT_PASSWORD};
     entrypoint: >
       bash -c "dotnet tool install --global dotnet-ef --version 9.0.9 &&
       export PATH=$$PATH:/root/.dotnet/tools &&
