@@ -61,6 +61,12 @@ namespace WebApplication1.Controllers
                 return RedirectToAction("Index", "Reports");
             }
 
+            if (!report.IsDraft && string.Equals(report.Status, "Approved", StringComparison.OrdinalIgnoreCase))
+            {
+                TempData["ErrorMessage"] = "Approved reports cannot be edited.";
+                return RedirectToAction("Index", "Reports");
+            }
+
             var normalizedEmail = email.Trim().ToLowerInvariant();
             var submittedEmail = (report.SubmittedByEmail ?? string.Empty).Trim().ToLowerInvariant();
 
@@ -72,6 +78,8 @@ namespace WebApplication1.Controllers
 
             ViewBag.IsEditing = true;
             ViewBag.ReportIsDraft = report.IsDraft;
+            ViewBag.ReportStatus = report.Status;
+            ViewBag.ReviewMessage = report.ReviewMessage;
 
             report.ReportObstacle.IsDraft = report.IsDraft;
             report.ReportObstacle.ReportID = report.ReportID;
@@ -180,7 +188,7 @@ namespace WebApplication1.Controllers
                 editObstacle.ObstacleLineLength = validatedData.ObstacleLineLength;
                 editObstacle.ImagePath = validatedData.ImagePath ?? editObstacle.ImagePath;
 
-                var normalizedSubmitType = submitType.Trim();
+                var normalizedSubmitType = (submitType ?? "Submit").Trim();
 
                 if (editReport.IsDraft)
                 {
@@ -203,7 +211,16 @@ namespace WebApplication1.Controllers
                 {
                     editReport.IsDraft = false;
                     editObstacle.IsDraft = false;
-                    TempData["SuccessMessage"] = "Changes saved.";
+
+                    if (string.Equals(normalizedSubmitType, "Submit", StringComparison.OrdinalIgnoreCase))
+                    {
+                        editReport.Status = "Pending";
+                        TempData["SuccessMessage"] = "Report updated and resubmitted for review.";
+                    }
+                    else
+                    {
+                        TempData["SuccessMessage"] = "Changes saved.";
+                    }
                 }
 
                 _context.ReportItems.Update(editReport);
@@ -505,3 +522,4 @@ namespace WebApplication1.Controllers
         }
     }
 }
+

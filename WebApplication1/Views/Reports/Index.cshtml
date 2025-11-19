@@ -48,6 +48,7 @@
                     <option value="Pending" selected="@(Model.Status == "Pending")">Pending</option>
                     <option value="Approved" selected="@(Model.Status == "Approved")">Approved</option>
                     <option value="Rejected" selected="@(Model.Status == "Rejected")">Rejected</option>
+                    <option value="More infos required" selected="@(Model.Status == "More infos required")">More infos required</option>
                     <option value="submitted" selected="@(Model.Status == "submitted")">Submitted</option>
                     <option value="draft" selected="@(Model.Status == "draft")">Draft</option>
                 </select>
@@ -107,7 +108,7 @@
                         @foreach (var r in Model.Reports)
                         {
                             var obstacle = r.ReportObstacle;
-                            <tr class="hover:bg-gray-50 @(r.IsDraft ? "bg-yellow-100" : "")">
+                            <tr class="hover:bg-gray-50">
                                 <td class="px-3 py-2 text-sm whitespace-nowrap text-gray-700">
                                     @r.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")
                                 </td>
@@ -124,12 +125,13 @@
                                             badge = "bg-green-100 text-green-800";
                                         else if (status.Equals("Rejected", System.StringComparison.OrdinalIgnoreCase))
                                             badge = "bg-red-100 text-red-800";
-                                    }
+                                        else if (status.Equals("More infos required", System.StringComparison.OrdinalIgnoreCase))
+                                            badge = "bg-orange-100 text-orange-800";
+                                        else if (r.IsDraft)
+                                            badge = "bg-yellow-100 text-yellow-800";
+                                     }
+
                                     <span class="rounded px-2 py-1 text-xs @badge">@status</span>
-                                    @if (r.IsDraft)
-                                    {
-                                        <span class="ml-2 rounded bg-yellow-200 px-2 py-1 text-xs text-yellow-900">Draft</span>
-                                    }
                                 </td>
 
                                 <td class="px-3 py-2 text-sm whitespace-nowrap text-gray-700">
@@ -164,9 +166,21 @@
                                 @if (Model.IsPilotView || Model.IsRegistrarView)
                                 {
                                     <td class="px-3 py-2 text-sm whitespace-nowrap text-gray-700">
-                                        <a class="button-dark-blue inline-block px-3 py-2 text-xs" href="@Url.Action("DataForm", "Obstacle", new { id = r.ReportID })">
-                                            Edit
-                                        </a>
+                                        @{
+                                            var isApproved = string.Equals(r.Status, "Approved", System.StringComparison.OrdinalIgnoreCase);
+                                        }
+                                        @if (!isApproved && Model.IsPilotView)
+                                        {
+                                            <a class="button-dark-blue inline-block px-3 py-2 text-xs" href="@Url.Action("DataForm", "Obstacle", new { id = r.ReportID })">
+                                                Edit
+                                            </a>
+                                        }
+                                        @if (Model.IsRegistrarView && !r.IsDraft)
+                                        {
+                                            <a class="button-white-blue inline-block px-3 py-2 text-xs" href="@Url.Action("Details", "Reports", new { id = r.ReportID })">
+                                                Review
+                                            </a>
+                                        }
                                     </td>
                                 }
                             </tr>
