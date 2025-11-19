@@ -1,27 +1,46 @@
-# NRL-prosjekt-Gr14-2025H
-Semesterprosjekt for Gr 14 for Kartverket og Norsk Luftambulanse høst 2025.
+# NRL-prosjekt-Gr14-2025H  
+Semesterprosjekt for Kartverket og Norsk Luftambulanse, høst 2025 (gruppe 14).
 
-Enkel ASP.NET Core MVC-app for å registrere hindere på kart. Bruker kan klikke i kartet eller gi posisjon (GPS), fylle ut skjema og se en oppsummering med kartmarkør.
+Dette repoet inneholder en ASP.NET Core MVC-applikasjon for å registrere, håndtere og kvalitetssikre luftfartshindre.  
+Piloter kan melde inn hindere via et kart, og registerførere kan se, vurdere og godkjenne/avvise innmeldingene.  
+Applikasjon og database kjører sammen i Docker, med MariaDB som database.
 
-Slik starter du:
-Docker Compose
+---
 
-    1. I mappen der docker-compose.yml ligger:
-    docker compose down -v --remove-orphans
-    docker compose up --build
+## 1. Kom i gang
 
-    2. Åpne http://localhost:8080/Obstacle/DataForm
+#### 1) Klon prosjektet
 
-GPS
-Når siden lastes første gang kan nettleseren spørre om Location. Velg Allow for at kartet skal sentrere automatisk og feltene for Latitude/Longitude fylles. Hvis du avslår, kan du klikke i kartet for å sette posisjon.
+git clone https://github.com/aanonho/NRL-prosjekt-Gr14-2025H.git
+cd NRL-prosjekt-Gr14-2025H
 
-Mapper og filer
--Controllers: ObstacleController (DataForm GET/POST), UserController
+### 2) Sett opp miljøvariabler (.env)
+I rotmappen ligger det en malfil: **.env.example**
 
--Models: ObstacleData, UserData
+Bruk denne til å lage din egen lokale .env: **cp .env.example .env**
 
--Views: Views/Obstacle/DataForm.cshtml, Views/Obstacle/ObstacleRegistrationOverview.cshtml
+Åpne deretter .env og fyll inn malen for tilkobling.
+Du kan bruke standardverdier, som skolen har lagt ut, eller lage dine egne.
+Poenget er at alle som utvikler eller skal kjøre systemet putter inn verdier her.
 
--Container: docker-compose.yml, WebApplication1/Dockerfile
+**Hvorfor har vi gjort det slik?** På grunn av - Sikkerhet: Passord og andre hemmelige ting ligger ikke i kildekode eller docker-compose.yml, og blir ikke lagt ut på GitHub. De finnes nå kun i lokale .env-filer.
+- Det er god praksis: Bruk av miljøvariabler og .env er standard praksis for webapplikasjoner og Docker. Dette gjør det enklere å kjøre samme kode i ulike miljøer.
+Fleksibilitet
+- Hver utvikler (eller sensor) kan bruke egne lokale passord/brukere uten å endre kode eller få passord.
+- Enklere vedlikehold: Endringer i databasekonfigurasjon gjøres i én fil (.env), i stedet for i flere ulike configfiler (docker-compose.yml, appsettings*.json, osv.).
+ 
+ Dette er kanskje ikke nødvendig i et lite skoleprosjekt, vi ville vise at vi tenker på sikkerhet og vet hva som er god praksis.
 
--Dokumentasjon: se /docs (architecture.md, deployment.md, testing.md)
+### Kom i gang - Steg 2 Start systemet (web + database)
+
+Fra rotmappen (der docker-compose.yml ligger):
+docker compose up --build
+
+**Hva som skjer da:**
+- Starter en MariaDB-databasecontainer (db) med brukere/passord fra .env.
+- Starter webapplikasjonen (WebApplication1) og kobler den mot databasen via connection string som leses fra ConnectionStrings__DefaultConnection (som igjen er basert på miljøvariabler og MYSQL_*).
+- Oppretter en navngitt volume for database-data: nrl-db-data.
+
+Når alt er oppe, er applikasjonen tilgjengelig på:
+
+**http://localhost:8080**
