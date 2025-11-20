@@ -42,6 +42,8 @@ namespace WebApplication1.Models
 
         public bool IsDraft { get; set; } = false;
 
+        public bool HasLights { get; set; }
+
         [StringLength(255)]
         public string? ImagePath { get; set; }
 

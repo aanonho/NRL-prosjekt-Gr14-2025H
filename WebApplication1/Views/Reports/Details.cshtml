@@ -65,8 +65,16 @@
             </div>
             <div class="grid gap-6 px-6 py-4 md:grid-cols-2">
                 <div>
+                    <p class="text-sm font-semibold text-gray-700">Report ID</p>
+                    <p class="text-gray-800">@Model.ReportObstacle.ObstacleID</p>
+                </div>
+                <div>
                     <p class="text-sm font-semibold text-gray-700">Name</p>
                     <p class="text-gray-800">@Model.ReportObstacle.ObstacleName</p>
+                </div>
+                <div>
+                    <p class="text-sm font-semibold text-gray-700">Type of obstacle</p>
+                    <p class="text-gray-800">@Model.ReportObstacle.ObstacleType</p>
                 </div>
                 <div>
                     <p class="text-sm font-semibold text-gray-700">Height (m)</p>
@@ -79,6 +87,10 @@
                 <div>
                     <p class="text-sm font-semibold text-gray-700">Longitude</p>
                     <p class="text-gray-800">@Model.ReportObstacle.ObstacleLongitude</p>
+                </div>
+                <div>
+                    <p class="text-sm font-semibold text-gray-700">Has lights</p>
+                    <p class="text-gray-800">@(Model.ReportObstacle.ObstacleHasLight ? "Yes" : "No")</p>
                 </div>
                 <div class="md:col-span-2">
                     <p class="text-sm font-semibold text-gray-700">Description</p>
