@@ -2,14 +2,22 @@
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.DataInfrastructure;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+using WebApplication1.Services;
+using WebApplication1.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.Configure<EmailOptions>(builder.Configuration.GetSection("EmailSettings"));
+builder.Services.AddSingleton<IEmailSender, SmtpEmailSender>();
+
+var emailOptions = builder.Configuration.GetSection("EmailSettings").Get<EmailOptions>();
 
 /*
-//Henter connection string fra �appsettings.json� filen 
+//Henter connection string fra �appsettings.json� filen
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 */
 

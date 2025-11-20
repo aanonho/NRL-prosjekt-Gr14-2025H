@@ -18,6 +18,7 @@ namespace WebApplication1.DataInfrastructure
         public DbSet<UserEntity> Users { get; set; }
         public DbSet<Pilot> Pilots { get; set; }
         public DbSet<Registrar> Registrars { get; set; }
+        public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
 
 
         // Database migrations
@@ -76,6 +77,17 @@ namespace WebApplication1.DataInfrastructure
                     .OnDelete(DeleteBehavior.Cascade);
             });
 
+            modelBuilder.Entity<PasswordResetToken>(e =>
+            {
+                e.ToTable("PasswordResetTokens");
+                e.HasKey(p => p.Id);
+                e.HasIndex(p => p.TokenHash).IsUnique();
+                e.HasOne(p => p.User)
+                    .WithMany()
+                    .HasForeignKey(p => p.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
             // --- ReportItem → Pilot (FK = ReportItem.PilotID → Pilot.UserID) ---
             modelBuilder.Entity<ReportItem>(e =>
             {
@@ -89,7 +101,7 @@ namespace WebApplication1.DataInfrastructure
                  .WithMany(o => o.Reports)
                  .HasForeignKey(r => r.OrganizationID)
                  .OnDelete(DeleteBehavior.SetNull);
-               
+
             });
 
         }

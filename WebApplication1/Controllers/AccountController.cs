@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -10,17 +11,26 @@ using Microsoft.EntityFrameworkCore;
 using WebApplication1.DataInfrastructure;
 using WebApplication1.Models;
 using WebApplication1.Models.Entities;
+using WebApplication1.Services;
+using System.Security.Cryptography;
+using Microsoft.AspNetCore.WebUtilities;
+using System.Text;
 
 namespace WebApplication1.Controllers
 {
     public class AccountController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IEmailSender _emailSender;
         private readonly PasswordHasher<UserEntity> _passwordHasher = new();
+        private readonly ILogger<AccountController> _logger;
 
-        public AccountController(ApplicationDbContext context)
+
+        public AccountController(ApplicationDbContext context, IEmailSender emailSender, ILogger<AccountController> logger)
         {
             _context = context;
+            _emailSender = emailSender;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -37,6 +47,74 @@ namespace WebApplication1.Controllers
             };
 
             return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            return View(new ForgotPasswordViewModel());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var normalizedEmail = model.Email!.Trim();
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == normalizedEmail);
+            const string confirmationMessage = "If an account exists for the provided email, a password reset link has been sent.";
+
+            if (user == null)
+            {
+                TempData["SuccessMessage"] = confirmationMessage;
+                return RedirectToAction(nameof(ForgotPassword));
+            }
+
+            // Delete any previous reset token for this user
+            await InvalidateExistingTokens(user.UserID);
+            await _context.SaveChangesAsync();
+
+            // Generate a new secure random token
+            var rawToken = GenerateSecureToken();
+            var tokenHash = HashToken(rawToken);
+
+            // Store the hash version in the DB
+            var resetToken = new PasswordResetToken
+            {
+                UserId = user.UserID,
+                TokenHash = tokenHash,
+                CreatedAtUtc = DateTime.UtcNow,
+                ExpiresAtUtc = DateTime.UtcNow.AddHours(1)
+            };
+
+            _context.PasswordResetTokens.Add(resetToken);
+
+            // Reset link creation
+            var resetLink = Url.Action(nameof(ResetPassword), "Account", new { token = rawToken, email = user.Email }, Request.Scheme)!;
+
+            try
+            {
+                //  Send the email
+                await _emailSender.SendPasswordResetAsync(user.Email!, user.Name ?? user.Email!, resetLink);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to send reset email: {Message}", ex.Message);
+                // Rollback the token creation if sending fails
+                _context.PasswordResetTokens.Remove(resetToken);
+                await _context.SaveChangesAsync();
+
+                ModelState.AddModelError(string.Empty, "We were unable to send the reset email. Please try again later.");
+                return View(model);
+            }
+
+            TempData["SuccessMessage"] = confirmationMessage;
+            return RedirectToAction(nameof(ForgotPassword));
         }
 
         [HttpPost]
@@ -91,18 +169,94 @@ namespace WebApplication1.Controllers
             TempData["CurrentUserEmail"] = normalizedEmail;
 
             if (user.Role == "Pilot")
-            {                           
-                return RedirectToAction("Dataform", "Obstacle");                
+            {
+                return RedirectToAction("Dataform", "Obstacle");
             }
 
             if (user.Role == "Registrar")
             {
-            
+
                 return RedirectToAction("Index", "Reports");
-             
+
             }
 
             return RedirectToLocal(model.ReturnUrl);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ResetPassword(string? token, string? email)
+        {
+            if (string.IsNullOrWhiteSpace(token) || string.IsNullOrWhiteSpace(email))
+            {
+                TempData["ErrorMessage"] = "Invalid password reset link.";
+                return RedirectToAction(nameof(Login));
+            }
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email.Trim());
+            if (user == null)
+            {
+                TempData["ErrorMessage"] = "Invalid password reset link.";
+                return RedirectToAction(nameof(Login));
+            }
+
+            var tokenHash = HashToken(token);
+            var tokenEntity = await _context.PasswordResetTokens
+                .Where(t => t.UserId == user.UserID && t.TokenHash == tokenHash)
+                .FirstOrDefaultAsync();
+
+            if (tokenEntity == null || tokenEntity.RedeemedAtUtc != null || tokenEntity.ExpiresAtUtc < DateTime.UtcNow)
+            {
+                TempData["ErrorMessage"] = "This password reset link is no longer valid.";
+                return RedirectToAction(nameof(Login));
+            }
+
+            var viewModel = new ResetPasswordViewModel
+            {
+                Email = email.Trim(),
+                Token = token
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var normalizedEmail = model.Email!.Trim();
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == normalizedEmail);
+            if (user == null)
+            {
+                TempData["ErrorMessage"] = "Unable to reset password with the provided information.";
+                return RedirectToAction(nameof(Login));
+            }
+
+            var tokenHash = HashToken(model.Token!);
+            var tokenEntity = await _context.PasswordResetTokens
+                .Where(t => t.UserId == user.UserID && t.TokenHash == tokenHash)
+                .FirstOrDefaultAsync();
+
+            if (tokenEntity == null || tokenEntity.RedeemedAtUtc != null || tokenEntity.ExpiresAtUtc < DateTime.UtcNow)
+            {
+                TempData["ErrorMessage"] = "This password reset link is no longer valid.";
+                return RedirectToAction(nameof(Login));
+            }
+
+            user.PasswordHash = _passwordHasher.HashPassword(user, model.Password!);
+            tokenEntity.RedeemedAtUtc = DateTime.UtcNow;
+
+            var otherTokens = _context.PasswordResetTokens.Where(t => t.UserId == user.UserID && t.RedeemedAtUtc == null && t.Id != tokenEntity.Id);
+            _context.PasswordResetTokens.RemoveRange(otherTokens);
+
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Your password has been reset. Please sign in with your new password.";
+            return RedirectToAction(nameof(Login));
         }
 
         [Authorize]
@@ -136,6 +290,34 @@ namespace WebApplication1.Controllers
             }
 
             return RedirectToAction("Index", "Home");
+        }
+
+        // Generate a random 48byte token and encode it base64URL format
+        // The raw token is sent to the user by email for security check
+        private static string GenerateSecureToken()
+        {
+            var bytes = RandomNumberGenerator.GetBytes(48);
+            return WebEncoders.Base64UrlEncode(bytes);
+        }
+
+        // Hash the token before storing it in DB
+        private static string HashToken(string token)
+        {
+            using var sha = SHA256.Create();
+            var hash = sha.ComputeHash(Encoding.UTF8.GetBytes(token));
+            return WebEncoders.Base64UrlEncode(hash);
+        }
+
+        private async Task InvalidateExistingTokens(int userId)
+        {
+            var existingTokens = await _context.PasswordResetTokens
+                .Where(t => t.UserId == userId)
+                .ToListAsync();
+
+            if (existingTokens.Any())
+            {
+                _context.PasswordResetTokens.RemoveRange(existingTokens);
+            }
         }
     }
 }
