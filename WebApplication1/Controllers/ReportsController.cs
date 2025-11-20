@@ -141,6 +141,27 @@ namespace WebApplication1.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize(Roles = "Registrar")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete(int id)
+        {
+            var report = _context.ReportItems
+                .FirstOrDefault(r => r.ReportID == id && !r.IsDraft);
+
+            if (report == null)
+            {
+                return NotFound();
+            }
+
+            _context.ReportItems.Remove(report);
+            _context.SaveChanges();
+
+            TempData["SuccessMessage"] = "Report deleted.";
+
+            return RedirectToAction("Index");
+        }
+
         [HttpGet]
         public IActionResult Details(int id)
         {
