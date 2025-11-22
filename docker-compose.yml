@@ -2,11 +2,8 @@ services:
   db:
     image: mariadb:10.11
     container_name: nrl-prosjekt-gr14-2025h-db-1
-    
-    # Bruker .env for å hente passord, slik at passord ikke er offentlig
     env_file:
       - .env
-
     environment:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
@@ -21,6 +18,8 @@ services:
       retries: 20
     volumes:
       - mysqldata:/var/lib/mysql
+    networks:
+      - nrl-network
 
   webapplication1:
     build:
@@ -29,19 +28,18 @@ services:
     depends_on:
       db:
         condition: service_healthy
-
     env_file:
       - .env
-
     environment:
       ASPNETCORE_URLS: "http://0.0.0.0:8080"
       ASPNETCORE_ENVIRONMENT: Development
-      # ASP.NET connection string bruker .env for sikkerhet
       ConnectionStrings__DefaultConnection: "server=db;port=3306;database=${MYSQL_DATABASE};user=root;password=${MYSQL_ROOT_PASSWORD}"
     ports:
       - "8080:8080"
     volumes:
       - ./WebApplication1/wwwroot/images:/app/wwwroot/images
+    networks:
+      - nrl-network
 
   ef-tools:
     image: mcr.microsoft.com/dotnet/sdk:9.0
@@ -51,16 +49,16 @@ services:
       - ~/.nuget/packages:/root/.nuget/packages
     depends_on:
       - db
-    
     env_file:
       - .env
-
     environment:
       - ConnectionStrings__DefaultConnection=server=db;database=${MYSQL_DATABASE};user=root;password=${MYSQL_ROOT_PASSWORD};
     entrypoint: >
       bash -c "dotnet tool install --global dotnet-ef --version 9.0.9 &&
       export PATH=$$PATH:/root/.dotnet/tools &&
       exec dotnet ef $${@}" --
+    networks:
+      - nrl-network
 
   ef-add:
     extends: ef-tools
@@ -69,11 +67,28 @@ services:
       export PATH=$$PATH:/root/.dotnet/tools &&
       MIGRATION_NAME=$${MIGRATION_NAME:-Init} &&
       exec dotnet ef migrations add $$MIGRATION_NAME --project WebApplication1/WebApplication1.csproj --startup-project WebApplication1"
+    networks:
+      - nrl-network
 
   ef-update:
     extends: ef-tools
     command: database update --project WebApplication1/WebApplication1.csproj --startup-project WebApplication1
+    networks:
+      - nrl-network
+
+  mailhog:
+    image: mailhog/mailhog
+    container_name: nrl-mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - nrl-network
 
 volumes:
   mysqldata:
     name: nrl-db-data
+
+networks:
+  nrl-network:
+    driver: bridge
