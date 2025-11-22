@@ -157,23 +157,23 @@ Så kort forklart:
 - Prøv å sende inn rapport som registerfører
 - Prøv å endre på en rapport som er sendt inn som pilot 
 
-### Testplan for brukertesting
+# Testplan for brukertesting
 ## Testplan pilot
 Info fra testleder til testbruker:
 «Du er her for å hjelpe oss i utviklingen av en løsning for innmeldinger til Kartverket. Vi tester ikke deg og dine datakunnskaper, men dine tilbakemeldinger om systemet er viktige for oss i den videre utviklingen for at systemet skal oppleves som brukervennlig. Du blir bedt om løse noen oppgaver samtidig som du snakker høyt om hva du tenker om utformingen av det grafiske og hvordan det oppleves å navigere i systemet. Hvis du ikke får til å løse oppgaven så sier du i fra,
 det er også viktig informasjon for oss.» (Rania, 2025, s. 1  Testplan_kartverket doc på Canvas)
 
-# Innlogging og opprett bruker
+### Innlogging og opprett bruker
 Oppgave 1: 
 Opprett en bruker via Create user knappen
 Spm: hva er førsteinntrykket av brukergrensesnittet?
 
-# Obstacle registration form
+### Obstacle registration form
 Spm: hva er førsteinntrykket av siden? Hva tror du knappene øverst på kartet er til?
 Oppgave 2: 
 Registrer et hinder i skjemaet. Velg mellom «point», «line» eller «area» på toppen av kartet og fyll inn feltene videre nedover slik du tolker skjemaet. Send inn skjema ved å trykke på enten Submit data eller Save draft knappen. Fortell underveis hvilke tanker du gjør deg om skjemaet.
 
-# Reports
+### Reports
 Spm: Hva er første tanke om det som skjedde i det du klikket på knappen (Submit data/Save draft)? Si litt om hva du ser her på denne siden og hvilket inntrykk du får av brukergrensesnittet og løsningen?
 Hvis testperson valgte Save draft: 
 Oppgave 3:
@@ -184,7 +184,7 @@ Gå tilbake til obstacle registration form og fyll ut en rapport til, denne gang
 Til testleder: Hvis save draft her: hopp til oppgave 3 igjen.
 
 
-# Sluttspørsmål:
+### Sluttspørsmål:
 1.	Hvordan opplevde du å bruke dette systemet fra innlogging til ferdig innsendt rapport
 2.	Hvordan vil du rangere systemet på en skala fra 1 til 5 hvor 
 1 = veldig vanskelig å bruke, 3 = midt på treet, og 5 = veldig lett å bruke
@@ -198,19 +198,19 @@ Info fra testleder til testbruker (samme info som til pilot):
 «Du er her for å hjelpe oss i utviklingen av en løsning for innmeldinger til Kartverket. Vi tester ikke deg og dine datakunnskaper, men dine tilbakemeldinger om systemet er viktige for oss i den videre utviklingen for at systemet skal oppleves som brukervennlig. Du blir bedt om løse noen oppgaver samtidig som du snakker høyt om hva du tenker om utformingen av det grafiske og hvordan det oppleves å navigere i systemet. Hvis du ikke får til å løse oppgaven så sier du i fra,
 det er også viktig informasjon for oss.» (Rania, 2025, s. 1  Testplan_kartverket doc på Canvas)
 
-# Innlogging og opprett bruker (likt som pilot)
+### Innlogging og opprett bruker (likt som pilot)
 Oppgave 1: 
 Opprett en bruker via Create user knappen
 Spm hva er førsteinntrykket av brukergrensesnittet?
 
-# Reports
+### Reports
 Spm: Hva er førsteinntrykket av siden du kommer til her? Hvordan tolker du informasjonen som vises på siden om disse rapportene
 Oppgave 2:
 Test ut de ulike mulighetene du har til å gjøre ting på siden her: Filtrer rapporter basert på status eller dato
 Oppgave 3:
 Klikk på review-knappen på en av rapportene
 
-# Report overview
+### Report overview
 Spm: hvilke tanker gjør du deg på denne siden?
 Oppgave 4:
 Se gjennom rapporten og oppdater statusen; velg mellom Approve, Reject eller Request more information, fyll også gjerne inn en melding til brukeren som har sendt inn rapporten
@@ -221,7 +221,7 @@ Spm 1: Hvilket inntrykk har du? Sett bort fra at du per i dag ikke får opp hind
 1 = Ikke i nærheten engang, 2 = langt unna, 3 = er inne på noe, men må forbedres en del, 4 = nærmer seg en brukbar løsning, og 5 = med kartvisning av oversiktssiden over hinderrapporter kunne dette vært bra 
 Spm 2: Hva mener du skal til for at du skulle svart 5 på forrige spørsmål?
 
-# Sluttspørsmål:
+### Sluttspørsmål:
 1.	Hvordan opplevde du å bruke dette systemet?
 2.	Hvordan vil du rangere systemet på en skala fra 1 til 5 hvor 
 1 = veldig vanskelig å bruke, 3 = midt på treet, og 5 = veldig lett å bruke
