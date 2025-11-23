@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.DataInfrastructure;
 using WebApplication1.Models;
@@ -123,6 +124,7 @@ namespace WebApplication1.Controllers
             }
 
             submitType ??= "Submit";
+            var isSubmitRequest = string.Equals(submitType.Trim(), "Submit", StringComparison.OrdinalIgnoreCase);
 
             // 1) Current user (required)
             var email = UserHelper.GetCurrentUserEmail(this);
@@ -157,6 +159,20 @@ namespace WebApplication1.Controllers
                     return RedirectToAction("Index", "Reports");
                 }
 
+                if (isSubmitRequest)
+                {
+                    ValidateSubmissionRequirements(validatedData);
+                }
+
+                if (isSubmitRequest && !ModelState.IsValid)
+                {
+                    ViewBag.IsEditing = true;
+                    ViewBag.ReportStatus = editReport.Status;
+                    ViewBag.ReviewMessage = editReport.ReviewMessage;
+                    validatedData.IsDraft = editReport.IsDraft;
+                    return View(validatedData);
+                }
+
                 if (imageFile != null && imageFile.Length > 0)
                 {
                     var directory = Path.Combine("wwwroot", "images");
@@ -187,11 +203,10 @@ namespace WebApplication1.Controllers
                 editObstacle.ObstacleLineLength = validatedData.ObstacleLineLength;
                 editObstacle.ImagePath = validatedData.ImagePath ?? editObstacle.ImagePath;
 
-                var normalizedSubmitType = (submitType ?? "Submit").Trim();
 
                 if (editReport.IsDraft)
                 {
-                    if (string.Equals(normalizedSubmitType, "Submit", StringComparison.OrdinalIgnoreCase))
+                    if (isSubmitRequest)
                     {
                         editReport.IsDraft = false;
                         editReport.Status = "Pending";
@@ -210,7 +225,7 @@ namespace WebApplication1.Controllers
                 {
                     editReport.IsDraft = false;
                     editObstacle.IsDraft = false;
-                    if(string.Equals(normalizedSubmitType, "Submit", StringComparison.OrdinalIgnoreCase))
+                    if (isSubmitRequest)
                     {
                         editReport.Status = "Pending";
                         TempData["SuccessMessage"] = "Report updated and resubmitted for review.";
@@ -229,6 +244,18 @@ namespace WebApplication1.Controllers
             }
 
             // === Creating a new report ===
+
+            if (isSubmitRequest)
+            {
+                ValidateSubmissionRequirements(validatedData);
+                if (!ModelState.IsValid)
+                {
+                    ViewBag.IsEditing = false;
+                    ViewBag.ReportStatus = "Draft";
+                    ViewBag.ReviewMessage = string.Empty;
+                    return View(validatedData);
+                }
+            }
 
             // 2) Image upload
             if (imageFile != null && imageFile.Length > 0)
@@ -304,10 +331,10 @@ namespace WebApplication1.Controllers
             var report = new ReportItem
             {
                 CreatedAt = validatedData.ObstacleRegistrationTime,
-                Status = (submitType == "Submit") ? "Pending" : "Draft",
+                Status = isSubmitRequest ? "Pending" : "Draft",
                 OrganizationID = organizationId,                // nullable FK
                 PilotID = userEntity.UserID,                    // required FK
-                IsDraft = submitType != "Submit",
+                IsDraft = !isSubmitRequest,
                 CreatedBy = dbUser.Email,
                 SubmittedByEmail = dbUser.Email,
                 SubmittedByName = dbUser.Name,
@@ -351,6 +378,35 @@ namespace WebApplication1.Controllers
                 : "Draft saved successfully.";
 
             return RedirectToAction("Index", "Reports");
+        }
+        private void ValidateSubmissionRequirements(ValidatedObstacleData data)
+        {
+            if (string.IsNullOrWhiteSpace(data.ObstacleType))
+            {
+                ModelState.AddModelError(nameof(data.ObstacleType), "Please select an obstacle type before submitting.");
+            }
+
+            var normalizedType = data.ObstacleType?.Trim().ToLowerInvariant();
+
+            if (normalizedType == "line")
+            {
+                if (string.IsNullOrWhiteSpace(data.ObstacleLineCoordinates))
+                {
+                    ModelState.AddModelError(nameof(data.ObstacleLineCoordinates), "Line coordinates are required to submit.");
+                }
+            }
+            else if (normalizedType == "point" || normalizedType == "area")
+            {
+                if (!data.ObstacleLatitude.HasValue || !data.ObstacleLongitude.HasValue)
+                {
+                    ModelState.AddModelError(nameof(data.ObstacleLatitude), "Latitude and longitude are required to submit.");
+                }
+
+                if (string.IsNullOrWhiteSpace(data.ObstacleGeoJson))
+                {
+                    ModelState.AddModelError(nameof(data.ObstacleGeoJson), "Location data is required to submit.");
+                }
+            }
         }
 
         // === DETAILS VIEW ===
