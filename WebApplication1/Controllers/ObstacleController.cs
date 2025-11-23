@@ -124,6 +124,25 @@ namespace WebApplication1.Controllers
 
             submitType ??= "Submit";
 
+            if (string.Equals(submitType, "SaveDraft", StringComparison.OrdinalIgnoreCase))
+            {
+                // Remove ALL model errors so draft can save incomplete data
+                ModelState.Clear();
+
+                validatedData.IsDraft = true;
+            }
+            else
+            {
+                if (!ModelState.IsValid)
+                {
+                    // keep user on the form, showing validation errors
+                    ViewBag.IsEditing = validatedData.ReportID > 0;
+                    return View(validatedData);
+                }
+
+                validatedData.IsDraft = false;
+            }
+
             // 1) Current user (required)
             var email = UserHelper.GetCurrentUserEmail(this);
             if (string.IsNullOrEmpty(email))

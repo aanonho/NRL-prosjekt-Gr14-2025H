@@ -43,7 +43,39 @@ namespace WebApplication1.Controllers
 
             var organization = await ResolveOrganizationAsync(userData.Organization);
 
-            var existingUser = await _context.Users
+            string NormalizePhone(string input)
+            {
+                if (string.IsNullOrWhiteSpace(input))
+                    return string.Empty;
+
+                // Strip all non-digits
+                var digits = new string(input.Where(char.IsDigit).ToArray());
+
+                if (digits.Length == 8)
+                    return "+47" + digits; // Norwegian local number
+
+                if (digits.StartsWith("47") && digits.Length == 10)
+                    return "+" + digits;
+
+                return "+" + digits;
+            }
+
+            var normalizedPhone = NormalizePhone(userData.Phone);
+
+            var emailExists = await _context.Users.AnyAsync(u => u.Email == normalizedEmail);
+            if (emailExists)
+            {
+                ModelState.AddModelError("Email", "This email is already registered.");
+                return View(userData);
+            }
+
+            var phoneExists = await _context.Users.AnyAsync(u => u.Phone == normalizedPhone);
+            if (phoneExists)
+            {
+                ModelState.AddModelError("Phone", "This phone number is already registered.");
+                return View(userData);
+            }
+                var existingUser = await _context.Users
                 .Include(u => u.Organization)
                 .Include(u => u.Pilot)
                 .Include(u => u.Registrar)
@@ -91,7 +123,7 @@ namespace WebApplication1.Controllers
                 {
                     Name = userData.Name?.Trim(),
                     Email = normalizedEmail,
-                    Phone = userData.Phone?.Trim(),
+                    Phone = normalizedPhone,
                     Role = normalizedRole,
                     Organization = organization
                 };

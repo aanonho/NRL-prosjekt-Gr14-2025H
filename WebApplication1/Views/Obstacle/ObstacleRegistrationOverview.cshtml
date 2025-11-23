@@ -6,18 +6,18 @@
 <link rel="stylesheet" href="~/css/shared.css" />
 <link rel="stylesheet" href="~/css/obstacleForm.css" />
 
-<div class="container mx-auto px-4 mt-6">
-    <div class="bg-white shadow-md rounded-lg overflow-hidden">
+<div class="container mx-auto mt-6 px-4">
+    <div class="overflow-hidden rounded-lg bg-white shadow-md">
         <!-- Header -->
-        <div class="bg-green-500 text-white px-4 py-3">
-            <h2 class="text-xl sm:text-2xl font-bold">@(Model.IsDraft ? "Draft saved" : "Report submitted")</h2>
+        <div class="bg-green-500 px-4 py-3 text-white">
+            <h2 class="text-xl font-bold sm:text-2xl">@(Model.IsDraft ? "Draft saved" : "Report submitted")</h2>
         </div>
 
         <!-- Body -->
         <div class="p-4">
             <p class="mb-4 text-gray-700">@(Model.IsDraft ? "You have saved a draft. You may edit and submit later." : "Thank you for registering an obstacle. Here are the details:")</p>
 
-            <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-gray-800">
+            <dl class="grid grid-cols-1 gap-4 text-gray-800 sm:grid-cols-2">
                 <div>
                     <dt class="font-medium">Name</dt>
                     <dd>@(string.IsNullOrWhiteSpace(Model.ObstacleName) ? "Not provided" : Model.ObstacleName)</dd>
@@ -25,7 +25,7 @@
 
                 <div>
                     <dt class="font-medium">Height</dt>
-                    <dd>@(Model.ObstacleHeight <= 0 ? "Not provided" : $"{Model.ObstacleHeight} m")</dd>
+                    <dd>@(Model.ObstacleHeight == null || Model.ObstacleHeight <= 0 ? "Not provided" : $"{Model.ObstacleHeight} m")</dd>
                 </div>
 
                 <div>
@@ -65,11 +65,11 @@
             </dl>
 
             <!-- Map -->
-            <div id="map" class="w-full h-96 sm:h-80 mt-6 rounded border-2 border-gray-300"></div>
+            <div id="map" class="mt-6 h-96 w-full rounded border-2 border-gray-300 sm:h-80"></div>
 
             <!-- Button -->
             <div class="mt-6">
-                <a asp-action="DataForm" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded inline-block">
+                <a asp-action="DataForm" class="inline-block rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600">
                     Register another obstacle
                 </a>
             </div>

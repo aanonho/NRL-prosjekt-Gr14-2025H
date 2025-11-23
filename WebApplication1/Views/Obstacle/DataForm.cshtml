@@ -1,7 +1,7 @@
 ﻿@using WebApplication1.Models.Entities
 <!-- Obstacle Registration Form with Leaflet map.
     Lat/Lng location auto-filled from map click or browser geolocation (auto-centered if permitted). -->
-@model ObstacleData
+@model ValidatedObstacleData
 
 @{
     ViewData["Title"] = "Obstacle Registration";
@@ -74,7 +74,7 @@
                 Only pilots can create or save obstacle reports. You can review the form, but submissions will be rejected.
             </div>
         }
-        <h1 class="text-2xl sm:text-3xl font-bold mb-6 text-center">
+        <h1 class="mb-6 text-center text-2xl font-bold sm:text-3xl">
             @(isEditing ? "Edit Obstacle Report" : "Obstacle Registration Form")
         </h1>
 
@@ -92,14 +92,14 @@
         <!-- Delete obstacle button -->
         <div class="mb-4 sm:col-span-2">
             <button type="button" id="deleteObstacleButton"
-                    class="button-dark-red px-6 py-3 rounded"
+                    class="button-dark-red rounded px-6 py-3"
                     style="display:none;">
                 Delete Obstacle
             </button>
         </div>
 
         <!-- Form -->
-        <form asp-controller="Obstacle" asp-action="DataForm" method="post" enctype="multipart/form-data" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <form asp-controller="Obstacle" asp-action="DataForm" method="post" enctype="multipart/form-data" class="grid grid-cols-1 gap-4 sm:grid-cols-2">
             @Html.AntiForgeryToken()
             <input type="hidden" name="submitType" id="submitType" value="Submit" />
             <input asp-for="ReportID" type="hidden" />
@@ -111,74 +111,74 @@
 
             <input asp-for="ImagePath" type="hidden" />
 
-            <div asp-validation-summary="None"></div>
+            <div asp-validation-summary="ModelOnly" class="mb-2 text-sm text-red-600 sm:col-span-2"></div>
 
             <div class="mb-4 sm:col-span-2" id="latContainer" style="display:none;">
-                <label asp-for="ObstacleLatitude" class="block mb-1 font-medium text-gray-700">Latitude</label>
-                <input asp-for="ObstacleLatitude" id="ObstacleLatitude" type="number" step="any" class="w-full border border-gray-300 rounded p-2" placeholder="Auto-filled for point and area" readonly />
+                <label asp-for="ObstacleLatitude" class="mb-1 block font-medium text-gray-700">Latitude</label>
+                <input asp-for="ObstacleLatitude" id="ObstacleLatitude" type="number" step="any" class="w-full rounded border border-gray-300 p-2" placeholder="Auto-filled for point and area" readonly />
             </div>
 
             <div class="mb-4 sm:col-span-2" id="lngContainer" style="display:none;">
-                <label asp-for="ObstacleLongitude" class="block mb-1 font-medium text-gray-700">Longitude</label>
-                <input asp-for="ObstacleLongitude" id="ObstacleLongitude" type="number" step="any" class="w-full border border-gray-300 rounded p-2" placeholder="Auto-filled for point and area" readonly />
+                <label asp-for="ObstacleLongitude" class="mb-1 block font-medium text-gray-700">Longitude</label>
+                <input asp-for="ObstacleLongitude" id="ObstacleLongitude" type="number" step="any" class="w-full rounded border border-gray-300 p-2" placeholder="Auto-filled for point and area" readonly />
             </div>
 
 
             <!-- Area radius input, shown only if "area" is selected -->
             <div class="mb-4 sm:col-span-2" id="areaRadiusContainer" style="display:none;">
-                <label asp-for="ObstacleRadius" class="block mb-1 font-medium text-gray-700"> Area Radius (optional, default 300 meters) </label>
-                <input asp-for="ObstacleRadius" type="number" step="any" class="w-full border border-gray-300 rounded p-2" placeholder="300" />
-                <span asp-validation-for="ObstacleRadius"></span>
+                <label asp-for="ObstacleRadius" class="mb-1 block font-medium text-gray-700"> Area Radius (optional, default 300 meters) </label>
+                <input asp-for="ObstacleRadius" type="number" step="any" class="w-full rounded border border-gray-300 p-2" placeholder="300" />
+                <span asp-validation-for="ObstacleRadius" class="text-sm text-red-500"></span>
             </div>
 
             <!-- Line length input-->
             <div class="mb-4 sm:col-span-2" id="lineLengthContainer" style="display:none;">
-                <label asp-for="ObstacleLineLength" class="block mb-1 font-medium text-gray-700">Line Length (meters)</label>
-                <input asp-for="ObstacleLineLength" type="number" step="any" class="w-full border border-gray-300 rounded p-2" placeholder="e.g., 2.5" />
-                <span asp-validation-for="ObstacleLineLength"></span>
+                <label asp-for="ObstacleLineLength" class="mb-1 block font-medium text-gray-700">Line Length (meters)</label>
+                <input asp-for="ObstacleLineLength" type="number" step="any" class="w-full rounded border border-gray-300 p-2" placeholder="e.g., 2.5" />
+                <span asp-validation-for="ObstacleLineLength" class="text-sm text-red-500"></span>
             </div>
 
             <div class="mb-4 sm:col-span-2" id="lineCoordinatesContainer" style="display:none;">
-                <label asp-for="ObstacleLineCoordinates" class="block mb-1 font-medium text-gray-700">Line Coordinates</label>
-                <textarea asp-for="ObstacleLineCoordinates" id="ObstacleLineCoordinates" type="text" step="any" class="w-full border border-gray-300 rounded p-2" placeholder=" Auto-filled for line" readonly></textarea>
+                <label asp-for="ObstacleLineCoordinates" class="mb-1 block font-medium text-gray-700">Line Coordinates</label>
+                <textarea asp-for="ObstacleLineCoordinates" id="ObstacleLineCoordinates" type="text" step="any" class="w-full rounded border border-gray-300 p-2" placeholder=" Auto-filled for line" readonly></textarea>
             </div>
 
             <div class="sm:col-span-2">
-                <label asp-for="ObstacleName" class="block mb-1 font-medium text-gray-700 required">Obstacle Name</label>
-                <input asp-for="ObstacleName" class="w-full border border-gray-300 rounded p-2" placeholder="e.g., Wall, Ramp" />
-                <span asp-validation-for="ObstacleName"></span>
+                <label asp-for="ObstacleName" class="required mb-1 block font-medium text-gray-700">Obstacle Name</label>
+                <input asp-for="ObstacleName" class="w-full rounded border border-gray-300 p-2" placeholder="e.g., Wall, Ramp" />
+                <span asp-validation-for="ObstacleName" class="text-sm text-red-500"></span>
             </div>
 
             <div class="sm:col-span-2">
-                <label asp-for="ObstacleHeight" class="block mb-1 font-medium text-gray-700">Obstacle Height (meters)</label>
-                <input asp-for="ObstacleHeight" type="number" step="any" class="w-full border border-gray-300 rounded p-2" placeholder="e.g., 2.5" />
+                <label asp-for="ObstacleHeight" class="mb-1 block font-medium text-gray-700">Obstacle Height (meters)</label>
+                <input asp-for="ObstacleHeight" type="number" step="any" class="w-full rounded border border-gray-300 p-2" placeholder="e.g., 2.5" />
 
-                <div class="text-gray-500 text-sm mb-4">
+                <div class="mb-4 text-sm text-gray-500">
                     Obstacles ≥15 m must be registered (≥30 m in densely built areas).<br>
                     Lower obstacles optional.<br>
                     All power/signal lines with poles must be reported.
                 </div>
-                <span asp-validation-for="ObstacleHeight"></span>
+                <span asp-validation-for="ObstacleHeight" class="text-sm text-red-500"></span>
             </div>
 
             <div class="sm:col-span-2">
-                <label asp-for="ObstacleDescription" class="block mb-1 font-medium text-gray-700 required">Obstacle Description</label>
-                <textarea asp-for="ObstacleDescription" class="w-full border border-gray-300 rounded p-2 h-96" placeholder="Describe the obstacle, meterials, location, etc."></textarea>
-                <span asp-validation-for="ObstacleDescription"></span>
+                <label asp-for="ObstacleDescription" class="required mb-1 block font-medium text-gray-700">Obstacle Description</label>
+                <textarea asp-for="ObstacleDescription" class="h-96 w-full rounded border border-gray-300 p-2" placeholder="Describe the obstacle, meterials, location, etc."></textarea>
+                <span asp-validation-for="ObstacleDescription" class="text-sm text-red-500"></span>
             </div>
 
             <!-- Has light checkbox -->
             <div class="sm:col-span-2">
                 <label class="inline-flex items-center">
-                    <input asp-for="ObstacleHasLight" type="checkbox" class="h-11 w-11 border-gray-300 rounded">
+                    <input asp-for="ObstacleHasLight" type="checkbox" class="h-11 w-11 rounded border-gray-300">
                     <span class="ml-2 text-gray-700">Check the box if obstacle have light</span>
                 </label>
             </div>
 
             <!-- Image upload -->
             <div class="sm:col-span-2">
-                <label for="ObstacleImage" class="block mb-1 font-medium text-gray-700">Upload Image</label>
-                <input type="file" name="imageFile" id="ObstacleImage" class="w-full border border-gray-300 rounded p-2" />
+                <label for="ObstacleImage" class="mb-1 block font-medium text-gray-700">Upload Image</label>
+                <input type="file" name="imageFile" id="ObstacleImage" class="w-full rounded border border-gray-300 p-2" />
 
                 @if (!string.IsNullOrWhiteSpace(Model?.ImagePath))
                 {
@@ -200,36 +200,36 @@
 
             @if (!isEditing || isDraft)
             {
-                <div class="status-warning p-4 rounded mb-4">
+                <div class="status-warning mb-4 rounded p-4">
                     <strong>⚠ Warning:</strong> You must complete all required fields marked with <strong>*</strong> before submitting the form. <br> You may leave them blank if you choose to save as a draft.
                 </div>
             }
 
-            <div class="sm:col-span-2 button-group center-button">
+            <div class="button-group center-button sm:col-span-2">
                 @if (isEditing)
                 {
                     if (isDraft || reportStatus.Equals("More info required", StringComparison.OrdinalIgnoreCase))
                     {
-                        <button type="submit" onclick="setSubmitType('Submit')" class="button-dark-green px-6 py-3 rounded">
+                        <button type="submit" onclick="setSubmitType('Submit')" class="button-dark-green rounded px-6 py-3">
                             Submit Data
                         </button>
-                        <button type="submit" onclick="setSubmitType('SaveDraft'); return true;" class="button-dark-blue px-6 py-3 rounded">
+                        <button type="submit" onclick="setSubmitType('SaveDraft'); return true;" class="button-dark-blue rounded px-6 py-3">
                             Save Draft
                         </button>
                     }
                     else
                     {
-                        <a asp-controller="Reports" asp-action="Index" class="button-white-blue px-6 py-3 rounded inline-block">
+                        <a asp-controller="Reports" asp-action="Index" class="button-white-blue inline-block rounded px-6 py-3">
                             <span>⬅️ Go Back</span>
                         </a>
                     }
                 }
                 else
                 {
-                    <button type="submit" onclick="setSubmitType('Submit')" class="button-dark-green px-6 py-3 rounded">
+                    <button type="submit" onclick="setSubmitType('Submit')" class="button-dark-green rounded px-6 py-3">
                         Submit Data
                     </button>
-                    <button type="submit" onclick="setSubmitType('SaveDraft'); return true;" class="button-dark-blue px-6 py-3 rounded">
+                    <button type="submit" onclick="setSubmitType('SaveDraft'); return true;" class="button-dark-blue rounded px-6 py-3">
                         Save Draft
                     </button>
                 }

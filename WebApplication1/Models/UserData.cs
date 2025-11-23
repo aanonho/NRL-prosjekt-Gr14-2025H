@@ -6,19 +6,24 @@ namespace WebApplication1.Models
     {
         [Required(ErrorMessage = "Name is required")]
         [StringLength(45, ErrorMessage = "Name cannot exceed 45 characters")]
+        [RegularExpression("^[A-Za-zæøåÆØÅ\\- ]+$", ErrorMessage = "Name may only contain letters, spaces, and hyphens")]
         public string? Name { get; set; }
 
         [Required(ErrorMessage = "Email is required")]
-        [EmailAddress(ErrorMessage = "Please enter valid email address")]
         [StringLength(45, ErrorMessage = "Email cannot exceed 45 characters")]
+        [DataType(DataType.EmailAddress)]
+        [RegularExpression("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$", ErrorMessage = "Please enter a valid email address")]
         public string? Email { get; set; }
 
         [Required(ErrorMessage = "Phone is required")]
-        [Phone(ErrorMessage = "Please enter a valid phone number")]
-        [StringLength(45, ErrorMessage = "Phone number cannot exceed 45 characters")]
+        [StringLength(45, ErrorMessage = "Phone cannot exceed 45 characters")]
+        [DataType(DataType.PhoneNumber)]
+        [RegularExpression(@"^(\+?\d{1,3}[\s-]?)?\d{8,12}$", ErrorMessage = "Phone must contain 8–12 digits and may include country code (+47 or 0047)")]
         public string? Phone { get; set; }
 
+        //Not in db yet(UserEntity needs Address)
         [StringLength(200, ErrorMessage = "Address cannot exceed 200 characters")]
+        [RegularExpression(@"^[A-Za-z0-9ÆØÅæøå .,\-\/#]*$", ErrorMessage = "Address contains invalid characters")]
         public string? Address { get; set; }
 
         // Additional properties
