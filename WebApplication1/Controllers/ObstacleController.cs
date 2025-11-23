@@ -42,7 +42,7 @@ namespace WebApplication1.Controllers
 
             if (!id.HasValue)
             {
-                return View(new ObstacleData());
+                return View(new ValidatedObstacleData());
             }
 
             var email = UserHelper.GetCurrentUserEmail(this);
@@ -83,7 +83,26 @@ namespace WebApplication1.Controllers
             report.ReportObstacle.IsDraft = report.IsDraft;
             report.ReportObstacle.ReportID = report.ReportID;
 
-            return View(report.ReportObstacle);
+            var validatedData = new ValidatedObstacleData
+            {
+                ReportID = report.ReportID,
+                ObstacleID = report.ReportObstacle.ObstacleID,
+                ObstacleName = report.ReportObstacle.ObstacleName,
+                ObstacleHeight = report.ReportObstacle.ObstacleHeight,
+                ObstacleDescription = report.ReportObstacle.ObstacleDescription,
+                ObstacleLatitude = report.ReportObstacle.ObstacleLatitude,
+                ObstacleLongitude = report.ReportObstacle.ObstacleLongitude,
+                ObstacleType = report.ReportObstacle.ObstacleType,
+                ObstacleRadius = report.ReportObstacle.ObstacleRadius,
+                ObstacleGeoJson = report.ReportObstacle.ObstacleGeoJson,
+                ObstacleLineCoordinates = report.ReportObstacle.ObstacleLineCoordinates,
+                ObstacleLineLength = report.ReportObstacle.ObstacleLineLength,
+                ObstacleHasLight = report.ReportObstacle.ObstacleHasLight,
+                ImagePath = report.ReportObstacle.ImagePath,
+                IsDraft = report.IsDraft // Add any other necessary fields
+            };
+
+            return View(validatedData); ;
         }
 
         // === EDIT EXISTING REPORT (VIEW) ===
@@ -337,7 +356,7 @@ namespace WebApplication1.Controllers
             await _context.SaveChangesAsync();
 
             // 6) Save the obstacle and link it
-            var obstacle = new ObstacleData
+            var obstacle = new ValidatedObstacleData
             {
                 ObstacleName = validatedData.ObstacleName,
                 ObstacleHeight = validatedData.ObstacleHeight,
