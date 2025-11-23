@@ -3,7 +3,7 @@ Semesterprosjekt for Kartverket og Norsk Luftambulanse, høst 2025 (gruppe 14).
 
 Dette repoet inneholder en ASP.NET Core MVC-applikasjon for å registrere, håndtere og kvalitetssikre luftfartshindre.  
 Piloter kan melde inn hindere via et kart, og registerførere kan se, vurdere og godkjenne/avvise innmeldingene.  
-Applikasjon og database kjører sammen i Docker, med MariaDB som database.
+Applikasjon, database og lokal test-epost (Mailhog) kjører sammen i Docker, med MariaDB som database.
 
 ---
 
@@ -40,6 +40,7 @@ docker compose up --build
 **Hva som skjer da:**
 - Starter en MariaDB-databasecontainer (db) med brukere/passord fra .env.
 - Starter webapplikasjonen (WebApplication1) og kobler den mot databasen via connection string som leses fra ConnectionStrings__DefaultConnection (som igjen er basert på miljøvariabler og MYSQL_*).
+- Starter en Mailhog-container for lokal e-post i utvikling. Mailhog brukes kun til å teste «glemt passord»-funksjonen og er tilgjengelig på http://localhost:8025.
 - Oppretter en navngitt volume for database-data: nrl-db-data.
 
 Når alt er oppe, er applikasjonen tilgjengelig på:
@@ -70,6 +71,7 @@ Infrastruktur:
   - docker-compose.yml i rotmappen definerer:
     - db (MariaDB-database)
     - webapplication1 (ASP.NET Core webapplikasjonen)
+    - mailhog (lokal e-postserver for utvikling, brukt til å teste «glemt passord» uten å sende ekte e-poster)
   - WebApplication1/Dockerfile beskriver hvordan webapplikasjonen bygges som Docker-image
   - .env.example (mal for miljøvariabler) og .env (lokal konfigurasjon) brukes til å styre database-navn, brukere og passord
 
@@ -78,6 +80,16 @@ Så kort forklart:
 - Domene- og forretningslag: inneholder begreper som “hinder”, “rapport”, “pilot”, “registrarfører” og reglene som gjelder for disse.
 - Datatilgangslag: kobler domenet til databasen og sørger for lesing/skriving av data på en strukturert måte.
 - Infrastruktur: Docker og miljøvariabler gjør at vi kan kjøre hele systemet med få kommandoer og uten manuell databaseoppsett.
+
+**Innlogging, roller og glemt passord**
+Innlogging og utlogging håndteres av AccountController. Brukere kan ha ulike roller (for eksempel pilot og registerfører) som styrer hva de har tilgang til i systemet.
+Vi har i tillegg implementert en «Glemt passord» / «Forgot password»-funksjon på innloggingssiden, slik man kjenner fra vanlige nettsider. Hvis en bruker har glemt passordet sitt, kan vedkommende:
+1. klikke på «Forgot password» på login-siden
+2. skrive inn e-postadressen sin
+3. motta en engangslenke via e-post (fanget opp av Mailhog i utvikling, ikke sendt «på ordentlig»)
+4. klikke på lenken og sette et nytt passord
+
+Selve lenken er tidsbegrenset og kan bare brukes én gang, og systemet lagrer kun en hash av tokenet i databasen. Dette er en trygg og mer realistisk måte å håndtere glemte passord på enn å endre passord manuelt i databasen, samtidig som vi slipper å sende ekte e-poster i utviklingsmiljøet.
 
 ## Viktig mappestruktur i repoet
 
@@ -103,7 +115,7 @@ Så kort forklart:
 
 - Controllers – controllere for hovedfunksjonene:
 - HomeController
-- AccountController (innlogging/utlogging)
+- AccountController (innlogging/utlogging og glemt passord)
 - UserController (brukerhåndtering og registerførerdashboard)
 - ObstacleController (innmelding av hindere via kart)
 - ReportsController (liste, detaljer og statusendring for rapporter)
@@ -155,7 +167,17 @@ Så kort forklart:
 7. Test autorisering:
 - Prøv å logge inn uten å lage en bruker først
 - Prøv å sende inn rapport som registerfører
-- Prøv å endre på en rapport som er sendt inn som pilot 
+- Prøv å endre på en rapport som er sendt inn som pilot
+
+8. Test glemt passord (Forgot password):
+
+Sørg for at det finnes en bruker i databasen med en kjent e-postadresse
+1. Gå til innloggingssiden og klikk på «Forgot password»
+2. Skriv inn e-postadressen til brukeren og send inn
+3. Åpne Mailhog i nettleser: http://localhost:8025
+4. Finn e-posten som ble sendt, åpne den og klikk på lenken for å resette passord
+5. Sett et nytt passord på siden som åpnes og lagre
+6. Prøv deretter å logge inn igjen med det nye passordet
 
 # Testplan for brukertesting
 ## Testplan pilot
