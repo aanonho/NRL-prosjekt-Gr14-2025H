@@ -113,7 +113,7 @@ namespace WebApplication1.Controllers
 
             await _context.SaveChangesAsync();
 
-            TempData["SuccessMessage"] = "Account saved successfully. Please sign in.";
+            TempData["SuccessMessage"] = "Account created successfully. Please sign in.";
 
             return RedirectToAction("Login", "Account");
         }
