@@ -56,6 +56,7 @@ label > input[type="checkbox"] {
 .locate-btn:hover {
     background-color: #2a4eb8;
 }
+
  /* --- Obstacle type button container --- */
 .obstacle-button-container {
     position: absolute;
