@@ -138,7 +138,14 @@ function resetLineState() {
 
 // Show delete button
 function showDeleteButton() {
-    deleteButton.style.display = 'inline-block';
+    if (disableEditing)
+    {
+        deleteButton.style.display = 'none';
+    }
+    else
+    {
+        deleteButton.style.display = 'inline-block';
+    }
 }
 
 // Initialize obstacle type buttons
@@ -345,6 +352,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Handle map clicks to draw obstacls
     map.on('click', function (e) {
+        if (disableEditing) return; // Editing disabled
         const type = obstacleTypeHidden.value;
         let addedObstacle = false; // True if an obstacle exists and can be deleted
 

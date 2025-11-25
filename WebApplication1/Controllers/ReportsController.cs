@@ -130,13 +130,18 @@ namespace WebApplication1.Controllers
         {
             var report = _context.ReportItems.FirstOrDefault(r => r.ReportID == id && !r.IsDraft);
             if (report == null)
-                return NotFound();
+            {
+                TempData["ErrorMessage"] = "Report not found.";
+                return RedirectToAction("Index");
+            }             
 
             report.Status = status;
             report.ReviewMessage = message;
             report.ReviewedAt = DateTime.Now;
 
             _context.SaveChanges();
+
+            TempData["SuccessMessage"] = "Report status updated.";
 
             return RedirectToAction("Index");
         }

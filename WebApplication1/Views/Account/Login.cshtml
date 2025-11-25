@@ -12,8 +12,11 @@
 
     @if (TempData["SuccessMessage"] != null)
     {
-        <div class="mb-6 rounded border border-green-200 bg-green-50 p-3 text-sm text-green-700">
+      @*   <div class="mb-6 rounded border border-green-200 bg-green-50 p-3 text-sm text-green-700">
             @TempData["SuccessMessage"]
+        </div> *@
+        <div class="status-confirmed p-4 rounded mb-6 mb-4">
+            <strong>✔ Success:</strong> @TempData["SuccessMessage"]
         </div>
     }
 
