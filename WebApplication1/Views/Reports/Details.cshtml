@@ -152,14 +152,11 @@
                         Ask for more information
                     </button>
                 </div>
-
-                <div class="mt-4 button-group center-button">
-                    <a href="@Url.Action("Index", "Reports")" class="button-white-blue">
-                        Back to list
-                    </a>
-                </div>
+           
             </form>
 
+
+        <div class="mt-4 w-full flex justify-between items-center">
             <!-- Eget form for å slette rapporten -->
             <form asp-action="Delete"
                   asp-controller="Reports"
@@ -174,12 +171,11 @@
                     Delete report
                 </button>
             </form>
-        }
-        else
-        {
-            <a href="@Url.Action("Index", "Reports")" class="button-white-blue">
-                Back to list
-            </a>
-        }
+
+                <a href="@Url.Action("Index", "Reports")" class="button-white-blue" style="width:170px; text-align:center;">
+                   ⬅️ Back to list
+                </a>
+            </div>
+        }     
     </div>
 </div>
