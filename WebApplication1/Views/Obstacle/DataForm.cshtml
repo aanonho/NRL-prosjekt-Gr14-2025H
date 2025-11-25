@@ -183,8 +183,7 @@
                 @if (!string.IsNullOrWhiteSpace(Model?.ImagePath))
                 {
                     <div class="mt-2 flex items-center gap-3">
-                        <img src="@Model.ImagePath" alt="Existing obstacle image" class="max-h-32 rounded border" />
-                        <span class="text-sm text-gray-600">Upload a new file to replace the current image.</span>
+                        <img src="@Model.ImagePath" alt="Existing obstacle image" class="max-h-32 rounded border" />                      
                     </div>
                 }
 
@@ -197,14 +196,8 @@
                     </button>
                 </div>
             </div>
-
-            @if (!isEditing || isDraft)
-            {
-                <div class="status-warning p-4 rounded mb-4">
-                    <strong>⚠ Warning:</strong> You must complete all required fields marked with <strong>*</strong> before submitting the form. <br> You may leave them blank if you choose to save as a draft.
-                </div>
-            }
-
+       
+       
             <div class="sm:col-span-2 button-group center-button">
                 @if (isEditing)
                 {
@@ -256,8 +249,12 @@
     </script>
 }
 
+<script>
+    var disableEditing = @disableEditing.ToString().ToLower(); // Pass Disable Editing flag to JavaScript as boolean
+</script>
 
 @section Scripts {
+   
     <partial name="_ValidationScriptsPartial" />
     <script src="~/js/obstacleForm.js"></script>
 }
