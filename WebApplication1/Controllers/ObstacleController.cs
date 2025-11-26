@@ -253,6 +253,7 @@ namespace WebApplication1.Controllers
                 ValidateSubmissionRequirements(validatedData);
                 if (!ModelState.IsValid)
                 {
+                    ViewBag.ErrorMessage = "Please fill all required fields before submitting.";
                     ViewBag.IsEditing = false;
                     ViewBag.ReportStatus = "Draft";
                     ViewBag.ReviewMessage = string.Empty;

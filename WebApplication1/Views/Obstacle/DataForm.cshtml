@@ -85,6 +85,14 @@
                 Only pilots can create or save obstacle reports. You can review the form, but submissions will be rejected.
             </div>
         }
+   
+        @if (ViewBag.ErrorMessage != null)
+        {
+            <div class="status-warning-top text-center mx-auto">
+                <strong>⚠ Warning:</strong> @ViewBag.ErrorMessage
+            </div>
+        }
+
         <h1 class="text-2xl sm:text-3xl font-bold mb-6 text-center">
             @(isEditing ? "Edit Obstacle Report" : "Obstacle Registration Form")
         </h1>
@@ -99,6 +107,9 @@
                 }
             </div>
         }
+
+ 
+
 
         <!-- Form -->
         <form asp-controller="Obstacle" asp-action="DataForm" method="post" enctype="multipart/form-data" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
