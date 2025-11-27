@@ -30,7 +30,7 @@
         <div class="flex flex-col">
             <label asp-for="Phone" class="required mb-1 font-medium text-gray-700">Phone</label>
             <input asp-for="Phone" id="Phone" type="tel" class="rounded border border-gray-300 p-2" />
-            <span class="text-xs text-gray-500">Format: +47 12345678 eller 12345678</span>
+            <span class="text-xs text-gray-500">Format: +47 12345678 or 12345678</span>
             <span asp-validation-for="Phone" class="text-sm text-red-500"></span>
         </div>
 
@@ -66,10 +66,6 @@
             <label asp-for="ConfirmPassword" class="required mb-1 font-medium text-gray-700">Confirm Password</label>
             <input asp-for="ConfirmPassword" type="password" autocomplete="new-password" class="rounded border border-gray-300 p-2" />
             <span asp-validation-for="ConfirmPassword" class="text-sm text-red-500"></span>
-        </div>
-
-        <div class="status-warning mb-4 rounded p-4">
-            <strong>⚠ Warning:</strong> You must complete all required fields marked with <strong>*</strong> before submitting the form.
         </div>
 
         <div class="button-group center-button sm:col-span-2">

@@ -43,7 +43,7 @@ namespace WebApplication1.Controllers
 
             if (!id.HasValue)
             {
-                return View(new ValidatedObstacleData());
+                return View(new ValidatedObstacleData{ObstacleType = "point"});
             }
 
             var email = UserHelper.GetCurrentUserEmail(this);
@@ -178,6 +178,14 @@ namespace WebApplication1.Controllers
             // Editing existing report/obstacle
             if (isEditing)
             {
+                bool isDraftSave = string.Equals(submitType, "SaveDraft", StringComparison.OrdinalIgnoreCase);
+
+                if (isDraftSave)
+                {
+                    // prevent any required validation from running
+                    ModelState.Clear();
+                }
+
                 var editReport = await _context.ReportItems
                     .Include(r => r.ReportObstacle)
                     .FirstOrDefaultAsync(r => r.ReportID == validatedData.ReportID);
@@ -187,6 +195,7 @@ namespace WebApplication1.Controllers
                     TempData["ErrorMessage"] = "Report not found.";
                     return RedirectToAction("Index", "Reports");
                 }
+
 
                 var normalizedEmail = (dbUser.Email ?? string.Empty).Trim().ToLowerInvariant();
                 var submittedEmail = (editReport.SubmittedByEmail ?? string.Empty).Trim().ToLowerInvariant();
@@ -228,7 +237,7 @@ namespace WebApplication1.Controllers
 
                 var editObstacle = editReport.ReportObstacle;
 
-                editObstacle.ObstacleName = validatedData.ObstacleName;
+                editObstacle.ObstacleName = validatedData.ObstacleName ?? "(no title)";
                 editObstacle.ObstacleHeight = validatedData.ObstacleHeight;
                 editObstacle.ObstacleDescription = validatedData.ObstacleDescription;
                 editObstacle.ObstacleHasLight = validatedData.ObstacleHasLight;
@@ -369,6 +378,7 @@ namespace WebApplication1.Controllers
             var report = new ReportItem
             {
                 CreatedAt = validatedData.ObstacleRegistrationTime,
+                ObstacleName = validatedData.ObstacleName ?? "(no title)",
                 Status = isSubmitRequest ? "Pending" : "Draft",
                 OrganizationID = organizationId,                // nullable FK
                 PilotID = userEntity.UserID,                    // required FK

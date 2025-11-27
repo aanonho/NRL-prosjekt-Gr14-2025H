@@ -343,10 +343,11 @@ document.addEventListener('DOMContentLoaded', function () {
     deleteButton.addEventListener('click', clearMapObstacle);
 
     const defaultButton = document.querySelector('.obstacle-button[data-type="point"]');
-    if (obstacleTypeHidden && obstacleTypeHidden.value) {
+    if (!obstacleTypeHidden.value || obstacleTypeHidden.value.trim() === "") {
+        obstacleTypeHidden.value = "point";
+        if (defaultButton) defaultButton.click();
+    } else {
         hydrateExistingObstacle();
-    } else if (defaultButton) {
-        defaultButton.click();
     }
 
 
@@ -417,8 +418,8 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelector('form').addEventListener('submit', function (e) {
         const type = obstacleTypeHidden.value;
 
-        // If no obstacle type is selected, fall back to user's GPS position
-        if (!obstacleTypeHidden.value && currentUserLat && currentUserLng) {
+        // GPS fallback only if no obstacle was added
+        if (!obstacleMarker && !circle && latlngsLine.length === 0 && currentUserLat && currentUserLng) {
             // Set lat and long from user's current postiton
             document.getElementById('ObstacleLatitude').value = currentUserLat.toFixed(6);
             document.getElementById('ObstacleLongitude').value = currentUserLng.toFixed(6);
