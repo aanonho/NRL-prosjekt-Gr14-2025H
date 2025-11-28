@@ -328,6 +328,8 @@ function drawLine(latlngs) {
 // -- Initialize Map and Handlers -- //
 document.addEventListener('DOMContentLoaded', function () {
     map = L.map('map').setView([58.1467, 7.9956], 12);
+    //makes map globally available
+    window.leafletMap = map;
 
     // Add OpenStreetMap tile layer
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

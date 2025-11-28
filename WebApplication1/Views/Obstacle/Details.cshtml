@@ -1,11 +1,18 @@
 ﻿@model WebApplication1.Models.ReportItem
 @using WebApplication1.Models
+
 @{
     ViewData["Title"] = "Report Details";
     var user = ViewBag.CurrentUser as UserData;
     bool isRegistrar = user?.Role == "Registrar";
     bool isDraft = Model.IsDraft;
 }
+<!-- Leaflet CSS -->
+<link rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin="" />
+
 <!-- Custom page CSS -->
 <link rel="stylesheet" href="~/css/shared.css" />
 
@@ -14,6 +21,11 @@
         <h1 class="mb-8 text-center text-3xl font-bold text-blue-700">
             Obstacle Details
         </h1>
+
+        <!-- Readonly Map -->
+        <div class="mx-auto mb-8 w-full max-w-4xl">
+            <div id="detailsMap" style="width:100%; height:350px; border-radius: 10px;"></div>
+        </div>
 
         <!-- Unified Form -->
         <form asp-action="SubmitDraft" asp-controller="Obstacle" method="post" class="space-y-6">
@@ -168,4 +180,67 @@
             </a>
         </div>
     </div>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const mapDiv = document.getElementById("detailsMap");
+            if (!mapDiv) return;
+
+            const obstacle = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ReportObstacle));
+
+            // Init map in center of Norway fallback
+            const map = L.map("detailsMap").setView([64.5, 11.0], 5);
+
+            // Tile layer
+            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                maxZoom: 19
+            }).addTo(map);
+
+            if (!obstacle) return;
+
+            // POINT / AREA
+            if (obstacle.obstacleLatitude && obstacle.obstacleLongitude) {
+                const lat = obstacle.obstacleLatitude;
+                const lng = obstacle.obstacleLongitude;
+
+                // Area (circle)
+                if (obstacle.obstacleType === "area") {
+                    const radius = obstacle.obstacleRadius || 300;
+                    L.circle([lat, lng], {
+                        radius: radius,
+                        color: "red",
+                        fillColor: "#f03",
+                        fillOpacity: 0.5
+                    }).addTo(map);
+
+                    map.setView([lat, lng], 15);
+                }
+
+                // Point
+                else if (obstacle.obstacleType === "point") {
+                    L.marker([lat, lng]).addTo(map);
+                    map.setView([lat, lng], 16);
+                }
+            }
+
+            // LINE
+            if (obstacle.obstacleType === "line" && obstacle.obstacleLineCoordinates) {
+
+                const coords = obstacle.obstacleGeoJson
+                    ? JSON.parse(obstacle.obstacleGeoJson).geometry.coordinates
+                    : [];
+
+                if (coords.length >= 2) {
+                    const latlngs = coords.map(c => [c[1], c[0]]);
+                    const line = L.polyline(latlngs, { color: "black", weight: 3 }).addTo(map);
+                    map.fitBounds(line.getBounds());
+                }
+            }
+
+        });
+    </script>
 </div>

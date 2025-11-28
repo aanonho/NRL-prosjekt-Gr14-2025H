@@ -55,6 +55,9 @@ namespace WebApplication1.Models
 
         public Organization? OrganizationRef { get; set; }
 
+        public double? ObstacleLatitude { get; set; }
+        public double? ObstacleLongitude { get; set; }
+
         // Not use in DB for now
         [NotMapped]
         public UserLink? UserInfo { get; set; }

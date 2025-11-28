@@ -45,7 +45,7 @@
 <!-- Delete obstacle button -->
 <div class="button-group center-button">
     <button type="button" id="deleteObstacleButton"
-            class="button-dark-red px-6 py-3 rounded"
+            class="button-dark-red rounded px-6 py-3"
             style="display:none; width: 200px;">
         Delete Obstacle
     </button>
@@ -83,7 +83,7 @@
                 Only pilots can create or save obstacle reports. You can review the form, but submissions will be rejected.
             </div>
         }
-        <h1 class="text-2xl sm:text-3xl font-bold mb-6 text-center">
+        <h1 class="mb-6 text-center text-2xl font-bold sm:text-3xl">
             @(isEditing ? "Edit Obstacle Report" : "Obstacle Registration Form")
         </h1>
 
@@ -101,7 +101,7 @@
         <!-- Delete obstacle button -->
         <div class="mb-4 sm:col-span-2">
             <button type="button" id="deleteObstacleButton"
-                    class="button-dark-red px-6 py-3 rounded"
+                    class="button-dark-red rounded px-6 py-3"
                     style="display:none;">
                 Delete Obstacle
             </button>
@@ -207,7 +207,7 @@
             </div>
        
        
-            <div class="sm:col-span-2 button-group center-button">
+            <div class="button-group center-button sm:col-span-2">
                 @if (isEditing)
                 {
                     if (isDraft || reportStatus.Equals("More info required", StringComparison.OrdinalIgnoreCase))
@@ -243,9 +243,6 @@
 
 @if (disableEditing)
 {
-    <div class="status-warning-top">
-        <strong>⚠ Warning:</strong> You cannot edit this obstacle report because it has already been submitted for review.
-    </div>
 
     <script>
         // Disable all form inputs if editing is disabled
@@ -261,6 +258,7 @@
 <script>
     var disableEditing = @disableEditing.ToString().ToLower(); // Pass Disable Editing flag to JavaScript as boolean
 </script>
+
 
 @section Scripts {
    

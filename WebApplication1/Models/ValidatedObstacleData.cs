@@ -21,5 +21,9 @@ namespace WebApplication1.Models
         [MaxLength(1000, ErrorMessage = "Descpriction cannot exceed 1000 characters")]
         public new string? ObstacleDescription { get; set; }
 
+        public double? ObstacleLatitude { get; set; }
+        public double? ObstacleLongitude { get; set; }
+
+
     }
 }
