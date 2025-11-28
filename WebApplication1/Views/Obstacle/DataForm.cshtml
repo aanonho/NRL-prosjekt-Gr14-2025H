@@ -112,7 +112,7 @@
 
 
         <!-- Form -->
-        <form asp-controller="Obstacle" asp-action="DataForm" method="post" enctype="multipart/form-data" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <form asp-controller="Obstacle" asp-action="DataForm" method="post" enctype="multipart/form-data" class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="obstacleForm">
             @Html.AntiForgeryToken()
             <input type="hidden" name="submitType" id="submitType" value="Submit" />
             <input asp-for="ReportID" type="hidden" />

@@ -414,19 +414,30 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    document.querySelector('form').addEventListener('submit', function (e) {
-        const type = obstacleTypeHidden.value;
+    const obstacleForm = document.getElementById('obstacleForm');
 
-        // If no obstacle type is selected, fall back to user's GPS position
-        if (!obstacleTypeHidden.value && currentUserLat && currentUserLng) {
-            // Set lat and long from user's current postiton
-            document.getElementById('ObstacleLatitude').value = currentUserLat.toFixed(6);
-            document.getElementById('ObstacleLongitude').value = currentUserLng.toFixed(6);
-            document.getElementById('ObstacleGeoJson').value = JSON.stringify({
+    obstacleForm?.addEventListener('submit', function () {
+        const geoJsonInput = document.getElementById('ObstacleGeoJson');
+        const latInput = document.getElementById('ObstacleLatitude');
+        const lngInput = document.getElementById('ObstacleLongitude');
+
+        const latValue = parseFloat(latInput.value);
+        const lngValue = parseFloat(lngInput.value);
+        const hasLatLng = !Number.isNaN(latValue) && !Number.isNaN(lngValue);
+        const hasGeoJson = !!geoJsonInput.value?.trim();
+
+        // If no geometry is present but GPS is available, fall back to user's position
+        const fallbackLat = currentUserLat ?? helicopterMarker?.getLatLng()?.lat ?? null;
+        const fallbackLng = currentUserLng ?? helicopterMarker?.getLatLng()?.lng ?? null;
+
+        if (!hasLatLng && !hasGeoJson && fallbackLat !== null && fallbackLng !== null) {
+            latInput.value = fallbackLat.toFixed(6);
+            lngInput.value = fallbackLng.toFixed(6);
+            geoJsonInput.value = JSON.stringify({
                 type: "Feature",
                 geometry: {
                     type: "Point",
-                    coordinates: [currentUserLng, currentUserLat]
+                    coordinates: [fallbackLng, fallbackLat]
                 },
                 properties: { source: "gps-fallback" }
             });
@@ -435,7 +446,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Locate user button logic
     locationButton.addEventListener('click', function () {
-        if (currentUserLat && currentUserLng) {
+        if (currentUserLat != null && currentUserLng != null) {
             map.setView([currentUserLat, currentUserLng], 14);
         }
     });
