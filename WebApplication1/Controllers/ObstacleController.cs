@@ -63,8 +63,11 @@ namespace WebApplication1.Controllers
             }
             if (!report.IsDraft && string.Equals(report.Status, "Approved", StringComparison.OrdinalIgnoreCase))
             {
-                TempData["ErrorMessage"] = "Approved reports cannot be edited.";
-                return RedirectToAction("Index", "Reports");
+                ViewBag.IsEditing = false;
+                ViewBag.ReadOnly = true;
+                return View(report.ReportObstacle);
+                //TempData["ErrorMessage"] = "Approved reports cannot be edited."; -> Gammel kode som ikke lar piloter åpne apporoved rapporter for visning
+                //return RedirectToAction("Index", "Reports");
             }
 
             var normalizedEmail = email.Trim().ToLowerInvariant();
@@ -250,6 +253,7 @@ namespace WebApplication1.Controllers
                 ValidateSubmissionRequirements(validatedData);
                 if (!ModelState.IsValid)
                 {
+                    ViewBag.ErrorMessage = "Please fill all required fields before submitting.";
                     ViewBag.IsEditing = false;
                     ViewBag.ReportStatus = "Draft";
                     ViewBag.ReviewMessage = string.Empty;
