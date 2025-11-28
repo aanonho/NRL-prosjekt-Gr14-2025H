@@ -577,51 +577,5 @@ namespace WebApplication1.Controllers
 
             return RedirectToAction("Details", "Obstacle", new { id = report.ReportID });
         }
-
-        // ------------ HELPERS (CLASS SCOPE) ------------
-        // These ensure the related rows exist when you need safe defaults.
-        // Keep them until the whole app always registers users/orgs before submit.
-
-        private async Task<int?> GetOrCreateDefaultOrganizationIdAsync()
-        {
-            const string defaultOrgName = "Default Organization";
-            var org = await _context.Organizations.FirstOrDefaultAsync(o => o.Name == defaultOrgName);
-
-            if (org == null)
-            {
-                org = new Organization { Name = defaultOrgName };
-                _context.Organizations.Add(org);
-                await _context.SaveChangesAsync();
-            }
-            return org.OrganizationID;
-        }
-
-        private async Task<int> GetOrCreateDefaultPilotIdAsync()
-        {
-            const string email = "default.pilot@nrl.local";
-
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
-            if (user == null)
-            {
-                user = new UserEntity
-                {
-                    Name = "Default Pilot",
-                    Email = email,
-                    Role = "Pilot",
-                    OrganizationID = await GetOrCreateDefaultOrganizationIdAsync()
-                };
-                _context.Users.Add(user);
-                await _context.SaveChangesAsync();
-            }
-
-            var pilot = await _context.Pilots.FindAsync(user.UserID);
-            if (pilot == null)
-            {
-                _context.Pilots.Add(new Pilot { UserID = user.UserID, ULicenseNumber = "N/A", AircraftType = "N/A" });
-                await _context.SaveChangesAsync();
-            }
-
-            return user.UserID; // ReportItem.PilotID references Pilot(UserID)
-        }
     }
 }
