@@ -220,6 +220,21 @@ namespace WebApplication1.Controllers
                     return View(validatedData);
                 }
 
+                // Image validation to most commonly used types
+                if (imageFile != null)
+                {
+                    var allowedTypes = new[] { ".jpg", ".jpeg", ".png" };
+                    var ext = Path.GetExtension(imageFile.FileName).ToLowerInvariant();
+
+                    if (allowedTypes.Contains(ext))
+                    {
+                        ModelState.AddModelError("ImageFile", "Only JPG and PNG are allowed");
+                        ViewBag.IsEditing = true;
+                        return View(validatedData);
+                    }
+
+                }
+
                 if (imageFile != null && imageFile.Length > 0)
                 {
                     var directory = Path.Combine("wwwroot", "images");
@@ -301,6 +316,21 @@ namespace WebApplication1.Controllers
                     ViewBag.ReviewMessage = string.Empty;
                     return View(validatedData);
                 }
+            }
+
+            // Image validation
+            if (imageFile != null)
+            {
+                var allowedTypes = new[] { ".jpg", ".jpeg", ".png" };
+                var ext = Path.GetExtension(imageFile.FileName).ToLowerInvariant();
+
+                if (allowedTypes.Contains(ext))
+                {
+                    ModelState.AddModelError("ImageFile", "Only JPG and PNG are allowed");
+                    ViewBag.IsEditing = true;
+                    return View(validatedData);
+                }
+
             }
 
             // 2) Image upload

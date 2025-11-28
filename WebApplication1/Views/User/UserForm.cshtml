@@ -59,6 +59,7 @@
         <div class="flex flex-col">
             <label asp-for="Password" class="required mb-1 font-medium text-gray-700">Password</label>
             <input asp-for="Password" type="password" autocomplete="new-password" class="rounded border border-gray-300 p-2" />
+            <span class="text-xs text-gray-500">Password must be 8 characters or more</span>
             <span asp-validation-for="Password" class="text-sm text-red-500"></span>
         </div>
 
