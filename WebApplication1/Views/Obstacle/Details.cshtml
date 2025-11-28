@@ -196,9 +196,7 @@
             const map = L.map("detailsMap").setView([64.5, 11.0], 5);
 
             // Tile layer
-            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-                maxZoom: 19
-            }).addTo(map);
+            L.tileLayer("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", { maxZoom: 17 }).addTo(map);
 
             if (!obstacle) return;
 

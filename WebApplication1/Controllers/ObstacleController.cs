@@ -91,9 +91,9 @@ namespace WebApplication1.Controllers
             {
                 ReportID = report.ReportID,
                 ObstacleID = report.ReportObstacle.ObstacleID,
-                ObstacleName = report.ReportObstacle.ObstacleName,
+                ObstacleName = report.ReportObstacle.ObstacleName ?? "",
                 ObstacleHeight = report.ReportObstacle.ObstacleHeight,
-                ObstacleDescription = report.ReportObstacle.ObstacleDescription,
+                ObstacleDescription = report.ReportObstacle.ObstacleDescription ?? "",
                 ObstacleLatitude = report.ReportObstacle.ObstacleLatitude,
                 ObstacleLongitude = report.ReportObstacle.ObstacleLongitude,
                 ObstacleType = report.ReportObstacle.ObstacleType,
@@ -254,18 +254,19 @@ namespace WebApplication1.Controllers
                 }
 
                 var editObstacle = editReport.ReportObstacle;
-                editObstacle.ObstacleName = validatedData.ObstacleName ?? "";
-                editObstacle.ObstacleHeight = validatedData.ObstacleHeight;
-                editObstacle.ObstacleDescription = validatedData.ObstacleDescription;
-                editObstacle.ObstacleHasLight = validatedData.ObstacleHasLight;
-                editObstacle.ObstacleLatitude = validatedData.ObstacleLatitude;
-                editObstacle.ObstacleLongitude = validatedData.ObstacleLongitude;
-                editObstacle.ObstacleType = validatedData.ObstacleType;
-                editObstacle.ObstacleRadius = validatedData.ObstacleRadius;
-                editObstacle.ObstacleGeoJson = validatedData.ObstacleGeoJson;
-                editObstacle.ObstacleLineCoordinates = validatedData.ObstacleLineCoordinates;
-                editObstacle.ObstacleLineLength = validatedData.ObstacleLineLength;
-                editObstacle.ImagePath = validatedData.ImagePath ?? editObstacle.ImagePath;
+                editReport.ObstacleName = validatedData.ObstacleName ?? "";
+                editReport.ObstacleHeight = validatedData.ObstacleHeight;
+                editReport.ObstacleDescription = validatedData.ObstacleDescription ?? "";
+                editReport.ObstacleHasLight = validatedData.ObstacleHasLight;
+                editReport.ObstacleLatitude = validatedData.ObstacleLatitude;
+                editReport.ObstacleLongitude = validatedData.ObstacleLongitude;
+                editReport.ObstacleType = validatedData.ObstacleType;
+                editReport.ObstacleRadius = validatedData.ObstacleRadius;
+                editReport.ObstacleGeoJson = validatedData.ObstacleGeoJson;
+                editReport.ObstacleLineCoordinates = validatedData.ObstacleLineCoordinates;
+                editReport.ObstacleLineLength = validatedData.ObstacleLineLength;
+                editReport.ImagePath = validatedData.ImagePath ?? editObstacle.ImagePath;
+                
 
 
                 if (editReport.IsDraft)
@@ -428,9 +429,9 @@ namespace WebApplication1.Controllers
             // 6) Save the obstacle and link it
             var obstacle = new ValidatedObstacleData
             {
-                ObstacleName = validatedData.ObstacleName,
+                ObstacleName = validatedData.ObstacleName ?? "",
                 ObstacleHeight = validatedData.ObstacleHeight,
-                ObstacleDescription = validatedData.ObstacleDescription,
+                ObstacleDescription = validatedData.ObstacleDescription ?? "",
                 ObstacleLatitude = validatedData.ObstacleLatitude,
                 ObstacleLongitude = validatedData.ObstacleLongitude,
                 ObstacleType = validatedData.ObstacleType,
@@ -545,9 +546,10 @@ namespace WebApplication1.Controllers
                 report.Obstacle = new ValidatedObstacleData();
 
             // Update some draft fields
-            report.Obstacle.ObstacleName = updatedData.ObstacleName;
+            report.Obstacle.ObstacleName = updatedData.ObstacleName ?? "";
             report.Obstacle.ObstacleHeight = updatedData.ObstacleHeight;
-            report.Obstacle.ObstacleDescription = updatedData.ObstacleDescription;
+            report.Obstacle.ObstacleDescription = updatedData.ObstacleDescription ?? "";
+            report.ObstacleName = updatedData.ObstacleName; //sync to ReportItem
 
             if (string.Equals(actionType, "Submit", StringComparison.OrdinalIgnoreCase))
             {
@@ -556,6 +558,7 @@ namespace WebApplication1.Controllers
             }
 
             _context.ReportItems.Update(report);
+            await _context.SaveChangesAsync();
             return RedirectToAction("Details", new { id = report.ReportID });
         }
 
