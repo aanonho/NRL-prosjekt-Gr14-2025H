@@ -45,7 +45,7 @@
 <!-- Delete obstacle button -->
 <div class="button-group center-button">
     <button type="button" id="deleteObstacleButton"
-            class="button-dark-red rounded px-6 py-3"
+            class="button-dark-red px-6 py-3 rounded"
             style="display:none; width: 200px;">
         Delete Obstacle
     </button>
@@ -54,6 +54,7 @@
 @{
 
     bool isEditing = ViewBag.IsEditing != null && (bool)ViewBag.IsEditing;
+    bool readOnly = ViewBag.ReadOnly != null && (bool)ViewBag.ReadOnly;
 
     bool isDraft = Model?.IsDraft ?? true;
     string reportStatus = ViewBag.ReportStatus as string ?? (isDraft ? "Draft" : "Pending");
@@ -72,7 +73,8 @@
         statusBadge = "bg-orange-100 text-orange-800";
     }
 
-    bool disableEditing = isEditing && !isDraft && !reportStatus.Equals("More info required", StringComparison.OrdinalIgnoreCase);
+    // bool disableEditing = isEditing && !isDraft && !reportStatus.Equals("More info required", StringComparison.OrdinalIgnoreCase);
+    bool disableEditing = readOnly || (isEditing && !isDraft && !reportStatus.Equals("More info required", StringComparison.OrdinalIgnoreCase));
 }
 
 <div class="flex-container">
@@ -98,14 +100,8 @@
             </div>
         }
 
-        <!-- Delete obstacle button -->
-        <div class="mb-4 sm:col-span-2">
-            <button type="button" id="deleteObstacleButton"
-                    class="button-dark-red rounded px-6 py-3"
-                    style="display:none;">
-                Delete Obstacle
-            </button>
-        </div>
+ 
+
 
         <!-- Form -->
         <form asp-controller="Obstacle" asp-action="DataForm" method="post" enctype="multipart/form-data" class="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -160,7 +156,7 @@
 
             <div class="sm:col-span-2">
                 <label asp-for="ObstacleHeight" class="mb-1 block font-medium text-gray-700">Obstacle Height (meters)</label>
-                <input asp-for="ObstacleHeight" type="number" step="any" class="w-full rounded border border-gray-300 p-2" placeholder="e.g., 2.5" />
+                <input asp-for="ObstacleHeight" type="number" step="any" class="w-full rounded border border-gray-300 p-2" placeholder="e.g., 2.5 (0-1000)" />
 
                 <div class="mb-4 text-sm text-gray-500">
                     Obstacles ≥15 m must be registered (≥30 m in densely built areas).<br>
@@ -241,7 +237,32 @@
     </div>
 </div>
 
-@if (disableEditing)
+@{
+    string disableMessage = string.Empty; // The warning message to display when editing is disabled
+    
+    // Set the disable message based on report status
+    if (disableEditing)
+    {
+        if(reportStatus.Equals("Approved",StringComparison.OrdinalIgnoreCase))
+        {
+            disableMessage = "This obstacle report has been approved and cannot be edited.";
+        }
+        else if (reportStatus.Equals("Rejected",StringComparison.OrdinalIgnoreCase))
+        {
+            disableMessage = "This obstacle report has been rejected and cannot be edited.";
+        }
+        else if (reportStatus.Equals("Pending", StringComparison.OrdinalIgnoreCase))
+        {
+            disableMessage = "You cannot edit this obstacle report because it has already been submitted for review";
+        }
+        else
+        {
+            disableMessage = "You cannot edit this obstacle report.";
+        }   
+    }
+}
+
+@if (disableEditing) // Show warning if editing is disabled
 {
 
     <script>
@@ -254,6 +275,7 @@
         });
     </script>
 }
+
 
 <script>
     var disableEditing = @disableEditing.ToString().ToLower(); // Pass Disable Editing flag to JavaScript as boolean
