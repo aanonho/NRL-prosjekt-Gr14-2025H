@@ -236,7 +236,6 @@ namespace WebApplication1.Controllers
                 }
 
                 var editObstacle = editReport.ReportObstacle;
-
                 editObstacle.ObstacleName = validatedData.ObstacleName ?? "";
                 editObstacle.ObstacleHeight = validatedData.ObstacleHeight;
                 editObstacle.ObstacleDescription = validatedData.ObstacleDescription;
