@@ -36,6 +36,9 @@ namespace WebApplication1.Models
 
         public string? ReviewMessage { get; set; }
 
+        [StringLength(150)]
+        public string? ObstacleName { get; set; }
+
         //public int? ObstacleID { get; set; } // FK vers ObstacleData
         public virtual ObstacleData? ReportObstacle { get; set; }
 
@@ -68,6 +71,7 @@ namespace WebApplication1.Models
             CreatedAt = createdAt;
             Status = status;
             OrganizationID = organizationID;
+
         }
     }
 }

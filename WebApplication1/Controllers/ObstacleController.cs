@@ -378,7 +378,7 @@ namespace WebApplication1.Controllers
             var report = new ReportItem
             {
                 CreatedAt = validatedData.ObstacleRegistrationTime,
-                ObstacleName = validatedData.ObstacleName ?? "(no title)",
+                ObstacleName = validatedData.ObstacleName ?? "",
                 Status = isSubmitRequest ? "Pending" : "Draft",
                 OrganizationID = organizationId,                // nullable FK
                 PilotID = userEntity.UserID,                    // required FK
