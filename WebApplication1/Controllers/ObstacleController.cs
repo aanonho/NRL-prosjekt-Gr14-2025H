@@ -66,8 +66,6 @@ namespace WebApplication1.Controllers
                 ViewBag.IsEditing = false;
                 ViewBag.ReadOnly = true;
                 return View(report.ReportObstacle);
-                //TempData["ErrorMessage"] = "Approved reports cannot be edited."; -> Gammel kode som ikke lar piloter åpne apporoved rapporter for visning
-                //return RedirectToAction("Index", "Reports");
             }
 
             var normalizedEmail = email.Trim().ToLowerInvariant();
@@ -87,23 +85,25 @@ namespace WebApplication1.Controllers
             report.ReportObstacle.IsDraft = report.IsDraft;
             report.ReportObstacle.ReportID = report.ReportID;
 
+            var o = report.ReportObstacle;
+
             var validatedData = new ValidatedObstacleData
             {
                 ReportID = report.ReportID,
-                ObstacleID = report.ReportObstacle.ObstacleID,
-                ObstacleName = report.ReportObstacle.ObstacleName ?? "",
-                ObstacleHeight = report.ReportObstacle.ObstacleHeight,
-                ObstacleDescription = report.ReportObstacle.ObstacleDescription ?? "",
-                ObstacleLatitude = report.ReportObstacle.ObstacleLatitude,
-                ObstacleLongitude = report.ReportObstacle.ObstacleLongitude,
-                ObstacleType = report.ReportObstacle.ObstacleType,
-                ObstacleRadius = report.ReportObstacle.ObstacleRadius,
-                ObstacleGeoJson = report.ReportObstacle.ObstacleGeoJson,
-                ObstacleLineCoordinates = report.ReportObstacle.ObstacleLineCoordinates,
-                ObstacleLineLength = report.ReportObstacle.ObstacleLineLength,
-                ObstacleHasLight = report.ReportObstacle.ObstacleHasLight,
-                ImagePath = report.ReportObstacle.ImagePath,
-                IsDraft = report.IsDraft // Add any other necessary fields
+                ObstacleID = o.ObstacleID,
+                ObstacleName = o.ObstacleName ?? "",
+                ObstacleHeight = o.ObstacleHeight,
+                ObstacleDescription = o.ObstacleDescription ?? "",
+                ObstacleLatitude = o.ObstacleLatitude,
+                ObstacleLongitude = o.ObstacleLongitude,
+                ObstacleType = o.ObstacleType,
+                ObstacleRadius = o.ObstacleRadius,
+                ObstacleGeoJson = o.ObstacleGeoJson,
+                ObstacleLineCoordinates = o.ObstacleLineCoordinates,
+                ObstacleLineLength = o.ObstacleLineLength,
+                ObstacleHasLight = o.ObstacleHasLight,
+                ImagePath = o.ImagePath,
+                IsDraft = o.IsDraft // Add any other necessary fields
             };
 
             return View(validatedData); ;
@@ -146,7 +146,7 @@ namespace WebApplication1.Controllers
             }
 
             submitType ??= "Submit";
-            var isSubmitRequest = string.Equals(submitType.Trim(), "Submit", StringComparison.OrdinalIgnoreCase);
+            bool isSubmitRequest = string.Equals(submitType.Trim(), "Submit", StringComparison.OrdinalIgnoreCase);
 
             if (string.Equals(submitType, "SaveDraft", StringComparison.OrdinalIgnoreCase))
             {
@@ -176,7 +176,7 @@ namespace WebApplication1.Controllers
             if (dbUser == null)
                 return RedirectToAction("UserForm", "User");
 
-            var isEditing = validatedData.ReportID > 0;
+            bool isEditing = validatedData.ReportID > 0;
 
             // Editing existing report/obstacle
             if (isEditing)
@@ -254,20 +254,23 @@ namespace WebApplication1.Controllers
                 }
 
                 var editObstacle = editReport.ReportObstacle;
+                editObstacle.ObstacleName = validatedData.ObstacleName ?? "";
+                editObstacle.ObstacleHeight = validatedData.ObstacleHeight;
+                editObstacle.ObstacleDescription = validatedData.ObstacleDescription ?? "";
+                editObstacle.ObstacleHasLight = validatedData.ObstacleHasLight;
+                editObstacle.ObstacleLatitude = validatedData.ObstacleLatitude;
+                editObstacle.ObstacleLongitude = validatedData.ObstacleLongitude;
+                editObstacle.ObstacleType = validatedData.ObstacleType;
+                editObstacle.ObstacleRadius = validatedData.ObstacleRadius;
+                editObstacle.ObstacleGeoJson = validatedData.ObstacleGeoJson;
+                editObstacle.ObstacleLineCoordinates = validatedData.ObstacleLineCoordinates;
+                editObstacle.ObstacleLineLength = validatedData.ObstacleLineLength;
+                editObstacle.ImagePath = validatedData.ImagePath ?? editObstacle.ImagePath;
+
+                //Update fields linked to ReportItem
                 editReport.ObstacleName = validatedData.ObstacleName ?? "";
-                editReport.ObstacleHeight = validatedData.ObstacleHeight;
-                editReport.ObstacleDescription = validatedData.ObstacleDescription ?? "";
-                editReport.ObstacleHasLight = validatedData.ObstacleHasLight;
                 editReport.ObstacleLatitude = validatedData.ObstacleLatitude;
                 editReport.ObstacleLongitude = validatedData.ObstacleLongitude;
-                editReport.ObstacleType = validatedData.ObstacleType;
-                editReport.ObstacleRadius = validatedData.ObstacleRadius;
-                editReport.ObstacleGeoJson = validatedData.ObstacleGeoJson;
-                editReport.ObstacleLineCoordinates = validatedData.ObstacleLineCoordinates;
-                editReport.ObstacleLineLength = validatedData.ObstacleLineLength;
-                editReport.ImagePath = validatedData.ImagePath ?? editObstacle.ImagePath;
-                
-
 
                 if (editReport.IsDraft)
                 {
@@ -391,14 +394,11 @@ namespace WebApplication1.Controllers
                 _context.Users.Add(userEntity);
                 await _context.SaveChangesAsync();
             }
-            else
+            else if (userEntity.OrganizationID != organizationId)
             {
-                if (userEntity.OrganizationID != organizationId)
-                {
                     userEntity.OrganizationID = organizationId;
                     _context.Users.Update(userEntity);
                     await _context.SaveChangesAsync();
-                }
             }
 
             var pilot = await _context.Pilots.FindAsync(userEntity.UserID);
@@ -420,18 +420,21 @@ namespace WebApplication1.Controllers
                 CreatedBy = dbUser.Email,
                 SubmittedByEmail = dbUser.Email,
                 SubmittedByName = dbUser.Name,
-                Organization = dbUser.Organization != null ? dbUser.Organization.Name : "Unknown"
+                Organization = dbUser.Organization != null ? dbUser.Organization.Name : "Unknown",
+                ObstacleLatitude = validatedData.ObstacleLatitude,
+                ObstacleLongitude = validatedData.ObstacleLongitude
+                
             };
 
             _context.ReportItems.Add(report);
             await _context.SaveChangesAsync();
 
             // 6) Save the obstacle and link it
-            var obstacle = new ValidatedObstacleData
+            var obstacle = new ObstacleData
             {
-                ObstacleName = validatedData.ObstacleName ?? "",
+                ObstacleName = validatedData.ObstacleName,
                 ObstacleHeight = validatedData.ObstacleHeight,
-                ObstacleDescription = validatedData.ObstacleDescription ?? "",
+                ObstacleDescription = validatedData.ObstacleDescription,
                 ObstacleLatitude = validatedData.ObstacleLatitude,
                 ObstacleLongitude = validatedData.ObstacleLongitude,
                 ObstacleType = validatedData.ObstacleType,
@@ -445,6 +448,10 @@ namespace WebApplication1.Controllers
                 ObstacleHasLight = validatedData.ObstacleHasLight,
                 ReportID = report.ReportID // FK
             };
+
+            report.ReportObstacle = obstacle;
+            report.ObstacleLatitude = obstacle.ObstacleLatitude;
+            report.ObstacleLongitude = obstacle.ObstacleLongitude;
 
             _context.Obstacles.Add(obstacle);
             await _context.SaveChangesAsync();
@@ -531,7 +538,7 @@ namespace WebApplication1.Controllers
         // === SUBMIT DRAFT (FROM DETAILS) ===
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SubmitDraft(int id, string actionType, ValidatedObstacleData updatedData)
+        public async Task<IActionResult> SubmitDraft(int id, string actionType, string ObstacleName, double? ObstacleHeight, string? ObstacleDescription)
         {
             var report = await _context.ReportItems
                                        .Include(r => r.ReportObstacle)
@@ -542,30 +549,37 @@ namespace WebApplication1.Controllers
                 return RedirectToAction("UserProfile", "User", new { email = fallbackEmail });
             }
 
-            if (report.Obstacle == null)
-                report.Obstacle = new ValidatedObstacleData();
+            var obstacle = report.ReportObstacle;
+            if (obstacle == null)
+            {
+                obstacle = new ObstacleData { ReportID = report.ReportID };
+                report.ReportObstacle = obstacle;
+            }
 
             // Update some draft fields
-            report.Obstacle.ObstacleName = updatedData.ObstacleName ?? "";
-            report.Obstacle.ObstacleHeight = updatedData.ObstacleHeight;
-            report.Obstacle.ObstacleDescription = updatedData.ObstacleDescription ?? "";
-            report.ObstacleName = updatedData.ObstacleName; //sync to ReportItem
+            obstacle.ObstacleName = ObstacleName;
+            obstacle.ObstacleHeight = ObstacleHeight;
+            obstacle.ObstacleDescription = ObstacleDescription;
+            report.ObstacleName = ObstacleName; //sync to ReportItem
 
             if (string.Equals(actionType, "Submit", StringComparison.OrdinalIgnoreCase))
             {
                 report.IsDraft = false;
                 report.Status = "Pending";
+                obstacle.IsDraft = false;
             }
 
             _context.ReportItems.Update(report);
+            _context.Obstacles.Update(obstacle);
             await _context.SaveChangesAsync();
+            
             return RedirectToAction("Details", new { id = report.ReportID });
         }
 
         // === EDITING AN EXISTING DRAFT (FORM POST) ===
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdateDraftAsync(int id, string ObstacleName, double ObstacleHeight, double? ObstacleLatitude, double? ObstacleLongitude, string ObstacleDescription, string? submitType)
+        public async Task<IActionResult> UpdateDraftAsync(int id, string ObstacleName, double? ObstacleHeight, double? ObstacleLatitude, double? ObstacleLongitude, string ObstacleDescription, string? submitType)
         {
             var email = TempData["CurrentUserEmail"] as string;
             if (string.IsNullOrEmpty(email))
@@ -585,30 +599,42 @@ namespace WebApplication1.Controllers
                 return RedirectToAction("UserProfile", "User", new { email = currentUser.Email! });
             }
 
+            var obstacle = report.ReportObstacle;
             // Update draft values
-            if (report.Obstacle != null)
+            if (obstacle != null)
             {
-                report.Obstacle.ObstacleName = ObstacleName;
-                report.Obstacle.ObstacleHeight = ObstacleHeight;
-                // You can also update coordinates/description if desired:
-                // report.Obstacle.ObstacleLatitude = ObstacleLatitude;
-                // report.Obstacle.ObstacleLongitude = ObstacleLongitude;
-                // report.Obstacle.ObstacleDescription = ObstacleDescription;
+                obstacle = new ObstacleData { ReportID = report.ReportID };
+                report.ReportObstacle = obstacle;
             }
+
+            obstacle.ObstacleName = ObstacleName;
+            obstacle.ObstacleHeight = ObstacleHeight;
+            obstacle.ObstacleLatitude = ObstacleLatitude;
+            obstacle.ObstacleLongitude = ObstacleLongitude;
+            obstacle.ObstacleDescription = ObstacleDescription;
+
+            report.ObstacleName = ObstacleName;
+            report.ObstacleLatitude = ObstacleLatitude;
+            report.ObstacleLongitude = ObstacleLongitude;
+
 
             if (string.Equals(submitType, "Submit", StringComparison.OrdinalIgnoreCase))
             {
                 report.Status = "Pending";
                 report.IsDraft = false;
+                obstacle.IsDraft = false;
                 TempData["SuccessMessage"] = "Draft submitted successfully.";
             }
             else
             {
                 report.Status = "Draft";
+                report.IsDraft = true;
+                obstacle.IsDraft = true;
                 TempData["SuccessMessage"] = "Draft updated.";
             }
 
             _context.ReportItems.Update(report);
+            _context.Obstacles.Update(obstacle);
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Details", "Obstacle", new { id = report.ReportID });

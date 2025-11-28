@@ -193,27 +193,92 @@
 </div>
 
 @section Scripts {
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin="" />
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin="">
+    </script>
+
+            @{
+             var flatObstacle = new {
+                ObstacleLatitude = Model.ReportObstacle?.ObstacleLatitude,
+                ObstacleLongitude = Model.ReportObstacle?.ObstacleLongitude,
+                ObstacleType = Model.ReportObstacle?.ObstacleType,
+                ObstacleRadius = Model.ReportObstacle?.ObstacleRadius,
+                ObstacleGeoJson = Model.ReportObstacle?.ObstacleGeoJson,
+                ObstacleLineCoordinates = Model.ReportObstacle?.ObstacleLineCoordinates,
+                ObstacleHasLight = Model.ReportObstacle?.ObstacleHasLight,
+                ObstacleHeight = Model.ReportObstacle?.ObstacleHeight,
+                ObstacleName = Model.ReportObstacle?.ObstacleName,
+                ObstacleDescription = Model.ReportObstacle?.ObstacleDescription
+             };
+             }
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+            document.addEventListener("DOMContentLoaded", function () {
+            const obstacle = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(flatObstacle));
 
-            var lat = @Model.ReportObstacle?.ObstacleLatitude ?? null;
-            var lng = @Model.ReportObstacle?.ObstacleLongitude ?? null;
 
-            if (!lat || !lng) {
-                document.getElementById("report-map").style.display = "none";
-                return;
+            const mapDiv = document.getElementById("report-map");
+            if (!mapDiv || !obstacle) return;
+
+            // Default map position
+            const map = L.map("report-map").setView([64.5, 11.0], 5);
+
+            L.tileLayer("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", {
+                maxZoom: 17
+            }).addTo(map);
+
+            // POINT / AREA
+            if (obstacle.obstacleLatitude && obstacle.obstacleLongitude) 
+            {
+                const lat = obstacle.obstacleLatitude;
+                const lng = obstacle.obstacleLongitude;
+
+                // Area circle
+                if (obstacle.obstacleType === "area") 
+                {
+                    const radius = obstacle.obstacleRadius || 300;
+                    L.circle([lat, lng], {
+                        radius: radius,
+                        color: "red",
+                        fillColor: "#f03",
+                        fillOpacity: 0.5
+                    }).addTo(map);
+                    map.setView([lat, lng], 15);
+                }
+
+                // Point marker
+                else if (obstacle.obstacleType === "point")
+                {
+                    L.marker([lat, lng]).addTo(map);
+                    map.setView([lat, lng], 16);
+                }
             }
 
-            var map = L.map('report-map').setView([lat, lng], 16);
+            // LINE OBSTACLES
+            if (obstacle.obstacleType === "line" && obstacle.obstacleLineCoordinates) 
+            {
 
-            L.tileLayer("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", { maxZoom: 20 }).addTo(map);
+                const coords = obstacle.obstacleGeoJson
+                    ? JSON.parse(obstacle.obstacleGeoJson).geometry.coordinates
+                    : [];
 
-            L.marker([lat, lng])
-                .addTo(map)
-                .bindPopup("Obstacle location");
-        });
+                if (coords.length >= 2) 
+                {
+                    const latlngs = coords.map(c => [c[1], c[0]]);
+                    const line = L.polyline(latlngs, {
+                        color: "black",
+                        weight: 3
+                    }).addTo(map);
+
+                    map.fitBounds(line.getBounds());
+                }
+             }
+         });
     </script>
 }
