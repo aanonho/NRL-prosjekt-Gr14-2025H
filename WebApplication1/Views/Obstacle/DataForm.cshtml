@@ -56,7 +56,9 @@
     bool isEditing = ViewBag.IsEditing != null && (bool)ViewBag.IsEditing;
     bool readOnly = ViewBag.ReadOnly != null && (bool)ViewBag.ReadOnly;
 
-    bool isDraft = Model?.IsDraft ?? true;
+    bool isDraft = ViewBag.ReportIsDraft is bool vbDraft
+        ? vbDraft
+        : (Model?.IsDraft ?? true);
     string reportStatus = ViewBag.ReportStatus as string ?? (isDraft ? "Draft" : "Pending");
     string reviewMessage = ViewBag.ReviewMessage as string ?? string.Empty;
     string statusBadge = "bg-yellow-100 text-yellow-800";
@@ -85,7 +87,7 @@
                 Only pilots can create or save obstacle reports. You can review the form, but submissions will be rejected.
             </div>
         }
-   
+
         @if (ViewBag.ErrorMessage != null)
         {
             <div class="status-warning-top text-center mx-auto">
@@ -108,7 +110,7 @@
             </div>
         }
 
- 
+
 
 
         <!-- Form -->
@@ -197,13 +199,16 @@
 
                 @{
                     var existingImages = (Model?.ImagePath ?? string.Empty)
-                        .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                    .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
                 }
 
                 <div class="mt-2 max-w-full space-y-3" id="imageManagement">
                     <div class="flex items-center justify-between gap-3">
                         <p class="text-sm text-gray-700">Manage images:</p>
-                        <button type="button" id="removeImageButton" class="button-dark-red px-4 py-2 rounded text-sm">Remove Selected</button>
+                        @if (isDraft)
+                        {
+                            <button type="button" id="removeImageButton" class="button-dark-red px-4 py-2 rounded text-sm">Remove Selected</button>
+                        }
                     </div>
 
                     <input type="hidden" id="ImagesToRemove" name="ImagesToRemove" value="@ViewBag.ImagesToRemove ?? string.Empty" />
@@ -270,15 +275,15 @@
 
 @{
     string disableMessage = string.Empty; // The warning message to display when editing is disabled
-    
+
     // Set the disable message based on report status
     if (disableEditing)
     {
-        if(reportStatus.Equals("Approved",StringComparison.OrdinalIgnoreCase))
+        if (reportStatus.Equals("Approved", StringComparison.OrdinalIgnoreCase))
         {
             disableMessage = "This obstacle report has been approved and cannot be edited.";
         }
-        else if (reportStatus.Equals("Rejected",StringComparison.OrdinalIgnoreCase))
+        else if (reportStatus.Equals("Rejected", StringComparison.OrdinalIgnoreCase))
         {
             disableMessage = "This obstacle report has been rejected and cannot be edited.";
         }
@@ -289,7 +294,7 @@
         else
         {
             disableMessage = "You cannot edit this obstacle report.";
-        }   
+        }
     }
 }
 
@@ -316,11 +321,10 @@
 </script>
 
 @section Scripts {
-   
+
     <partial name="_ValidationScriptsPartial" />
     <script src="~/js/obstacleForm.js"></script>
 }
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-
