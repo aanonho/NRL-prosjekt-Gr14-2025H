@@ -64,7 +64,7 @@
             <!-- Organization -->
             <div>
                 <label class="block text-sm font-medium text-gray-700">Organization</label>
-                <p class="input-box rounded border border-gray-700 bg-gray-50 p-2 text-gray-800">@Model.Organization</p>
+                <p class="input-box rounded border border-gray-700 bg-gray-50 p-2 text-gray-800">@(Model.Organization ?? Model.OrganizationRef?.Name ?? "Unknown")</p>
             </div>
 
             <!-- Status -->
@@ -87,7 +87,7 @@
             @if (Model.ReportObstacle != null && !string.IsNullOrWhiteSpace(Model.ReportObstacle.ImagePath))
             {
                 var obstacleImages = Model.ReportObstacle.ImagePath
-                    .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
                 if (obstacleImages.Any())
                 {

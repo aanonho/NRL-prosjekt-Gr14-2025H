@@ -38,6 +38,7 @@ namespace WebApplication1.Controllers
 
             var query = _context.ReportItems
                 .Include(r => r.ReportObstacle)
+                .Include(r => r.OrganizationRef)
                 .AsQueryable();
 
             if (isPilot)
@@ -79,7 +80,8 @@ namespace WebApplication1.Controllers
             {
                 var org = organization.Trim();
                 filtered = filtered.Where(r =>
-                    (r.Organization ?? string.Empty).Contains(org, StringComparison.OrdinalIgnoreCase));
+                    (r.Organization ?? r.OrganizationRef?.Name ?? string.Empty)
+                        .Contains(org, StringComparison.OrdinalIgnoreCase));
             }
 
             var sortNormalized = (sort ?? "date_desc").Trim().ToLowerInvariant();
@@ -133,7 +135,7 @@ namespace WebApplication1.Controllers
             {
                 TempData["ErrorMessage"] = "Report not found.";
                 return RedirectToAction("Index");
-            }             
+            }
 
             report.Status = status;
             report.ReviewMessage = message;
@@ -175,6 +177,7 @@ namespace WebApplication1.Controllers
 
             var report = _context.ReportItems
                                   .Include(r => r.ReportObstacle)
+                                  .Include(r => r.OrganizationRef)
                                   .FirstOrDefault(r => r.ReportID == id);
             if (report == null)
                 return NotFound();

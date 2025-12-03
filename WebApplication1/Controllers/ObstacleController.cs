@@ -139,7 +139,9 @@ namespace WebApplication1.Controllers
             if (string.IsNullOrEmpty(email))
                 return RedirectToAction("UserForm", "User");
 
-            var dbUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            var dbUser = await _context.Users
+                .Include(u => u.Organization)
+                .FirstOrDefaultAsync(u => u.Email == email);
             if (dbUser == null)
                 return RedirectToAction("UserForm", "User");
 
@@ -286,22 +288,9 @@ namespace WebApplication1.Controllers
 
             validatedData.ObstacleRegistrationTime = DateTime.Now;
 
-            // 3) Resolve or create Organization
-            int? organizationId = null;
-            if (dbUser.Organization != null && !string.IsNullOrWhiteSpace(dbUser.Organization.Name))
-            {
-                var orgName = dbUser.Organization.Name.Trim();
-                if (orgName.Length > 45) orgName = orgName.Substring(0, 45);
-
-                var org = await _context.Organizations.FirstOrDefaultAsync(o => o.Name == orgName);
-                if (org == null)
-                {
-                    org = new Organization { Name = orgName };
-                    _context.Organizations.Add(org);
-                    await _context.SaveChangesAsync();
-                }
-                organizationId = org.OrganizationID;
-            }
+            // 3) Organization (selected during registration)
+            var organizationId = dbUser.OrganizationID;
+            var organizationName = dbUser.Organization?.Name;
 
             // 4) Resolve or create UserEntity (by email) and ensure Pilot exists
             var emailKey = (dbUser.Email ?? string.Empty).Trim();
@@ -349,7 +338,7 @@ namespace WebApplication1.Controllers
                 CreatedBy = dbUser.Email,
                 SubmittedByEmail = dbUser.Email,
                 SubmittedByName = dbUser.Name,
-                Organization = dbUser.Organization != null ? dbUser.Organization.Name : "Unknown"
+                Organization = organizationName ?? "Unknown"
             };
 
             _context.ReportItems.Add(report);
@@ -524,6 +513,7 @@ namespace WebApplication1.Controllers
         {
             var report = await _context.ReportItems
                                        .Include(r => r.ReportObstacle)
+                                       .Include(r => r.OrganizationRef)
                                        .FirstOrDefaultAsync(r => r.ReportID == id);
             if (report == null)
             {
@@ -562,6 +552,7 @@ namespace WebApplication1.Controllers
         {
             var report = await _context.ReportItems
                                        .Include(r => r.ReportObstacle)
+                                       .Include(r => r.OrganizationRef)
                                        .FirstOrDefaultAsync(r => r.ReportID == id);
             if (report == null)
             {

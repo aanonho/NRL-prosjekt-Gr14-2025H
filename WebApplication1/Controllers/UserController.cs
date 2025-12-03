@@ -9,6 +9,7 @@ using WebApplication1.DataInfrastructure;
 using System.Threading.Tasks;
 using System;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace WebApplication1.Controllers
 {
@@ -24,6 +25,7 @@ namespace WebApplication1.Controllers
         [HttpGet]
         public IActionResult UserForm()
         {
+            PopulateOrganizationOptions();
             return View(new UserData());
         }
 
@@ -31,6 +33,18 @@ namespace WebApplication1.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UserForm(UserData userData)
         {
+            PopulateOrganizationOptions();
+
+            var normalizedOrganization = OrganizationOptions.NormalizeName(userData.Organization);
+            if (normalizedOrganization == null)
+            {
+                ModelState.AddModelError(nameof(userData.Organization), "Please select a valid organization.");
+            }
+            else
+            {
+                userData.Organization = normalizedOrganization;
+            }
+
             if (!ModelState.IsValid)
             {
                 return View(userData);
@@ -41,7 +55,7 @@ namespace WebApplication1.Controllers
             var isRegistrar = IsRegistrarRole(normalizedRole);
             var isPilot = IsPilotRole(normalizedRole);
 
-            var organization = await ResolveOrganizationAsync(userData.Organization);
+            var organization = await ResolveOrganizationAsync(normalizedOrganization!);
 
             var existingUser = await _context.Users
                 .Include(u => u.Organization)
@@ -65,15 +79,8 @@ namespace WebApplication1.Controllers
                 existingUser.Role = normalizedRole;
                 existingUser.PasswordHash = passwordHasher.HashPassword(existingUser, userData.Password!);
 
-                if (organization == null)
-                {
-                    existingUser.Organization = null;
-                    existingUser.OrganizationID = null;
-                }
-                else
-                {
-                    existingUser.Organization = organization;
-                }
+                existingUser.Organization = organization;
+                existingUser.OrganizationID = organization.OrganizationID;
 
                 if (isPilot && existingUser.Pilot == null)
                 {
@@ -93,7 +100,8 @@ namespace WebApplication1.Controllers
                     Email = normalizedEmail,
                     Phone = userData.Phone?.Trim(),
                     Role = normalizedRole,
-                    Organization = organization
+                    Organization = organization,
+                    OrganizationID = organization.OrganizationID
                 };
 
                 newUser.PasswordHash = passwordHasher.HashPassword(newUser, userData.Password!);
@@ -168,6 +176,7 @@ namespace WebApplication1.Controllers
             var reports = await _context.ReportItems
                 .Where(r => !r.IsDraft)
                 .Include(r => r.ReportObstacle)
+                .Include(r => r.OrganizationRef)
                 .ToListAsync();
 
 
@@ -217,18 +226,10 @@ namespace WebApplication1.Controllers
             return RedirectToAction("RegistrarDashboard");
         }
 
-        private async Task<Organization?> ResolveOrganizationAsync(string? organizationName)
+        private async Task<Organization> ResolveOrganizationAsync(string organizationName)
         {
-            if (string.IsNullOrWhiteSpace(organizationName))
-            {
-                return null;
-            }
-
-            var normalizedName = organizationName.Trim();
-            var loweredName = normalizedName.ToLower();
-
             var existingOrganization = await _context.Organizations
-                .FirstOrDefaultAsync(o => o.Name.ToLower() == loweredName);
+                .FirstOrDefaultAsync(o => o.Name.ToLower() == organizationName.ToLower());
 
             if (existingOrganization != null)
             {
@@ -237,11 +238,22 @@ namespace WebApplication1.Controllers
 
             var newOrganization = new Organization
             {
-                Name = normalizedName
+                Name = organizationName
             };
 
             _context.Organizations.Add(newOrganization);
             return newOrganization;
+        }
+
+        private void PopulateOrganizationOptions()
+        {
+            ViewBag.OrganizationOptions = OrganizationOptions.AllowedOrganizations
+                .Select(o => new SelectListItem
+                {
+                    Text = o,
+                    Value = o
+                })
+                .ToList();
         }
 
         private static bool IsRegistrarRole(string role) =>

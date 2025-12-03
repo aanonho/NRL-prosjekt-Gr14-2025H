@@ -116,7 +116,7 @@
                                 <td class="px-3 py-2 text-sm text-gray-700">@r.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
                                 <td class="px-3 py-2 text-sm text-gray-800">@r.ReportObstacle?.ObstacleName</td>
                                 <td class="px-3 py-2 text-sm"><span class="rounded px-2 py-1 text-xs @badge">@status</span></td>
-                                <td class="px-3 py-2 text-sm text-gray-700">@(string.IsNullOrWhiteSpace(r.Organization) ? "Unknown" : r.Organization)</td>
+                                <td class="px-3 py-2 text-sm text-gray-700">@(string.IsNullOrWhiteSpace(r.Organization) ? r.OrganizationRef?.Name ?? "Unknown" : r.Organization)</td>
                                 <td class="px-3 py-2 text-sm text-gray-700">@r.ReportObstacle?.ObstacleHeight?.ToString("0.##")</td>
                                 <td class="px-3 py-2 text-sm text-gray-700">@r.ReportObstacle?.ObstacleLatitude?.ToString(System.Globalization.CultureInfo.InvariantCulture)</td>
                                 <td class="px-3 py-2 text-sm text-gray-700">@r.ReportObstacle?.ObstacleLongitude?.ToString(System.Globalization.CultureInfo.InvariantCulture)</td>

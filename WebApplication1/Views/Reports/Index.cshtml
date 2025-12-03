@@ -28,25 +28,25 @@
 
         @if (TempData["SuccessMessage"] != null)
         {
-           @*  <div class="m-4 rounded-md border border-green-300 bg-green-50 p-3 text-center font-medium text-green-800 shadow-sm">
+            @*  <div class="m-4 rounded-md border border-green-300 bg-green-50 p-3 text-center font-medium text-green-800 shadow-sm">
                 @TempData["SuccessMessage"]
             </div>*@
 
             <div class="status-confirmed p-4 rounded mb-6 mb-4">
                 <strong>✔ Saved:</strong> @TempData["SuccessMessage"]
             </div>
-        }            
+        }
         @if (TempData["ErrorMessage"] != null)
         {
-          
+
             <div class="status-critical p-4 rounded mb-4">
                 <strong>⚠ Critical:</strong> @TempData["ErrorMessage"]
             </div>
-           @*  <div class="m-4 rounded-md border border-red-300 bg-red-50 p-3 text-center font-medium text-red-800 shadow-sm">
+            @*  <div class="m-4 rounded-md border border-red-300 bg-red-50 p-3 text-center font-medium text-red-800 shadow-sm">
                 @TempData["ErrorMessage"]
             </div> *@         
         }
-       
+
         <!-- Filters -->
         <form method="get" class="grid grid-cols-1 gap-4 border-b p-4 sm:grid-cols-3">
             <!-- Status -->
@@ -107,7 +107,7 @@
                             <th class="px-3 py-2 text-left text-xs font-medium tracking-wider text-gray-600 uppercase">Submitted by</th>
                             <th class="px-3 py-2 text-left text-xs font-medium tracking-wider text-gray-600 uppercase">Organization</th>
                             <th class="px-3 py-2 text-left text-xs font-medium tracking-wider text-gray-600 uppercase">Height (m)</th>
-                            <th class="px-3 py-2 text-left text-xs font-medium tracking-wider text-gray-600 uppercase">Coordinates</th>                  
+                            <th class="px-3 py-2 text-left text-xs font-medium tracking-wider text-gray-600 uppercase">Coordinates</th>
                             <th class="px-3 py-2 text-left text-xs font-medium tracking-wider text-gray-600 uppercase">Image</th>
                             @if (Model.IsPilotView || Model.IsRegistrarView)
                             {
@@ -119,7 +119,7 @@
                         @foreach (var r in Model.Reports)
                         {
                             var obstacle = r.ReportObstacle;
-                                
+
                             <tr class="hover:bg-gray-50">
                                 <td class="px-3 py-2 text-sm whitespace-nowrap text-gray-800">
                                     @(obstacle?.ObstacleID)
@@ -147,7 +147,7 @@
                                         else if (status.Equals("More info required", System.StringComparison.OrdinalIgnoreCase))
                                             badge = "bg-yellow-200 text-yellow-900";
                                         else if (r.IsDraft)
-                                            badge = "bg-gray-50 text-gray-800 border border-gray-200";                                           
+                                            badge = "bg-gray-50 text-gray-800 border border-gray-200";
                                     }
                                     <span class="rounded px-2 py-1 text-xs @badge">@status</span>
                                 </td>
@@ -157,7 +157,7 @@
                                 </td>
 
                                 <td class="px-3 py-2 text-sm whitespace-nowrap text-gray-700">
-                                    @(r.Organization ?? "Unknown")
+                                    @(r.Organization ?? r.OrganizationRef?.Name ?? "Unknown")
                                 </td>
 
                                 <td class="px-3 py-2 text-sm whitespace-nowrap text-gray-700">
@@ -167,26 +167,26 @@
                                     @if (!string.IsNullOrWhiteSpace(obstacle?.ObstacleLineCoordinates))
                                     {
                                         @Html.Raw(
-                                            obstacle.ObstacleLineCoordinates
-                                            .Replace("\n", "<br />")
-                                            .Replace(", Lng:","&nbsp;&nbsp;&nbsp;&nbsp;&nbspLng:"))                                    
-                                    }
+                                        obstacle.ObstacleLineCoordinates
+                                        .Replace("\n", "<br />")
+                                        .Replace(", Lng:", "&nbsp;&nbsp;&nbsp;&nbsp;&nbspLng:"))
+                                                        }
                                     else if (obstacle?.ObstacleLatitude != null && obstacle?.ObstacleLongitude != null)
                                     {
                                         <span>Lat: @(obstacle?.ObstacleLatitude?.ToString(System.Globalization.CultureInfo.InvariantCulture)),</span>
                                         <span style="margin-left:10px;">Lng: @(obstacle?.ObstacleLongitude?.ToString(System.Globalization.CultureInfo.InvariantCulture))</span>
-                                    }          
+                                    }
                                     else
                                     {
                                         <span>-</span>
                                     }
-                                </td>                                                                                        
-                           
+                                </td>
+
                                 <td class="px-3 py-2 text-sm whitespace-nowrap text-gray-700">
                                     @if (!string.IsNullOrWhiteSpace(obstacle?.ImagePath))
                                     {
                                         var obstacleImages = obstacle.ImagePath
-                                            .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                                        .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
                                         if (obstacleImages.Any())
                                         {
@@ -229,7 +229,7 @@
                                             </a>
                                         }
                                         *@
-                                    
+
                                         @if (Model.IsPilotView)
                                         {
                                             if (r.IsDraft || r.Status == "More info required")
@@ -237,14 +237,14 @@
                                                 <a class="button-white-green inline-block px-3 py-2 text-xs"
                                                    href="@Url.Action("DataForm", "Obstacle", new { id = r.ReportID })">
                                                     Edit
-                                                </a>                                          
+                                                </a>
                                             }
                                             else
                                             {
                                                 <a class="button-white-blue inline-block px-3 py-2 text-xs"
-                                                    href="@Url.Action("DataForm", "Obstacle", new { id = r.ReportID })">
+                                                   href="@Url.Action("DataForm", "Obstacle", new { id = r.ReportID })">
                                                     View
-                                                </a>                                                                                                
+                                                </a>
                                             }
                                         }
                                         @* REGISTRAR: kan alltid Review så lenge det ikke er draft *@
@@ -266,7 +266,7 @@
                                     *@
                                 }
                             </tr>
-                            }
+                        }
                     </tbody>
                 </table>
             }
