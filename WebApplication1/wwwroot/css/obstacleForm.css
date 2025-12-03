@@ -30,6 +30,117 @@
     border: 1px solid #ccc;
 }
 
+.existing-image-list {
+    width: 100%;
+}
+
+.existing-image-tile {
+    position: relative;
+    border-radius: 10px;
+    border: 1px solid #d1d5db;
+    overflow: hidden;
+    padding: 4px;
+    background: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.existing-image-tile:hover {
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+}
+
+.existing-image-tile.selected {
+    outline: 3px solid #3b82f6;
+}
+
+.existing-image {
+    width: 8rem;
+    height: 8rem;
+    max-width: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    flex: 0 0 auto;
+    transition: filter 0.15s ease, opacity 0.15s ease;
+}
+
+.existing-image-tile.pending-removal .existing-image {
+    filter: blur(1.5px) grayscale(0.3);
+    opacity: 0.6;
+}
+
+.image-error {
+    color: #b91c1c;
+    font-weight: 600;
+    background-color: #fef2f2;
+    border: 1px solid #fecdd3;
+    border-radius: 6px;
+    padding: 8px 10px;
+    display: inline-block;
+}
+
+.image-preview-tile {
+    position: relative;
+    transition: box-shadow 0.15s ease, transform 0.15s ease;
+    cursor: pointer;
+}
+
+.image-preview-tile:hover {
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+}
+
+.image-preview-tile.selected {
+    box-shadow: 0 0 0 3px #ef4444;
+}
+
+.selection-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background-color: rgba(239, 68, 68, 0.9);
+    color: white;
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 9999px;
+    display: none;
+}
+
+.image-preview-tile.selected .selection-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.existing-selection-badge,
+.existing-removal-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 9999px;
+    display: none;
+}
+
+.existing-selection-badge {
+    background-color: rgba(59, 130, 246, 0.95);
+    color: white;
+}
+
+.existing-removal-badge {
+    background-color: rgba(239, 68, 68, 0.95);
+    color: white;
+}
+
+.existing-image-tile.selected .existing-selection-badge,
+.existing-image-tile.pending-removal .existing-removal-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
 /* --- Checkbox styling --- */
 input[type="checkbox"] {
     width: 24px;

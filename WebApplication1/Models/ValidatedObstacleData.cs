@@ -20,5 +20,7 @@ namespace WebApplication1.Models
         [MaxLength(1000, ErrorMessage = "Descpriction cannot exceed 1000 characters")]
         public new string? ObstacleDescription { get; set; }
 
+        public string? ImagesToRemove { get; set; }
+
     }
 }

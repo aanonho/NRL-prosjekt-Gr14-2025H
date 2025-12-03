@@ -98,12 +98,23 @@
                 </div>
                 @if (!string.IsNullOrWhiteSpace(Model.ReportObstacle.ImagePath))
                 {
-                    <div class="md:col-span-2">
-                        <p class="text-sm font-semibold text-gray-700">Image</p>
-                        <a href="@Model.ReportObstacle.ImagePath" target="_blank" class="mt-2 inline-block">
-                            <img src="@Model.ReportObstacle.ImagePath" alt="Obstacle image" class="max-h-80 rounded border" />
-                        </a>
-                    </div>
+                    var obstacleImages = Model.ReportObstacle.ImagePath
+                        .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+                    if (obstacleImages.Any())
+                    {
+                        <div class="md:col-span-2">
+                            <p class="text-sm font-semibold text-gray-700">Images</p>
+                            <div class="mt-2 flex flex-wrap gap-3">
+                                @foreach (var imagePath in obstacleImages)
+                                {
+                                    <a href="@imagePath" target="_blank" class="inline-block">
+                                        <img src="@imagePath" alt="Obstacle image" class="max-h-80 rounded border" />
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                    }
                 }
             </div>
         </div>

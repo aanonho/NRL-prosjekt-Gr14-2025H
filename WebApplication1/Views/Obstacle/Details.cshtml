@@ -86,19 +86,28 @@
             <!-- Attached Image Section -->
             @if (Model.ReportObstacle != null && !string.IsNullOrWhiteSpace(Model.ReportObstacle.ImagePath))
             {
-                <div class="mt-6">
-                    <h3 class="mb-3 text-center text-lg font-semibold text-gray-700 sm:text-left">
-                        Attached Image
-                    </h3>
+                var obstacleImages = Model.ReportObstacle.ImagePath
+                    .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
-                    <div class="flex flex-col items-center justify-center gap-4 sm:flex-row">
-                        <a href="@Model.ReportObstacle.ImagePath" target="_blank" class="block max-w-full sm:w-auto">
-                            <img src="@Model.ReportObstacle.ImagePath"
-                                 alt="Obstacle image"
-                                 class="w-full max-w-sm rounded-lg border border-gray-300 object-contain shadow-md transition hover:shadow-lg sm:max-w-md" />
-                        </a>
+                if (obstacleImages.Any())
+                {
+                    <div class="mt-6 max-w-full">
+                        <h3 class="mb-3 text-center text-lg font-semibold text-gray-700 sm:text-left">
+                            Attached Images
+                        </h3>
+
+                        <div class="flex flex-wrap items-center justify-center gap-4 sm:justify-start">
+                            @foreach (var imagePath in obstacleImages)
+                            {
+                                <a href="@imagePath" target="_blank" class="block">
+                                    <img src="@imagePath"
+                                         alt="Obstacle image"
+                                         class="h-36 w-36 rounded-lg border border-gray-300 object-cover shadow-md transition hover:shadow-lg sm:h-40 sm:w-40" />
+                                </a>
+                            }
+                        </div>
                     </div>
-                </div>
+                }
             }
             else
             {
