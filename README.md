@@ -141,7 +141,7 @@ Selve lenken er tidsbegrenset og kan bare brukes én gang, og systemet lagrer ku
 
 4. Gå til http://localhost:8080
 
-4. Opprett bruker: Opprett minst én pilot og én registerfører (eller én bruker med begge roller)
+4. Opprett bruker: Opprett minst én pilot og én registerfører
 
 4. Test pilotflyt:
  - Lag bruker som pilot
