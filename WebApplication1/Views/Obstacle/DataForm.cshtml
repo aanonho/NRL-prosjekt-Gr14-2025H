@@ -133,14 +133,14 @@
 
             <!-- Area radius input, shown only if "area" is selected -->
             <div class="mb-4 sm:col-span-2" id="areaRadiusContainer" style="display:none;">
-                <label asp-for="ObstacleRadius" class="mb-1 block font-medium text-gray-700"> Area Radius (optional, default 300 meters) </label>
+                <label asp-for="ObstacleRadius" class="mb-1 block font-medium text-gray-700"> Area Radius (optional, default 300 ft) </label>
                 <input asp-for="ObstacleRadius" type="number" step="any" class="w-full rounded border border-gray-300 p-2" placeholder="300" />
                 <span asp-validation-for="ObstacleRadius" class="text-sm text-red-500"></span>
             </div>
 
             <!-- Line length input-->
             <div class="mb-4 sm:col-span-2" id="lineLengthContainer" style="display:none;">
-                <label asp-for="ObstacleLineLength" class="mb-1 block font-medium text-gray-700">Line Length (meters)</label>
+                <label asp-for="ObstacleLineLength" class="mb-1 block font-medium text-gray-700">Line Length (ft)</label>
                 <input asp-for="ObstacleLineLength" type="number" step="any" class="w-full rounded border border-gray-300 p-2" placeholder="e.g., 2.5" />
                 <span asp-validation-for="ObstacleLineLength" class="text-sm text-red-500"></span>
             </div>
@@ -157,7 +157,7 @@
             </div>
 
             <div class="sm:col-span-2">
-                <label asp-for="ObstacleHeight" class="mb-1 block font-medium text-gray-700">Obstacle Height (meters)</label>
+                <label asp-for="ObstacleHeight" class="mb-1 block font-medium text-gray-700">Obstacle Height (ft)</label>
                 <input asp-for="ObstacleHeight" type="number" step="any" class="w-full rounded border border-gray-300 p-2" placeholder="e.g., 2.5 (0-1000)" />
 
                 <div class="mb-4 text-sm text-gray-500">
