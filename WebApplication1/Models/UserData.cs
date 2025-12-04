@@ -31,6 +31,7 @@ namespace WebApplication1.Models
         [StringLength(45, ErrorMessage = "Role cannot exceed 45 characters")]
         public string? Role { get; set; }
 
+        [Required(ErrorMessage = "Organization is required")]
         [StringLength(45, ErrorMessage = "Organization name cannot exceed 45 characters")]
         public string? Organization { get; set; }
 

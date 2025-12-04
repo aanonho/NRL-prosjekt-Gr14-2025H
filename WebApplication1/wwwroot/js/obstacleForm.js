@@ -1,4 +1,4 @@
-﻿//obstacleForm.js
+//obstacleForm.js
 
 // -- DOM Elements -- //
 // Show/hide relevant input fields based on selected obstacle type
@@ -8,11 +8,23 @@ const areaRadiusContainer = document.getElementById('areaRadiusContainer');
 const lineLengthContainer = document.getElementById('lineLengthContainer');
 const lineCoordinatesContainer = document.getElementById('lineCoordinatesContainer');
 
-// Handle image upload: preview selected image and allow removing it
+// Handle image upload: preview selected images and allow removing them
 const fileInput = document.getElementById('ObstacleImage');
-const imagePreview = document.getElementById('imagePreview');
 const imageContainer = document.getElementById('imageContainer');
+const imagePreviewList = document.getElementById('imagePreviewList');
 const removeButton = document.getElementById('removeImageButton');
+const imageError = document.getElementById('imageError');
+const imagesToRemoveInput = document.getElementById('ImagesToRemove');
+const existingImageTiles = Array.from(document.querySelectorAll('.existing-image-tile'));
+
+const allowedImageExtensions = ['.jpg', '.jpeg', '.png'];
+const allowedImageTypes = ['image/jpeg', 'image/png'];
+const maxImageSizeBytes = 10 * 1024 * 1024; // Keep in sync with server limit
+
+const selectedFiles = [];
+const selectedImageIndexes = new Set();
+const existingSelectedImages = new Set();
+const pendingRemovalImages = new Set();
 
 const deleteButton = document.getElementById('deleteObstacleButton');
 const modal = document.getElementById('obstacleFormModal');
@@ -45,26 +57,256 @@ var helicopterIcon = L.icon({
 
 // Show image preview when user selects a file
 function setupImageUpload() {
+    if (!fileInput || !imageContainer || !imagePreviewList) return;
+
+    clearImageError();
+    updateRemoveButtonState();
+
+    hydrateImagesToRemove();
+    renderExistingImages();
+
     fileInput.addEventListener('change', (event) => {
-        const file = event.target.files[0];
-        if (!file) return;
+        const files = Array.from(event.target.files || []);
+        selectedImageIndexes.clear();
+        clearImageError();
 
+        if (files.length === 0 && selectedFiles.length === 0) {
+            imageContainer.classList.add('hidden');
+            return;
+        }
 
-        // Read the file and set it as the src of the image preview
-        const reader = new FileReader();
-        reader.onload = () => {
-            imagePreview.src = reader.result;
-            imageContainer.classList.remove('hidden');
-        };
-        reader.readAsDataURL(file);
+        const hasInvalidFile = files.some(file => !validateFile(file));
+
+        if (hasInvalidFile) {
+            fileInput.value = '';
+            renderImagePreview();
+            return;
+        }
+
+        files.forEach(file => {
+            const duplicate = selectedFiles.some(existing => existing.name === file.name && existing.size === file.size && existing.lastModified === file.lastModified);
+            if (!duplicate) {
+                selectedFiles.push(file);
+            }
+        });
+
+        renderImagePreview();
+        syncFileInput();
     });
 
-    // Remove selected image button logic
-    removeButton.addEventListener('click', function () {
-        fileInput.value = ""; // removes file input
-        imagePreview.src = "";
-        imageContainer.classList.add('hidden');
+    // Remove selected images button logic
+    if (removeButton) {
+        removeButton.addEventListener('click', function () {
+            const hasNewSelection = selectedImageIndexes.size > 0;
+            const hasExistingSelection = existingSelectedImages.size > 0;
+
+            if (!hasNewSelection && !hasExistingSelection) return;
+
+            if (hasNewSelection) {
+                const remainingFiles = selectedFiles.filter((_, index) => !selectedImageIndexes.has(index));
+                selectedFiles.length = 0;
+                selectedFiles.push(...remainingFiles);
+
+                selectedImageIndexes.clear();
+                renderImagePreview();
+                syncFileInput();
+                clearImageError();
+            }
+
+            if (hasExistingSelection) {
+                togglePendingRemovalForSelection();
+            }
+
+            updateRemoveButtonState();
+        });
+    }
+
+    function validateFile(file) {
+        const extension = (file.name || '').toLowerCase();
+        const fileType = (file.type || '').toLowerCase();
+
+        const isAllowedExtension = allowedImageExtensions.some(ext => extension.endsWith(ext));
+        const isAllowedType = allowedImageTypes.includes(fileType);
+
+        if (!isAllowedExtension || !isAllowedType) {
+            setImageError('Only PNG and JPEG images are allowed (no audio or video files).');
+            return false;
+        }
+
+        if (file.size > maxImageSizeBytes) {
+            setImageError('Each image must be 10 MB or smaller.');
+            return false;
+        }
+
+        return true;
+    }
+
+    function setImageError(message) {
+        if (!imageError) return;
+
+        const hasMessage = Boolean(message);
+        imageError.textContent = message || '';
+        imageError.style.display = hasMessage ? 'inline-block' : 'none';
+    }
+
+    function clearImageError() {
+        setImageError('');
+    }
+
+    function updateRemoveButtonState() {
+        if (!removeButton) return;
+
+        const hasSelection = selectedImageIndexes.size > 0 || existingSelectedImages.size > 0;
+        removeButton.disabled = !hasSelection;
+        removeButton.classList.toggle('opacity-60', !hasSelection);
+        removeButton.classList.toggle('cursor-not-allowed', !hasSelection);
+        removeButton.textContent = hasSelection
+            ? `Remove Selected (${selectedImageIndexes.size + existingSelectedImages.size})`
+            : 'Remove Selected';
+    }
+
+    function hydrateImagesToRemove() {
+        const initialRemovals = (imagesToRemoveInput?.value || '')
+            .split(',')
+            .map(p => p.trim())
+            .filter(Boolean);
+
+        initialRemovals.forEach(path => pendingRemovalImages.add(path));
+    }
+
+    function renderExistingImages() {
+        if (!existingImageTiles.length) {
+            return;
+        }
+
+        existingImageTiles.forEach(tile => {
+            const path = tile.dataset.imagePath;
+            const isSelected = existingSelectedImages.has(path);
+            const isPendingRemoval = pendingRemovalImages.has(path);
+
+            tile.classList.toggle('selected', isSelected);
+            tile.classList.toggle('pending-removal', isPendingRemoval);
+        });
+
+        updateRemoveButtonState();
+        syncImagesToRemove();
+    }
+
+    function togglePendingRemovalForSelection() {
+        existingSelectedImages.forEach(path => {
+            if (pendingRemovalImages.has(path)) {
+                pendingRemovalImages.delete(path);
+            } else {
+                pendingRemovalImages.add(path);
+            }
+        });
+
+        existingSelectedImages.clear();
+        renderExistingImages();
+    }
+
+    function syncImagesToRemove() {
+        if (!imagesToRemoveInput) return;
+
+        imagesToRemoveInput.value = Array.from(pendingRemovalImages).join(',');
+    }
+
+    existingImageTiles.forEach(tile => {
+        tile.addEventListener('click', () => {
+            const path = tile.dataset.imagePath;
+
+            if (!path) return;
+
+            if (existingSelectedImages.has(path)) {
+                existingSelectedImages.delete(path);
+            } else {
+                existingSelectedImages.add(path);
+            }
+
+            renderExistingImages();
+        });
     });
+
+    function renderImagePreview() {
+        imagePreviewList.innerHTML = '';
+
+        if (selectedFiles.length === 0) {
+            imageContainer.classList.add('hidden');
+            updateRemoveButtonState();
+            return;
+        }
+
+        selectedFiles.forEach((file, index) => {
+            const listItem = document.createElement('button');
+            listItem.type = 'button';
+            listItem.dataset.index = index;
+            listItem.className = 'image-preview-tile flex w-32 flex-col gap-1 rounded border border-gray-300 p-2 text-left focus:outline-none focus:ring-2 focus:ring-blue-500';
+
+            const isSelected = selectedImageIndexes.has(index);
+            listItem.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
+
+            if (isSelected) {
+                listItem.classList.add('selected');
+            }
+
+            listItem.addEventListener('click', () => {
+                if (selectedImageIndexes.has(index)) {
+                    selectedImageIndexes.delete(index);
+                } else {
+                    selectedImageIndexes.add(index);
+                }
+
+                renderImagePreview();
+            });
+
+            const selectionBadge = document.createElement('span');
+            selectionBadge.className = 'selection-badge';
+            selectionBadge.textContent = 'Selected';
+            listItem.appendChild(selectionBadge);
+
+            const label = document.createElement('span');
+            label.className = 'truncate text-xs font-medium text-gray-800';
+            label.textContent = file.name;
+            listItem.appendChild(label);
+
+            const img = document.createElement('img');
+            const imageUrl = URL.createObjectURL(file);
+            img.src = imageUrl;
+            img.onload = () => URL.revokeObjectURL(imageUrl);
+            img.alt = file.name;
+            img.className = 'h-24 w-full rounded object-cover';
+            listItem.appendChild(img);
+
+            imagePreviewList.appendChild(listItem);
+        });
+
+        imageContainer.classList.remove('hidden');
+        updateRemoveButtonState();
+    }
+
+    function syncFileInput() {
+        if (!fileInput) return;
+
+        const dataTransfer = new DataTransfer();
+        selectedFiles.forEach(file => dataTransfer.items.add(file));
+        fileInput.files = dataTransfer.files;
+
+        if (selectedFiles.length === 0) {
+            fileInput.value = '';
+            imageContainer.classList.add('hidden');
+        }
+    }
+
+    updateRemoveButtonState();
+
+    // Ensure the current selection is attached to the form on submit
+    const obstacleForm = document.getElementById('obstacleForm');
+    if (obstacleForm) {
+        obstacleForm.addEventListener('submit', () => {
+            syncFileInput();
+            syncImagesToRemove();
+        });
+    }
 }
 
 // Set submit type (Submit or SaveDraft)
@@ -138,12 +380,10 @@ function resetLineState() {
 
 // Show delete button
 function showDeleteButton() {
-    if (disableEditing)
-    {
+    if (disableEditing) {
         deleteButton.style.display = 'none';
     }
-    else
-    {
+    else {
         deleteButton.style.display = 'inline-block';
     }
 }

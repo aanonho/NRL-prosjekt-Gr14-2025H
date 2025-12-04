@@ -24,6 +24,6 @@ namespace WebApplication1.Models
         public double? ObstacleLatitude { get; set; }
         public double? ObstacleLongitude { get; set; }
 
-
+        public string? ImagesToRemove { get; set; }
     }
 }
