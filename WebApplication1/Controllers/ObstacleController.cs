@@ -25,7 +25,7 @@ namespace WebApplication1.Controllers
             _context = context;
         }
 
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet("read")]
         public IActionResult ReadAll()
         {

@@ -16,11 +16,6 @@ builder.Services.AddSingleton<IEmailSender, SmtpEmailSender>();
 
 var emailOptions = builder.Configuration.GetSection("EmailSettings").Get<EmailOptions>();
 
-/*
-//Henter connection string fra �appsettings.json� filen
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-*/
-
 // Henter connection string fra miljøvariabel først, ellers fra config-fil
 var connectionString =
     builder.Configuration.GetValue<string>("ConnectionStrings__DefaultConnection") ??
@@ -29,21 +24,11 @@ var connectionString =
 // Test to log which connection string is being used
 Console.WriteLine($"[Startup] Using connection string: {connectionString}");
 
-
-/*
-// Entity Framework Core configuration with Mariadb
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
-*/
-
 // Using explicit version of MariaDB rather than AutoDetect
 var serverVersion = new MariaDbServerVersion(new Version(10, 11));
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(connectionString, serverVersion));
-
-// Add services to the container.
-builder.Services.AddControllersWithViews();
 
 builder.Services
     .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
