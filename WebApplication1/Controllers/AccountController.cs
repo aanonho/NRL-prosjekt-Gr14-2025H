@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿// Denne filen styrer innlogging, utlogging og passordreset for brukere.
+using System.Security.Claims;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
@@ -55,6 +56,7 @@ namespace WebApplication1.Controllers
             return View(new ForgotPasswordViewModel());
         }
 
+        // Håndterer forespørsel om glemt passord og lager ny token om nødvendig.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
@@ -74,15 +76,12 @@ namespace WebApplication1.Controllers
                 return RedirectToAction(nameof(ForgotPassword));
             }
 
-            // Delete any previous reset token for this user
             await InvalidateExistingTokens(user.UserID);
             await _context.SaveChangesAsync();
 
-            // Generate a new secure random token
             var rawToken = GenerateSecureToken();
             var tokenHash = HashToken(rawToken);
 
-            // Store the hash version in the DB
             var resetToken = new PasswordResetToken
             {
                 UserId = user.UserID,
@@ -93,19 +92,16 @@ namespace WebApplication1.Controllers
 
             _context.PasswordResetTokens.Add(resetToken);
 
-            // Reset link creation
             var resetLink = Url.Action(nameof(ResetPassword), "Account", new { token = rawToken, email = user.Email }, Request.Scheme)!;
 
             try
             {
-                //  Send the email
                 await _emailSender.SendPasswordResetAsync(user.Email!, user.Name ?? user.Email!, resetLink);
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Failed to send reset email: {Message}", ex.Message);
-                // Rollback the token creation if sending fails
                 _context.PasswordResetTokens.Remove(resetToken);
                 await _context.SaveChangesAsync();
 
@@ -117,6 +113,7 @@ namespace WebApplication1.Controllers
             return RedirectToAction(nameof(ForgotPassword));
         }
 
+        // Validerer innloggingsskjema og oppretter cookie ved suksess.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
@@ -183,6 +180,7 @@ namespace WebApplication1.Controllers
             return RedirectToLocal(model.ReturnUrl);
         }
 
+        // Viser skjemaet for å legge inn nytt passord basert på token fra e-post.
         [HttpGet]
         public async Task<IActionResult> ResetPassword(string? token, string? email)
         {
@@ -219,6 +217,7 @@ namespace WebApplication1.Controllers
             return View(viewModel);
         }
 
+        // Tar imot nytt passord og markerer token som brukt.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
@@ -259,6 +258,7 @@ namespace WebApplication1.Controllers
             return RedirectToAction(nameof(Login));
         }
 
+        // Logger brukeren ut og rydder midlertidige data.
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -292,8 +292,7 @@ namespace WebApplication1.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        // Generate a random 48byte token and encode it base64URL format
-        // The raw token is sent to the user by email for security check
+        // Lager en engangstoken for e-postlenker og hasher den før lagring.
         private static string GenerateSecureToken()
         {
             var bytes = RandomNumberGenerator.GetBytes(48);

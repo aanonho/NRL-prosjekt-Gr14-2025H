@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿// Denne filen håndterer registrering, profilvisning og rollestyring for brukere.
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using WebApplication1.Models;
@@ -22,6 +23,7 @@ namespace WebApplication1.Controllers
             _context = context;
         }
 
+        // Viser påmeldingsskjemaet der pilot eller registrar registrerer seg.
         [HttpGet]
         public IActionResult UserForm()
         {
@@ -29,6 +31,7 @@ namespace WebApplication1.Controllers
             return View(new UserData());
         }
 
+        // Tar imot registreringsskjemaet, oppretter bruker og setter riktig rolle.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UserForm(UserData userData)
@@ -132,14 +135,13 @@ namespace WebApplication1.Controllers
             var email = TempData["CurrentUserEmail"] as string;
             if (!string.IsNullOrEmpty(email))
             {
-                // Use Task.FromResult to provide an awaitable task
                 return await Task.FromResult(RedirectToAction("UserProfile", new { email }));
             }
 
             return await Task.FromResult(RedirectToAction("UserForm"));
         }
 
-        // === USER PROFILE VIEW ===
+        // Viser profilsiden for innlogget eller valgt bruker.
         [Authorize]
         [HttpGet]
         public async Task<IActionResult> UserProfile(string? email)
@@ -168,19 +170,16 @@ namespace WebApplication1.Controllers
             return View(viewModel);
         }
 
-        // === REGISTRAR VIEW ===
+        // Registrar-dashboard som lister innsendte rapporter for oppfølging.
         [HttpGet]
         public async Task<IActionResult> RegistrarDashboard(string status = "all", string sort = "date_desc")
         {
-            // Get only submitted reports (exclude drafts)
             var reports = await _context.ReportItems
                 .Where(r => !r.IsDraft)
                 .Include(r => r.ReportObstacle)
                 .Include(r => r.OrganizationRef)
                 .ToListAsync();
 
-
-            // Filter by status if a valid one is selected
             if (!string.IsNullOrEmpty(status) && status.ToLower() != "all")
             {
                 reports = reports
@@ -188,7 +187,6 @@ namespace WebApplication1.Controllers
                     .ToList();
             }
 
-            // Sort by date
             reports = sort == "date_asc"
                 ? reports.OrderBy(r => r.CreatedAt).ToList()
                 : reports.OrderByDescending(r => r.CreatedAt).ToList();
@@ -201,7 +199,7 @@ namespace WebApplication1.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateReportStatus(int id, string status, string? message)
         {
-            // Only allow registrar to act on submitted (non-draft) reports
+            // Registrar låser endringer til innsendte rapporter og lagrer vurderingen.
             var report = await _context.ReportItems
                 .FirstOrDefaultAsync(r => r.ReportID == id && !r.IsDraft);
 
@@ -211,17 +209,14 @@ namespace WebApplication1.Controllers
                 return RedirectToAction("RegistrarDashboard");
             }
 
-            // Update registrar-specific fields
             report.Status = status;
             report.IsDraft = false;
             report.ReviewedAt = DateTime.Now;
             report.ReviewMessage = message ?? "";
 
-            // Persist update safely
             _context.ReportItems.Update(report);
             await _context.SaveChangesAsync();
 
-            // Show confirmation
             TempData["SuccessMessage"] = $"Report {status.ToLower()} successfully.";
             return RedirectToAction("RegistrarDashboard");
         }
@@ -289,4 +284,3 @@ namespace WebApplication1.Controllers
 
     }
 }
-

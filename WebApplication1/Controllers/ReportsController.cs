@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿// Denne filen lar brukere liste, filtrere og administrere rapporter etter rolle.
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -19,6 +20,7 @@ namespace WebApplication1.Controllers
             _context = context;
         }
 
+        // Henter oversikt over rapporter med filtrering på status, sortering og organisasjon.
         [HttpGet]
         public async Task<IActionResult> Index(string status = "all", string sort = "date_desc", string organization = "")
         {
@@ -109,6 +111,7 @@ namespace WebApplication1.Controllers
             return View(vm);
         }
 
+        // Enkel statusvisning for alle rapporter uten rollefiltrering.
         [HttpGet]
         public IActionResult ReportStatus(string status = "all")
         {
@@ -125,6 +128,7 @@ namespace WebApplication1.Controllers
             return View(filtered.ToList());
         }
 
+        // Registrar oppdaterer status og legger igjen tilbakemelding på en innsendt rapport.
         [Authorize(Roles = "Registrar")]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -148,6 +152,7 @@ namespace WebApplication1.Controllers
             return RedirectToAction("Index");
         }
 
+        // Registrar kan slette en ikke-utkast rapport dersom den ikke skal beholdes.
         [Authorize(Roles = "Registrar")]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -169,6 +174,7 @@ namespace WebApplication1.Controllers
             return RedirectToAction("Index");
         }
 
+        // Viser detaljer for en spesifikk rapport og sikrer at piloter kun ser egne innsendelser.
         [HttpGet]
         public IActionResult Details(int id)
         {

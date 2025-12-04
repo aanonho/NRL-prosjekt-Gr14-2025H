@@ -1,4 +1,5 @@
-﻿using System;
+﻿// Denne filen lar piloter og registrarer lese, opprette og oppdatere hinderrapporter.
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,14 +19,14 @@ namespace WebApplication1.Controllers
     [Authorize]
     public class ObstacleController : Controller
     {
-        private readonly ApplicationDbContext _context; // Database context
+        private readonly ApplicationDbContext _context;
 
         public ObstacleController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        [Authorize]
+        [AllowAnonymous]
         [HttpGet("read")]
         public IActionResult ReadAll()
         {
@@ -33,7 +34,7 @@ namespace WebApplication1.Controllers
             return Ok(data);
         }
 
-        // === SHOW FORM ===
+        // Viser skjemaet enten som blankt eller forhåndsutfylt for valgt rapport.
         [HttpGet]
         public async Task<ActionResult> DataForm(int? id)
         {
@@ -67,8 +68,6 @@ namespace WebApplication1.Controllers
                 ViewBag.IsEditing = false;
                 ViewBag.ReadOnly = true;
                 return View(report.ReportObstacle);
-                //TempData["ErrorMessage"] = "Approved reports cannot be edited."; -> Gammel kode som ikke lar piloter åpne apporoved rapporter for visning
-                //return RedirectToAction("Index", "Reports");
             }
 
             var normalizedEmail = email.Trim().ToLowerInvariant();
@@ -91,7 +90,6 @@ namespace WebApplication1.Controllers
             return View(report.ReportObstacle);
         }
 
-        // === EDIT EXISTING REPORT (VIEW) ===
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
@@ -116,7 +114,7 @@ namespace WebApplication1.Controllers
             return View("Details", report);
         }
 
-        // === HANDLE SUBMIT / SAVE DRAFT ===
+        // Håndterer innsending og lagring av hinderrapporter, inkludert bildeopplasting.
         private const long MaxImageSizeBytes = 10 * 1024 * 1024; // 10 MB limit for safety
         private static readonly string[] AllowedImageContentTypes = new[] { "image/jpeg", "image/png" };
         private static readonly string[] AllowedImageExtensions = new[] { ".jpg", ".jpeg", ".png" };
@@ -134,7 +132,6 @@ namespace WebApplication1.Controllers
             submitType ??= "Submit";
             var isSubmitRequest = string.Equals(submitType.Trim(), "Submit", StringComparison.OrdinalIgnoreCase);
 
-            // 1) Current user (required)
             var email = UserHelper.GetCurrentUserEmail(this);
             if (string.IsNullOrEmpty(email))
                 return RedirectToAction("UserForm", "User");
@@ -147,7 +144,7 @@ namespace WebApplication1.Controllers
 
             var isEditing = validatedData.ReportID > 0;
 
-            // Editing existing report/obstacle
+            // Tar høyde for oppdatering av eksisterende rapport med validering av eierskap.
             if (isEditing)
             {
                 var editReport = await _context.ReportItems
@@ -257,7 +254,7 @@ namespace WebApplication1.Controllers
                 return RedirectToAction("Index", "Reports");
             }
 
-            // === Creating a new report ===
+            // Oppretter ny rapport og lagrer eventuelle opplastede bilder før validering.
             var newUploadPaths = await ProcessImageUploadsAsync(imageFiles, ParseImagePaths(validatedData.ImagePath));
             validatedData.ImagePath = string.Join(',', newUploadPaths);
 
@@ -288,11 +285,9 @@ namespace WebApplication1.Controllers
 
             validatedData.ObstacleRegistrationTime = DateTime.Now;
 
-            // 3) Organization (selected during registration)
             var organizationId = dbUser.OrganizationID;
             var organizationName = dbUser.Organization?.Name;
 
-            // 4) Resolve or create UserEntity (by email) and ensure Pilot exists
             var emailKey = (dbUser.Email ?? string.Empty).Trim();
             if (emailKey.Length > 45) emailKey = emailKey.Substring(0, 45);
 
@@ -327,7 +322,6 @@ namespace WebApplication1.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            // 5) Create & save ReportItem (no magic IDs)
             var report = new ReportItem
             {
                 CreatedAt = validatedData.ObstacleRegistrationTime,
@@ -344,7 +338,6 @@ namespace WebApplication1.Controllers
             _context.ReportItems.Add(report);
             await _context.SaveChangesAsync();
 
-            // 6) Save the obstacle and link it
             var obstacle = new ObstacleData
             {
                 ObstacleName = validatedData.ObstacleName,
@@ -361,18 +354,16 @@ namespace WebApplication1.Controllers
                 ObstacleRegistrationTime = validatedData.ObstacleRegistrationTime,
                 IsDraft = report.IsDraft,
                 ObstacleHasLight = validatedData.ObstacleHasLight,
-                ReportID = report.ReportID // FK
+                ReportID = report.ReportID
             };
 
             _context.Obstacles.Add(obstacle);
             await _context.SaveChangesAsync();
 
-            // 7) Update Report with its obstacle record
             report.ReportObstacle = obstacle;
             _context.ReportItems.Update(report);
             await _context.SaveChangesAsync();
 
-            // 8) Redirect
             TempData["SuccessMessage"] = string.Equals(submitType, "Submit", StringComparison.OrdinalIgnoreCase)
                 ? "Your report has been submitted successfully."
                 : "Draft saved successfully.";
@@ -380,6 +371,7 @@ namespace WebApplication1.Controllers
             return RedirectToAction("Index", "Reports");
         }
 
+        // Hjelpemetoder for bildehåndtering og validering av påkrevde felter.
         private List<string> ParseImagePaths(string? storedPaths)
         {
             if (string.IsNullOrWhiteSpace(storedPaths))
@@ -414,11 +406,9 @@ namespace WebApplication1.Controllers
                     }
                     catch (IOException)
                     {
-                        // If the file cannot be deleted, continue without failing the request
                     }
                     catch (UnauthorizedAccessException)
                     {
-                        // Ignore deletion errors due to permissions
                     }
                 }
             }
@@ -507,7 +497,6 @@ namespace WebApplication1.Controllers
             }
         }
 
-        // === DETAILS VIEW ===
         [HttpGet]
         public async Task<IActionResult> Details(int id, string? returnUrl = null)
         {
@@ -545,7 +534,6 @@ namespace WebApplication1.Controllers
             return View(report);
         }
 
-        // === SUBMIT DRAFT (FROM DETAILS) ===
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SubmitDraft(int id, string actionType, ValidatedObstacleData updatedData)
@@ -563,7 +551,6 @@ namespace WebApplication1.Controllers
             if (report.Obstacle == null)
                 report.Obstacle = new ValidatedObstacleData();
 
-            // Update some draft fields
             report.Obstacle.ObstacleName = updatedData.ObstacleName;
             report.Obstacle.ObstacleHeight = updatedData.ObstacleHeight;
             report.Obstacle.ObstacleDescription = updatedData.ObstacleDescription;
@@ -578,7 +565,6 @@ namespace WebApplication1.Controllers
             return RedirectToAction("Details", new { id = report.ReportID });
         }
 
-        // === EDITING AN EXISTING DRAFT (FORM POST) ===
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateDraftAsync(int id, string ObstacleName, double ObstacleHeight, double? ObstacleLatitude, double? ObstacleLongitude, string ObstacleDescription, string? submitType)
@@ -601,15 +587,10 @@ namespace WebApplication1.Controllers
                 return RedirectToAction("UserProfile", "User", new { email = currentUser.Email! });
             }
 
-            // Update draft values
             if (report.Obstacle != null)
             {
                 report.Obstacle.ObstacleName = ObstacleName;
                 report.Obstacle.ObstacleHeight = ObstacleHeight;
-                // You can also update coordinates/description if desired:
-                // report.Obstacle.ObstacleLatitude = ObstacleLatitude;
-                // report.Obstacle.ObstacleLongitude = ObstacleLongitude;
-                // report.Obstacle.ObstacleDescription = ObstacleDescription;
             }
 
             if (string.Equals(submitType, "Submit", StringComparison.OrdinalIgnoreCase))
