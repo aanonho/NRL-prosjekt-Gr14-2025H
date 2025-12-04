@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -116,9 +117,13 @@ namespace WebApplication1.Controllers
         }
 
         // === HANDLE SUBMIT / SAVE DRAFT ===
+        private const long MaxImageSizeBytes = 10 * 1024 * 1024; // 10 MB limit for safety
+        private static readonly string[] AllowedImageContentTypes = new[] { "image/jpeg", "image/png" };
+        private static readonly string[] AllowedImageExtensions = new[] { ".jpg", ".jpeg", ".png" };
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DataForm(ValidatedObstacleData validatedData, IFormFile? imageFile, string submitType)
+        public async Task<IActionResult> DataForm(ValidatedObstacleData validatedData, List<IFormFile>? imageFiles, string submitType)
         {
             if (!User.IsInRole("Pilot"))
             {
@@ -167,28 +172,30 @@ namespace WebApplication1.Controllers
                     ValidateSubmissionRequirements(validatedData);
                 }
 
-                if (isSubmitRequest && !ModelState.IsValid)
+                var storedImagePaths = ParseImagePaths(editReport.ReportObstacle.ImagePath);
+                var imagesToRemove = ParseImagePaths(validatedData.ImagesToRemove);
+                var remainingImagePaths = storedImagePaths
+                    .Where(path => !imagesToRemove.Contains(path, StringComparer.OrdinalIgnoreCase))
+                    .ToList();
+
+                var updatedImagePaths = await ProcessImageUploadsAsync(imageFiles, remainingImagePaths);
+
+                validatedData.ImagePath = string.Join(',', storedImagePaths);
+                validatedData.ImagesToRemove = string.Join(',', imagesToRemove);
+
+                if (!isSubmitRequest)
+                {
+                    ModelState.Clear();
+                }
+
+                if (!ModelState.IsValid)
                 {
                     ViewBag.IsEditing = true;
                     ViewBag.ReportStatus = editReport.Status;
                     ViewBag.ReviewMessage = editReport.ReviewMessage;
                     validatedData.IsDraft = editReport.IsDraft;
+                    ViewBag.ImagesToRemove = validatedData.ImagesToRemove;
                     return View(validatedData);
-                }
-
-                if (imageFile != null && imageFile.Length > 0)
-                {
-                    var directory = Path.Combine("wwwroot", "images");
-                    if (!Directory.Exists(directory))
-                        Directory.CreateDirectory(directory);
-
-                    var fileName = Path.GetFileName(imageFile.FileName);
-                    var imagePath = Path.Combine(directory, fileName);
-
-                    using (var stream = new FileStream(imagePath, FileMode.Create))
-                        await imageFile.CopyToAsync(stream);
-
-                    validatedData.ImagePath = "/images/" + fileName;
                 }
 
                 var editObstacle = editReport.ReportObstacle;
@@ -204,7 +211,7 @@ namespace WebApplication1.Controllers
                 editObstacle.ObstacleGeoJson = validatedData.ObstacleGeoJson;
                 editObstacle.ObstacleLineCoordinates = validatedData.ObstacleLineCoordinates;
                 editObstacle.ObstacleLineLength = validatedData.ObstacleLineLength;
-                editObstacle.ImagePath = validatedData.ImagePath ?? editObstacle.ImagePath;
+                editObstacle.ImagePath = string.Join(',', updatedImagePaths);
 
 
                 if (editReport.IsDraft)
@@ -243,14 +250,22 @@ namespace WebApplication1.Controllers
                 _context.Obstacles.Update(editObstacle);
                 await _context.SaveChangesAsync();
 
+                await DeleteImagesFromDiskAsync(imagesToRemove);
+
                 return RedirectToAction("Index", "Reports");
             }
 
             // === Creating a new report ===
+            var newUploadPaths = await ProcessImageUploadsAsync(imageFiles, ParseImagePaths(validatedData.ImagePath));
+            validatedData.ImagePath = string.Join(',', newUploadPaths);
+
+            var hasImageErrors = ModelState.TryGetValue(nameof(ValidatedObstacleData.ImagePath), out var imageState)
+                && imageState.Errors.Count > 0;
 
             if (isSubmitRequest)
             {
                 ValidateSubmissionRequirements(validatedData);
+
                 if (!ModelState.IsValid)
                 {
                     ViewBag.ErrorMessage = "Please fill all required fields before submitting.";
@@ -260,21 +275,13 @@ namespace WebApplication1.Controllers
                     return View(validatedData);
                 }
             }
-
-            // 2) Image upload
-            if (imageFile != null && imageFile.Length > 0)
+            else if (hasImageErrors)
             {
-                var directory = Path.Combine("wwwroot", "images");
-                if (!Directory.Exists(directory))
-                    Directory.CreateDirectory(directory);
-
-                var fileName = Path.GetFileName(imageFile.FileName);
-                var imagePath = Path.Combine(directory, fileName);
-
-                using (var stream = new FileStream(imagePath, FileMode.Create))
-                    await imageFile.CopyToAsync(stream);
-
-                validatedData.ImagePath = "/images/" + fileName;
+                ViewBag.ErrorMessage = "Fix the highlighted image issues before saving.";
+                ViewBag.IsEditing = false;
+                ViewBag.ReportStatus = "Draft";
+                ViewBag.ReviewMessage = string.Empty;
+                return View(validatedData);
             }
 
             validatedData.ObstacleRegistrationTime = DateTime.Now;
@@ -383,6 +390,104 @@ namespace WebApplication1.Controllers
 
             return RedirectToAction("Index", "Reports");
         }
+
+        private List<string> ParseImagePaths(string? storedPaths)
+        {
+            if (string.IsNullOrWhiteSpace(storedPaths))
+            {
+                return new List<string>();
+            }
+
+            return storedPaths
+                .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .ToList();
+        }
+
+        private async Task DeleteImagesFromDiskAsync(IEnumerable<string> imagePaths)
+        {
+            if (imagePaths == null)
+            {
+                return;
+            }
+
+            foreach (var path in imagePaths)
+            {
+                if (string.IsNullOrWhiteSpace(path)) continue;
+
+                var trimmed = path.TrimStart('/').Replace('/', Path.DirectorySeparatorChar);
+                var fullPath = Path.Combine("wwwroot", trimmed);
+
+                if (System.IO.File.Exists(fullPath))
+                {
+                    try
+                    {
+                        System.IO.File.Delete(fullPath);
+                    }
+                    catch (IOException)
+                    {
+                        // If the file cannot be deleted, continue without failing the request
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                        // Ignore deletion errors due to permissions
+                    }
+                }
+            }
+
+            await Task.CompletedTask;
+        }
+
+        private async Task<List<string>> ProcessImageUploadsAsync(IEnumerable<IFormFile>? imageFiles, List<string> existingPaths)
+        {
+            var combinedPaths = new List<string>(existingPaths ?? new List<string>());
+
+            if (imageFiles == null)
+            {
+                return combinedPaths;
+            }
+
+            foreach (var file in imageFiles)
+            {
+                if (file == null || file.Length == 0)
+                {
+                    continue;
+                }
+
+                var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+                var contentType = (file.ContentType ?? string.Empty).ToLowerInvariant();
+
+                if (!AllowedImageExtensions.Contains(extension) || !AllowedImageContentTypes.Contains(contentType))
+                {
+                    ModelState.AddModelError(nameof(ValidatedObstacleData.ImagePath), "Only PNG and JPEG images are allowed.");
+                    continue;
+                }
+
+                if (file.Length > MaxImageSizeBytes)
+                {
+                    ModelState.AddModelError(nameof(ValidatedObstacleData.ImagePath), $"Images must be {MaxImageSizeBytes / (1024 * 1024)} MB or smaller.");
+                    continue;
+                }
+
+                var directory = Path.Combine("wwwroot", "images");
+                if (!Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
+
+                var uniqueName = $"{Guid.NewGuid()}{extension}";
+                var imagePath = Path.Combine(directory, uniqueName);
+
+                using (var stream = new FileStream(imagePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+
+                combinedPaths.Add($"/images/{uniqueName}");
+            }
+
+            return combinedPaths;
+        }
+
         private void ValidateSubmissionRequirements(ValidatedObstacleData data)
         {
             if (string.IsNullOrWhiteSpace(data.ObstacleType))

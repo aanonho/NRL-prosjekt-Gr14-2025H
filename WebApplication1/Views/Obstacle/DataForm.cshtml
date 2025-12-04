@@ -1,4 +1,4 @@
-﻿@using WebApplication1.Models.Entities
+@using WebApplication1.Models.Entities
 <!-- Obstacle Registration Form with Leaflet map.
     Lat/Lng location auto-filled from map click or browser geolocation (auto-centered if permitted). -->
 @model ObstacleData
@@ -190,27 +190,50 @@
 
             <!-- Image upload -->
             <div class="sm:col-span-2">
-                <label for="ObstacleImage" class="block mb-1 font-medium text-gray-700">Upload Image</label>
-                <input type="file" name="imageFile" id="ObstacleImage" class="w-full border border-gray-300 rounded p-2" />
+                <label for="ObstacleImage" class="block mb-1 font-medium text-gray-700">Upload Images</label>
+                <input type="file" name="imageFiles" id="ObstacleImage" accept=".jpg,.jpeg,.png,image/jpeg,image/png" multiple class="w-full border border-gray-300 rounded p-2" />
+                <p class="text-sm text-gray-600 mt-1">Only PNG and JPEG images are allowed (max 10 MB each). You can select multiple files.</p>
+                <div id="imageError" class="image-error text-sm mt-2" role="alert" aria-live="assertive"></div>
 
-                @if (!string.IsNullOrWhiteSpace(Model?.ImagePath))
-                {
-                    <div class="mt-2 flex items-center gap-3">
-                        <img src="@Model.ImagePath" alt="Existing obstacle image" class="max-h-32 rounded border" />                      
-                    </div>
+                @{
+                    var existingImages = (Model?.ImagePath ?? string.Empty)
+                        .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
                 }
 
-                <!-- Image preview + delete -->
-                <div id="imageContainer" class="mt-2 hidden">
-                    <img id="imagePreview" class="max-h-60 rounded border border-gray-300" />
-                    <button type="button" id="removeImageButton"
-                            class="button-dark-red" px-6 py-3 rounded">
-                        Remove Image
-                    </button>
+                <div class="mt-2 max-w-full space-y-3" id="imageManagement">
+                    <div class="flex items-center justify-between gap-3">
+                        <p class="text-sm text-gray-700">Manage images:</p>
+                        <button type="button" id="removeImageButton" class="button-dark-red px-4 py-2 rounded text-sm">Remove Selected</button>
+                    </div>
+
+                    <input type="hidden" id="ImagesToRemove" name="ImagesToRemove" value="@ViewBag.ImagesToRemove ?? string.Empty" />
+
+                    @if (existingImages.Any())
+                    {
+                        <div id="existingImageContainer" class="existing-image-list flex max-w-full flex-wrap gap-3">
+                            @foreach (var imagePath in existingImages)
+                            {
+                                <button type="button"
+                                        class="existing-image-tile"
+                                        data-image-path="@imagePath"
+                                        aria-label="Existing obstacle image">
+                                    <span class="existing-selection-badge">Selected</span>
+                                    <span class="existing-removal-badge">Marked for removal</span>
+                                    <img src="@imagePath" alt="Existing obstacle image" class="existing-image" />
+                                </button>
+                            }
+                        </div>
+                    }
+
+                    <!-- Image preview + delete -->
+                    <div id="imageContainer" class="hidden max-w-full">
+                        <p class="text-sm text-gray-700">Newly selected images:</p>
+                        <div id="imagePreviewList" class="flex flex-wrap gap-3"></div>
+                    </div>
                 </div>
+
+                <span asp-validation-for="ImagePath" class="text-red-600 text-sm"></span>
             </div>
-       
-       
             <div class="sm:col-span-2 button-group center-button">
                 @if (isEditing)
                 {
