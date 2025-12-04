@@ -1,13 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
+// Utvidet hinderklasse som kombinerer databasenivået med modellvalidering for skjemaene.
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using WebApplication1.Models.Entities;
 
 namespace WebApplication1.Models
 {
-    // Derived class with validation attributes
+    // Filformål: Arver ObstacleData og legger på valideringsregler for skjemaene som administrerer hindere.
     [NotMapped]
     public class ValidatedObstacleData : ObstacleData
     {
+        // Navn, høyde og beskrivelse må fylles ut innenfor definerte grenser før de kan lagres i databasen.
         [Required(ErrorMessage = "Obstacle Name is required")]
         [MaxLength(100, ErrorMessage = "Name cannot exceed 100 characters")]
         public new string? ObstacleName { get; set; }
@@ -20,6 +22,7 @@ namespace WebApplication1.Models
         [MaxLength(1000, ErrorMessage = "Descpriction cannot exceed 1000 characters")]
         public new string? ObstacleDescription { get; set; }
 
+        // Holder en kommaseparert liste over bildefiler som skal slettes sammen med oppdateringen.
         public string? ImagesToRemove { get; set; }
 
     }
