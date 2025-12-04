@@ -1,1 +1,3 @@
+/* Hovedinngangen for Tailwind-stilene som bygges til wwwroot/css/site.css. */
+/* Importerer Tailwind-rammeverket slik at base-, komponent- og utility-klasser genereres. */
 @import "tailwindcss";

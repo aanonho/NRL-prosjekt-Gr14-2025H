@@ -1,5 +1,7 @@
-﻿namespace WebApplication1.Models
+﻿// Konfigurasjonsmodell for SMTP-innstillinger hentet fra appsettings
+namespace WebApplication1.Models
 {
+    // Bundles alle feltene som trengs for å kontakte SMTP-serveren
     public class EmailOptions
     {
         public string SmtpServer { get; set; }

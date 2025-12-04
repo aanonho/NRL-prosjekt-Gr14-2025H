@@ -1,25 +1,27 @@
-﻿@model WebApplication1.Models.LoginViewModel
+﻿﻿@* Påloggingssiden der brukeren sender inn e-post og passord for å få tilgang. *@
+@model WebApplication1.Models.LoginViewModel
 
 @{
+    @* Tittel brukes i layouten for å navngi fanen og breadcrumbs. *@
     ViewData["Title"] = "Sign in";
 }
 
 <link rel="stylesheet" href="~/css/shared.css" />
 
+@* Hovedcontaineren samler heading, hjelpetekst og eventuelle statustilbakemeldinger. *@
 <div class="container mx-auto mt-8 py-8 px-4 bg-white form-container max-w-xl">
     <h1 class="mb-6 text-center text-2xl font-bold text-gray-800 sm:text-3xl">Sign in to your account</h1>
     <p class="mb-6 text-center text-gray-600">Enter your credentials to access reports and obstacle forms.</p>
 
+    @* Viser grønn bekreftelse dersom brukeren nettopp har utført en vellykket handling (f.eks. passordreset). *@
     @if (TempData["SuccessMessage"] != null)
     {
-      @*   <div class="mb-6 rounded border border-green-200 bg-green-50 p-3 text-sm text-green-700">
-            @TempData["SuccessMessage"]
-        </div> *@
         <div class="status-confirmed p-4 rounded mb-6 mb-4">
             <strong>✔ Success:</strong> @TempData["SuccessMessage"]
         </div>
     }
 
+    @* Rød feilmelding vises hvis innloggingen feilet eller annen feil ble lagt i TempData. *@
     @if (TempData["ErrorMessage"] != null)
     {
         <div class="mb-6 rounded border border-red-200 bg-red-50 p-3 text-sm text-red-700">
@@ -27,22 +29,26 @@
         </div>
     }
 
+    @* Skjemaet poster til Login-aksjonen og inkluderer ReturnUrl for å sende brukeren tilbake etter suksess. *@
     <form asp-action="Login" method="post" class="space-y-6">
         <div asp-validation-summary="ModelOnly" class="text-sm text-red-600"></div>
         <input type="hidden" asp-for="ReturnUrl" />
 
+        @* E-postfeltet sørger for riktig autocomplete og valideringsfeedback via MVC helperne. *@
         <div class="flex flex-col">
             <label asp-for="Email" class="mb-1 font-medium text-gray-700">Email</label>
             <input asp-for="Email" class="rounded border border-gray-300 p-2" autocomplete="email" />
             <span asp-validation-for="Email" class="text-sm text-red-500"></span>
         </div>
 
+        @* Passordfeltet er skjult av browseren og bruker samme valideringsoppsett som modellen. *@
         <div class="flex flex-col">
             <label asp-for="Password" class="mb-1 font-medium text-gray-700">Password</label>
             <input asp-for="Password" class="rounded border border-gray-300 p-2" autocomplete="current-password" />
             <span asp-validation-for="Password" class="text-sm text-red-500"></span>
         </div>
 
+        @* Linjen kobler sammen "Husk meg"-valget og lenken for glemt passord. *@
         <div class="flex items-center justify-between">
             <label class="inline-flex items-center text-sm text-gray-700">
                 <input asp-for="RememberMe" class="mr-2" />
@@ -51,6 +57,7 @@
             <a asp-action="ForgotPassword" class="forgot-password-link">Forgot your password?</a>
         </div>
 
+        @* Primærknappen sender skjemaet, mens lenken lar nye brukere gå til registrering. *@
         <div class="button-group center-button">
             <button type="submit" class="button-dark-blue px-6 py-3 rounded">Sign in</button>
             <a asp-controller="User" asp-action="UserForm" class="button-dark-green inline-block px-6 py-3 rounded">Create new account</a>
@@ -60,5 +67,6 @@
 </div>
 
 @section Scripts {
+    @* Importerer valideringsskript slik at klientvalidering fungerer på feltene ovenfor. *@
     <partial name="_ValidationScriptsPartial" />
 }

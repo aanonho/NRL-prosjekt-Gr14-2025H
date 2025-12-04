@@ -1,4 +1,5 @@
-﻿using System;
+﻿// Filen beskriver en hinder-rapport med status, eierinformasjon og navigasjonskoblinger.
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using WebApplication1.Models.Entities;
@@ -8,6 +9,7 @@ namespace WebApplication1.Models
     [Table("ReportItem")]
     public partial class ReportItem
     {
+        // Identifikator og tidsstempel for rapporten, samt referanse til piloten som leverte den.
         [Key]
         [Column("ReportID")]
         public int ReportID { get; set; }
@@ -17,12 +19,14 @@ namespace WebApplication1.Models
         [Required]
         public int PilotID { get; set; }
 
+        // Status og organisasjonstilknytning styrer arbeidsflyt og tilgang.
         [Required]
         [StringLength(32)]
         public string Status { get; set; } = "Pending";
 
         public int? OrganizationID { get; set; }
 
+        // Metadata om hvem som sendte inn rapporten og hvordan den ble opprettet.
         [StringLength(100)]
         public string? SubmittedByName { get; set; }
 
@@ -36,10 +40,11 @@ namespace WebApplication1.Models
 
         public string? ReviewMessage { get; set; }
 
-        //public int? ObstacleID { get; set; } // FK vers ObstacleData
+        // Kobling til selve hinderdataene når rapporten beskriver en hindring.
         public virtual ObstacleData? ReportObstacle { get; set; }
 
 
+        // Diverse statusfelt og filreferanser for rapporten.
         public bool IsDraft { get; set; } = false;
 
         public bool HasLights { get; set; }
@@ -52,15 +57,15 @@ namespace WebApplication1.Models
 
         public Organization? OrganizationRef { get; set; }
 
-        // Not use in DB for now
+        // Hjelpeobjekter for visning og validering som ikke lagres i databasen.
         [NotMapped]
         public UserLink? UserInfo { get; set; }
         public Pilot? Pilot { get; set; }
 
-        // Not use in DB, only for form validations
         [NotMapped]
         public ValidatedObstacleData? Obstacle { get; set; }
 
+        // Konstruktører for å kunne opprette rapporter med forhåndsverdier.
         public ReportItem() { }
 
         public ReportItem(DateTime createdAt, string status, int? organizationID)
