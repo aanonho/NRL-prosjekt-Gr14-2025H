@@ -52,7 +52,7 @@
         </div>
 
         <div class="flex flex-col">
-            <label asp-for="Organization" class="mb-1 font-medium text-gray-700">Organization</label>
+            <label asp-for="Organization" class="required mb-1 font-medium text-gray-700">Organization</label>
             <select asp-for="Organization" asp-items="@(ViewBag.OrganizationOptions as IEnumerable<SelectListItem>)" class="rounded border border-gray-300 p-2">
                 <option value="">Select organization...</option>
             </select>
