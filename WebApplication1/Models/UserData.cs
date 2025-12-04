@@ -18,6 +18,7 @@ namespace WebApplication1.Models
 
         [Required(ErrorMessage = "Phone is required")]
         [Phone(ErrorMessage = "Please enter a valid phone number")]
+        [RegularExpression(@"^(?=(?:\D*\d){10,15}\D*$)[\d\s\-\(\)\+]+$", ErrorMessage = "Please enter a valid phone number with 10 to 15 digits")]
         [StringLength(45, ErrorMessage = "Phone number cannot exceed 45 characters")]
         public string? Phone { get; set; }
 

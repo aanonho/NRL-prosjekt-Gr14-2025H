@@ -48,6 +48,24 @@ namespace WebApplication1.Controllers
                 userData.Organization = normalizedOrganization;
             }
 
+            var trimmedPhone = userData.Phone?.Trim();
+            if (!string.IsNullOrWhiteSpace(trimmedPhone))
+            {
+                var digitCount = trimmedPhone.Count(char.IsDigit);
+                if (digitCount < 10)
+                {
+                    ModelState.AddModelError(nameof(userData.Phone), "Please enter a phone number with at least 10 digits.");
+                }
+                else if (digitCount > 15)
+                {
+                    ModelState.AddModelError(nameof(userData.Phone), "Please enter a phone number with no more than 15 digits.");
+                }
+                else
+                {
+                    userData.Phone = trimmedPhone;
+                }
+            }
+
             if (!ModelState.IsValid)
             {
                 return View(userData);
