@@ -1,4 +1,5 @@
-﻿using System;
+﻿// Sender passordreset-eposter via SMTP basert på konfigurasjon fra appsettings
+using System;
 using System.Net;
 using System.Net.Mail;
 using Microsoft.Extensions.Logging;
@@ -14,16 +15,17 @@ namespace WebApplication1.Services
 
         public SmtpEmailSender(IOptions<EmailOptions> options, ILogger<SmtpEmailSender> logger)
         {
+            // Henter SMTP-innstillinger fra DI og tar inn logger for feilsøking
             _options = options.Value;
             _logger = logger;
         }
 
-        // SMTP-based email sender for password reset notifications
-        // Uses configuration from appsettings.json
+        // Bygger e-post for passordreset og sender den via konfigurert SMTP-server
         public async Task SendPasswordResetAsync(string recipientEmail, string recipientName, string resetLink)
         {
             ValidateConfiguration();
 
+            // Klienten settes opp med SSL og legitimasjon fra konfigurasjon
             using var client = new SmtpClient(_options.SmtpServer!, _options.SmtpPort)
             {
                 EnableSsl = _options.UseSSL,
@@ -31,6 +33,7 @@ namespace WebApplication1.Services
                 DeliveryMethod = SmtpDeliveryMethod.Network
             };
 
+            // Selve e-posten får enkel tekst, avsendernavn og personlig link
             using var message = new MailMessage
             {
                 From = new MailAddress(_options.SenderEmail!, "NRL Support"),
@@ -43,6 +46,7 @@ namespace WebApplication1.Services
 
             try
             {
+                // Forsøker å sende e-posten; lar exception boble hvis det feiler
                 await client.SendMailAsync(message);
             }
             catch (Exception ex)
@@ -54,6 +58,7 @@ namespace WebApplication1.Services
 
         private void ValidateConfiguration()
         {
+            // Stopper tidlig hvis påkrevde SMTP-felter ikke er satt
             if (string.IsNullOrWhiteSpace(_options.SmtpServer) ||
                 _options.SmtpPort <= 0 ||
                 string.IsNullOrWhiteSpace(_options.SenderEmail))
