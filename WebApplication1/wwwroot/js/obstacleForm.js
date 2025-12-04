@@ -57,7 +57,7 @@ var helicopterIcon = L.icon({
 
 // Show image preview when user selects a file
 function setupImageUpload() {
-    if (!fileInput || !imageContainer || !imagePreviewList || !removeButton) return;
+    if (!fileInput || !imageContainer || !imagePreviewList) return;
 
     clearImageError();
     updateRemoveButtonState();
@@ -95,29 +95,31 @@ function setupImageUpload() {
     });
 
     // Remove selected images button logic
-    removeButton.addEventListener('click', function () {
-        const hasNewSelection = selectedImageIndexes.size > 0;
-        const hasExistingSelection = existingSelectedImages.size > 0;
+    if (removeButton) {
+        removeButton.addEventListener('click', function () {
+            const hasNewSelection = selectedImageIndexes.size > 0;
+            const hasExistingSelection = existingSelectedImages.size > 0;
 
-        if (!hasNewSelection && !hasExistingSelection) return;
+            if (!hasNewSelection && !hasExistingSelection) return;
 
-        if (hasNewSelection) {
-            const remainingFiles = selectedFiles.filter((_, index) => !selectedImageIndexes.has(index));
-            selectedFiles.length = 0;
-            selectedFiles.push(...remainingFiles);
+            if (hasNewSelection) {
+                const remainingFiles = selectedFiles.filter((_, index) => !selectedImageIndexes.has(index));
+                selectedFiles.length = 0;
+                selectedFiles.push(...remainingFiles);
 
-            selectedImageIndexes.clear();
-            renderImagePreview();
-            syncFileInput();
-            clearImageError();
-        }
+                selectedImageIndexes.clear();
+                renderImagePreview();
+                syncFileInput();
+                clearImageError();
+            }
 
-        if (hasExistingSelection) {
-            togglePendingRemovalForSelection();
-        }
+            if (hasExistingSelection) {
+                togglePendingRemovalForSelection();
+            }
 
-        updateRemoveButtonState();
-    });
+            updateRemoveButtonState();
+        });
+    }
 
     function validateFile(file) {
         const extension = (file.name || '').toLowerCase();
@@ -378,12 +380,10 @@ function resetLineState() {
 
 // Show delete button
 function showDeleteButton() {
-    if (disableEditing)
-    {
+    if (disableEditing) {
         deleteButton.style.display = 'none';
     }
-    else
-    {
+    else {
         deleteButton.style.display = 'inline-block';
     }
 }
