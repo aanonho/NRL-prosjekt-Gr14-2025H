@@ -91,6 +91,17 @@ Vi har i tillegg implementert en «Glemt passord» / «Forgot password»-funksjo
 
 Selve lenken er tidsbegrenset og kan bare brukes én gang, og systemet lagrer kun en hash av tokenet i databasen. Dette er en trygg og mer realistisk måte å håndtere glemte passord på enn å endre passord manuelt i databasen, samtidig som vi slipper å sende ekte e-poster i utviklingsmiljøet.
 
+## Sikkerhet 
+
+Vi har kontinuerlig vurdert sikkerhet under utviklingen av systemet, og tatt flere grep for å sikre data og brukere:
+- **Miljøvariabler:** Bruk av .env-filer for sensitive data som databasepassord, slik at disse ikke sjekkes inn i kildekoden.
+- **Autentisering og autorisasjon:** Implementering av rollebasert tilgangskontroll for å sikre at brukere kun får tilgang til funksjoner de har rettigheter til (piloter vs. registerførere).
+- **Input-validering:** Grundig validering av brukerinput både på klient- og serversiden for å forhindre SQL-injeksjon, XSS og andre angrep.
+- **HTTPS og HSTS:** Konfigurasjon av applikasjonen til å bruke HTTPS og HSTS for å sikre dataoverføring.
+- Mailhog for lokal e-posttesting, slik at ekte e-poster ikke sendes ut under utvikling og testing.
+- Validert passordpolicy for å sikre at brukerne velger sterke passord.
+- Bilder har begrensninger på filtype og størrelse ved opplasting for å forhindre direkte angrep via filopplasting.
+
 ## Viktig mappestruktur i repoet
 
 ### Rot:
