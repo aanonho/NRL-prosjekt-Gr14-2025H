@@ -14,6 +14,7 @@ namespace WebApplication1.Models
         [Required(ErrorMessage = "Email is required")]
         [EmailAddress(ErrorMessage = "Please enter valid email address")]
         [StringLength(45, ErrorMessage = "Email cannot exceed 45 characters")]
+        [RegularExpression(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", ErrorMessage = "Please enter a valid email address")]
         public string? Email { get; set; }
 
         [Required(ErrorMessage = "Phone is required")]
