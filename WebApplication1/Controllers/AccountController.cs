@@ -1,4 +1,4 @@
-// Denne filen styrer innlogging, utlogging og passordreset for brukere.
+// This file is responsible for user login, logout, and password reset.
 using System.Security.Claims;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -56,7 +56,7 @@ namespace WebApplication1.Controllers
             return View(new ForgotPasswordViewModel());
         }
 
-        // Håndterer forespørsel om glemt passord og lager ny token om nødvendig.
+        // Handles password reset requests and creates new token if needed.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
@@ -113,7 +113,7 @@ namespace WebApplication1.Controllers
             return RedirectToAction(nameof(ForgotPassword));
         }
 
-        // Validerer innloggingsskjema og oppretter cookie ved suksess.
+        // Validates login form and creates cookie on success.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
@@ -180,7 +180,7 @@ namespace WebApplication1.Controllers
             return RedirectToLocal(model.ReturnUrl);
         }
 
-        // Viser skjemaet for å legge inn nytt passord basert på token fra e-post.
+        // Displays the form to enter a new password based on the token from email.      
         [HttpGet]
         public async Task<IActionResult> ResetPassword(string? token, string? email)
         {
@@ -217,7 +217,7 @@ namespace WebApplication1.Controllers
             return View(viewModel);
         }
 
-        // Tar imot nytt passord og markerer token som brukt.
+        // Takes in new password and marks token as used.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
@@ -258,7 +258,7 @@ namespace WebApplication1.Controllers
             return RedirectToAction(nameof(Login));
         }
 
-        // Logger brukeren ut og rydder midlertidige data.
+        // Logs the user out and clears temporary data.     
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -292,14 +292,14 @@ namespace WebApplication1.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        // Lager en engangstoken for e-postlenker og hasher den før lagring.
+        // Generates a one-time token for email links and hashes it before storing.
         private static string GenerateSecureToken()
         {
             var bytes = RandomNumberGenerator.GetBytes(48);
             return WebEncoders.Base64UrlEncode(bytes);
         }
 
-        // Hash the token before storing it in DB
+        // Hash the token before storing it in DB.
         private static string HashToken(string token)
         {
             using var sha = SHA256.Create();

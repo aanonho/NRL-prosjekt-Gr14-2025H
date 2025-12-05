@@ -1,11 +1,11 @@
-﻿// Modellen brukes for "glemt passord"-skjemaet og holder kun e-postadresse med validering.
+﻿// The model is used for the "forgot password" form and contains only the email address with validation.
 using System.ComponentModel.DataAnnotations;
 
 namespace WebApplication1.Models
 {
     public class ForgotPasswordViewModel
     {
-        // Påkrevd e-post for å sende reset-lenke og validert til gyldig e-postformat.
+        // Required email to send reset link and validated to a valid email format.
         [Required]
         [EmailAddress]
         public string? Email { get; set; }

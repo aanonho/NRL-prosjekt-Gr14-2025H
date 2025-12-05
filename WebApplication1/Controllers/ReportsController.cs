@@ -1,4 +1,4 @@
-// Denne filen lar brukere liste, filtrere og administrere rapporter etter rolle.
+// This file allows users to list, filter, and manage reports based on roles.
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,7 +20,7 @@ namespace WebApplication1.Controllers
             _context = context;
         }
 
-        // Henter oversikt over rapporter med filtrering på status, sortering og organisasjon.
+        // Retrieves an overview of reports with filtering by status, sorting, and organization.  
         [HttpGet]
         public async Task<IActionResult> Index(string status = "all", string sort = "date_desc", string organization = "")
         {
@@ -111,7 +111,7 @@ namespace WebApplication1.Controllers
             return View(vm);
         }
 
-        // Enkel statusvisning for alle rapporter uten rollefiltrering.
+        // Status view for all reports without role-based filtering.
         [HttpGet]
         public IActionResult ReportStatus(string status = "all")
         {
@@ -128,7 +128,7 @@ namespace WebApplication1.Controllers
             return View(filtered.ToList());
         }
 
-        // Registrar oppdaterer status og legger igjen tilbakemelding på en innsendt rapport.
+        // Registrar updates the status and provides feedback on a submitted report.
         [Authorize(Roles = "Registrar")]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -152,7 +152,7 @@ namespace WebApplication1.Controllers
             return RedirectToAction("Index");
         }
 
-        // Registrar kan slette en ikke-utkast rapport dersom den ikke skal beholdes.
+        // Registrar can delete a non-draft report if it is not to be retained.
         [Authorize(Roles = "Registrar")]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -174,7 +174,7 @@ namespace WebApplication1.Controllers
             return RedirectToAction("Index");
         }
 
-        // Viser detaljer for en spesifikk rapport og sikrer at piloter kun ser egne innsendelser.
+        // Show details for a specific report, ensuring pilots only see their own submissions.
         [HttpGet]
         public IActionResult Details(int id)
         {

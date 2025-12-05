@@ -1,4 +1,4 @@
-// Denne filen setter opp hele ASP.NET Core-applikasjonen, fra konfigurasjon til ruting.
+// This file sets up the entire ASP.Net Core application, from configuration to routing.
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.DataInfrastructure;
@@ -8,29 +8,29 @@ using WebApplication1.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Setter opp MVC og e-posttjenesten så UI og e-postvarsler fungerer fra start.
+// Sets up MVC and the email service so UI and email notifications work from the start.
 builder.Services.AddControllersWithViews();
 builder.Services.Configure<EmailOptions>(builder.Configuration.GetSection("EmailSettings"));
 builder.Services.AddSingleton<IEmailSender, SmtpEmailSender>();
 
-// Leser inn e-postkonfig for eventuell videre bruk i appen.
+// Reading email configuration for potential further use in the app.
 var emailOptions = builder.Configuration.GetSection("EmailSettings").Get<EmailOptions>();
 
-// Henter connection string fra miljøvariabel først, ellers fra config-fil
+// Getting connection string from an environment variable first, otherwise from the config file.
 var connectionString =
     builder.Configuration.GetValue<string>("ConnectionStrings__DefaultConnection") ??
     builder.Configuration.GetConnectionString("DefaultConnection");
 
-// Logger hvilken databasekobling som faktisk brukes slik at drift vet hva som skjer.
+// Logs whish database connection is actually used so operations know what's happening.
 Console.WriteLine($"[Startup] Using connection string: {connectionString}");
 
-// Setter opp EF Core mot MariaDB med eksplisitt versjon for forutsigbarhet.
+// Configures EF Core for MariaDB with explicit version for predictability.
 var serverVersion = new MariaDbServerVersion(new Version(10, 11));
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(connectionString, serverVersion));
 
-// Konfigurerer cookie-basert autentisering og autorisasjon for hele appen.
+// Configurerer cookie-based authentication and autorixation for the entire app.
 builder.Services
     .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
@@ -44,7 +44,7 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-// Lager HTTP-pipelinen med feilhåndtering, HTTPS, statiske filer og ruting.
+// Builds the HTTP-pipeline with error handling, HTTPS, static files, and routing.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -59,7 +59,7 @@ app.UseAuthorization();
 
 app.MapStaticAssets();
 
-// Standardrute for MVC-controllerne.
+// Default route for MVC controllers.
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")

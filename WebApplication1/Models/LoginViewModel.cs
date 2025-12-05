@@ -1,26 +1,26 @@
-// ViewModel for å hente inn brukernavn, passord og navigasjonsinfo fra login-skjemaet.
+// ViewModel for capturing username, password, and navigation info from the login form.
 using System.ComponentModel.DataAnnotations;
 
 namespace WebApplication1.Models
 {
-    // Filformål: Enkel viewmodel som samler innloggingsfeltene som sendes fra login-skjemaet.
+    // File purpose: Simple viewmodel that collects the login fields submitted from the login form.
     public class LoginViewModel
     {
-        // Påkrevd e-postadresse som brukes som brukernavn i autentisering.
+        // Required email address used as username for authentication.
         [Required]
         [EmailAddress]
         public string? Email { get; set; }
 
-        // Passordfelt merket som hemmelig og validert for at brukeren må fylle det ut.
+        // Password field marked as secret and validated to ensure user fills it out.
         [Required]
         [DataType(DataType.Password)]
         public string? Password { get; set; }
 
-        // Husk meg flagget styrer om cookie får lengre levetid mellom besøk.
+        // The "Remember me" flag determines wheter cookie gets longer lifetime between visits.
         [Display(Name = "Remember me")]
         public bool RememberMe { get; set; }
 
-        // URL å returnere til etter innlogging slik at bruker kan gå tilbake til ønsket side.
+        // URL to return to after login so user can go back to desired page.
         public string? ReturnUrl { get; set; }
     }
 }

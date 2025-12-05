@@ -1,4 +1,4 @@
-﻿// Filen beskriver en hinder-rapport med status, eierinformasjon og navigasjonskoblinger.
+﻿// This file describes an obstacle report with status, ownership info, and navigation links.
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -9,7 +9,7 @@ namespace WebApplication1.Models
     [Table("ReportItem")]
     public partial class ReportItem
     {
-        // Identifikator og tidsstempel for rapporten, samt referanse til piloten som leverte den.
+        // Identifier and timestamp for the report, along with reference to the pilot who submitted it.
         [Key]
         [Column("ReportID")]
         public int ReportID { get; set; }
@@ -19,14 +19,14 @@ namespace WebApplication1.Models
         [Required]
         public int PilotID { get; set; }
 
-        // Status og organisasjonstilknytning styrer arbeidsflyt og tilgang.
+        // Status and organization affiliation control workflow and access.
         [Required]
         [StringLength(32)]
         public string Status { get; set; } = "Pending";
 
         public int? OrganizationID { get; set; }
 
-        // Metadata om hvem som sendte inn rapporten og hvordan den ble opprettet.
+        // Metadata about who submitted the report and how it was created.
         [StringLength(100)]
         public string? SubmittedByName { get; set; }
 
@@ -40,11 +40,11 @@ namespace WebApplication1.Models
 
         public string? ReviewMessage { get; set; }
 
-        // Kobling til selve hinderdataene når rapporten beskriver en hindring.
+        // Link to the actual obstacle data when the report describes an obstacle.
         public virtual ObstacleData? ReportObstacle { get; set; }
 
 
-        // Diverse statusfelt og filreferanser for rapporten.
+        // Various status fields and file references for the report.
         public bool IsDraft { get; set; } = false;
 
         public bool HasLights { get; set; }
@@ -57,7 +57,7 @@ namespace WebApplication1.Models
 
         public Organization? OrganizationRef { get; set; }
 
-        // Hjelpeobjekter for visning og validering som ikke lagres i databasen.
+        // Helper objects for display and validation that are not stored in the database.
         [NotMapped]
         public UserLink? UserInfo { get; set; }
         public Pilot? Pilot { get; set; }
@@ -65,7 +65,7 @@ namespace WebApplication1.Models
         [NotMapped]
         public ValidatedObstacleData? Obstacle { get; set; }
 
-        // Konstruktører for å kunne opprette rapporter med forhåndsverdier.
+        // Constructor for creating a report with preset values.
         public ReportItem() { }
 
         public ReportItem(DateTime createdAt, string status, int? organizationID)

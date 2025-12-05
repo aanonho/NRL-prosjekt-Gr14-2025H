@@ -1,4 +1,4 @@
-// Denne filen håndterer registrering, profilvisning og rollestyring for brukere.
+// This file handles user registration, profile viewing, and role management.
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +23,7 @@ namespace WebApplication1.Controllers
             _context = context;
         }
 
-        // Viser påmeldingsskjemaet der pilot eller registrar registrerer seg.
+        // Shows the registration form where pilots or registrars can sign up.     
         [HttpGet]
         public IActionResult UserForm()
         {
@@ -31,7 +31,7 @@ namespace WebApplication1.Controllers
             return View(new UserData());
         }
 
-        // Tar imot registreringsskjemaet, oppretter bruker og setter riktig rolle.
+        // Receives the registration form, creates user and assigns correct role.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UserForm(UserData userData)
@@ -64,6 +64,18 @@ namespace WebApplication1.Controllers
                 {
                     userData.Phone = trimmedPhone;
                 }
+            }
+
+            if (string.IsNullOrWhiteSpace(userData.Email))
+            {
+                ModelState.AddModelError(nameof(userData.Email), "Email is required.");
+                return View(userData);
+            }
+            
+            if (string.IsNullOrWhiteSpace(userData.Role))
+            {
+                ModelState.AddModelError(nameof(userData.Role), "Role is required.");
+                return View(userData);
             }
 
             var normalizedEmail = userData.Email!.Trim();
@@ -168,7 +180,7 @@ namespace WebApplication1.Controllers
             return await Task.FromResult(RedirectToAction("UserForm"));
         }
 
-        // Viser profilsiden for innlogget eller valgt bruker.
+        // Shows the profile page for the logged-in or selected user.
         [Authorize]
         [HttpGet]
         public async Task<IActionResult> UserProfile(string? email)
@@ -197,7 +209,7 @@ namespace WebApplication1.Controllers
             return View(viewModel);
         }
 
-        // Registrar-dashboard som lister innsendte rapporter for oppfølging.
+        // Registrar-dashboard that shows an overview of submitted reports.
         [HttpGet]
         public async Task<IActionResult> RegistrarDashboard(string status = "all", string sort = "date_desc")
         {
@@ -226,7 +238,7 @@ namespace WebApplication1.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateReportStatus(int id, string status, string? message)
         {
-            // Registrar låser endringer til innsendte rapporter og lagrer vurderingen.
+            // Registar locks changes to submitted reports and saves the review.
             var report = await _context.ReportItems
                 .FirstOrDefaultAsync(r => r.ReportID == id && !r.IsDraft);
 
@@ -311,4 +323,3 @@ namespace WebApplication1.Controllers
 
     }
 }
-

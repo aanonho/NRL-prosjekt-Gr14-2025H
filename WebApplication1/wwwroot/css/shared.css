@@ -40,23 +40,6 @@ input, select, textarea {
     align-items: center;
 }
 
-/*.flex {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 16px;  
-}
-
-.field-box {
-    flex: 1 1 auto;
-    min-width: 200px;
-}
-
-.input-small {
-    width: 150px;
-    padding: 8px;
-}
-*/
-
 /* Labels for Fields */
 .field-container label {
     font-weight: 600;
@@ -203,13 +186,6 @@ a.button-white-green{
     cursor: pointer;
     text-align: left;
 }
-
-/*.button-small {
-    min-width: auto;
-    min-height: auto;
-    padding: 0.4rem 1rem;
-    font-size: 14px;
-}*/
 
 /* Center button group */
 .center-button {

@@ -1,4 +1,4 @@
-﻿// Representerer registrarkontoer som er koblet én-til-én med en UserEntity.
+﻿// Reprresents registrar accounts that are linked one-to-one with a UserEntity.
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -7,16 +7,16 @@ namespace WebApplication1.Models.Entities
     [Table("Registrar")]
     public class Registrar
     {
-        // Primærnøkkelen er også en fremmednøkkel til UserEntity.
+        // Primary key is also a foreign key to UserEntity.
         [Key]
         [Column("UserData_UserID")]
         public int UserID { get; set; }
 
-        // Intern avdeling registraren tilhører.
+        // The internal department the registrar belongs to.
         [StringLength(45)]
         public string? Department { get; set; }
 
-        // Navigasjonslenke til brukeren slik at EF kan laste profil og rolle.
+        // Navigation link to the user so that EF can load profile and role.
         [ForeignKey(nameof(UserID))]
         public virtual UserEntity User { get; set; } = null!;
     }

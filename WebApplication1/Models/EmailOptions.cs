@@ -1,18 +1,18 @@
-﻿// Konfigurasjonsmodell for SMTP-innstillinger hentet fra appsettings
+﻿// Configuration model for SMTP settings retrieved from appsettings.
 namespace WebApplication1.Models
 {
-    // Bundles alle feltene som trengs for å kontakte SMTP-serveren
+    // Bundles all fields required to contact the SMTP server.
     public class EmailOptions
     {
-        // Serveradresse og port som SmtpClient skal bruke
+        // Server address and port that the SmtpClient should use.
         public string SmtpServer { get; set; }
         public int SmtpPort { get; set; }
-        // Avsenderinfo og legitimasjon for å autentisere mot serveren
+        // Sender information and credentials to authenticate with the server.
         public string SenderEmail { get; set; }
         public string SenderName { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
-        // Toggle for å sikre transport med SSL når serveren krever det
+        // Toggle to secure transport with SSL when the server requires it.
         public bool UseSSL { get; set; }
     }
 }

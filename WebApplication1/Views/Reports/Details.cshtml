@@ -128,7 +128,7 @@
     <div class="mt-6">
         @if (isRegistrar && !Model.IsDraft)
         {
-            <!-- Form for å oppdatere status (Approve / Reject / More info) -->
+            <!-- Form to update status (Approve / Reject / More info) -->
             <form asp-action="UpdateStatus"
                   asp-controller="Reports"
                   method="post"
@@ -173,7 +173,7 @@
 
 
             <div class="mt-4 w-full flex justify-between items-center">
-                <!-- Eget form for å slette rapporten -->
+                <!-- Separate form for deleting the report -->
                 <form asp-action="Delete"
                       asp-controller="Reports"
                       method="post"

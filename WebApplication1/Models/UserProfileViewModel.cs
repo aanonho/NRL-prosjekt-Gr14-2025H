@@ -1,4 +1,4 @@
-﻿// Viser en brukers profilinformasjon i dashboardet.
+﻿// Displays a user's profile in the dashboard.
 using System;
 using WebApplication1.Models.Entities;
 
@@ -6,25 +6,25 @@ namespace WebApplication1.Models
 {
     public class UserProfileViewModel
     {
-        // Grunnleggende kontaktinformasjon og rolle hentet fra databasen.
+        // Basic contact info and role retrieved from the database.
         public string? Name { get; set; }
         public string? Email { get; set; }
         public string? Phone { get; set; }
         public string? Role { get; set; }
         public string? OrganizationName { get; set; }
 
-        // Hjelpeflagg for å vite om profilen har en tilknyttet bruker.
+        // Help flag to know if the profile has an associated user.
         public bool HasUser => !string.IsNullOrWhiteSpace(Email);
 
-        // Rollesjekker for å styre hvilke seksjoner som vises i viewet.
+        // Role checks to control which sections are displayed in the view.
         public bool IsPilot => string.Equals(Role, "Pilot", StringComparison.OrdinalIgnoreCase);
         public bool IsRegistrar => string.Equals(Role, "Registrar", StringComparison.OrdinalIgnoreCase);
 
-        // Viser fallback-tekst når rolle eller organisasjon mangler.
+        // Displays fallback text for missing contact info.
         public string RoleDisplay => string.IsNullOrWhiteSpace(Role) ? "Unknown" : Role!;
         public string OrganizationDisplay => string.IsNullOrWhiteSpace(OrganizationName) ? "Unknown" : OrganizationName!;
 
-        // Mapper databasenhet til ViewModel slik at Razor-siden får rene strenger å jobbe med.
+        // Maps the database entity to the ViewModel so the Razor page gets clean strings to work with.
         public static UserProfileViewModel FromEntity(UserEntity entity)
         {
             return new UserProfileViewModel

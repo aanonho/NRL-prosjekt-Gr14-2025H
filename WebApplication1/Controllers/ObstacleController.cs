@@ -1,4 +1,4 @@
-// Denne filen lar piloter og registrarer lese, opprette og oppdatere hinderrapporter.
+// This file allows pilots and registrars to read, create, and update obstacle reports.
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -34,7 +34,7 @@ namespace WebApplication1.Controllers
             return Ok(data);
         }
 
-        // Viser skjemaet enten som blankt eller forhåndsutfylt for valgt rapport.
+        // Dislays the form for creating a new obstacle report or editing an existing one.
         [HttpGet]
         public async Task<ActionResult> DataForm(int? id)
         {
@@ -114,7 +114,7 @@ namespace WebApplication1.Controllers
             return View("Details", report);
         }
 
-        // Håndterer innsending og lagring av hinderrapporter, inkludert bildeopplasting.
+        // Handles submission and storage of obstacle reports, including image uploads.    
         private const long MaxImageSizeBytes = 10 * 1024 * 1024; // 10 MB limit for safety
         private static readonly string[] AllowedImageContentTypes = new[] { "image/jpeg", "image/png" };
         private static readonly string[] AllowedImageExtensions = new[] { ".jpg", ".jpeg", ".png" };
@@ -144,7 +144,7 @@ namespace WebApplication1.Controllers
 
             var isEditing = validatedData.ReportID > 0;
 
-            // Tar høyde for oppdatering av eksisterende rapport med validering av eierskap.
+            // Handles updating of existing report with ownership validation.
             if (isEditing)
             {
                 var editReport = await _context.ReportItems
@@ -254,7 +254,7 @@ namespace WebApplication1.Controllers
                 return RedirectToAction("Index", "Reports");
             }
 
-            // Oppretter ny rapport og lagrer eventuelle opplastede bilder før validering.
+            // Creates a  new report and saves any uploaded images before validation.
             var newUploadPaths = await ProcessImageUploadsAsync(imageFiles, ParseImagePaths(validatedData.ImagePath));
             validatedData.ImagePath = string.Join(',', newUploadPaths);
 
@@ -371,7 +371,7 @@ namespace WebApplication1.Controllers
             return RedirectToAction("Index", "Reports");
         }
 
-        // Hjelpemetoder for bildehåndtering og validering av påkrevde felter.
+        // Helper methods for image handling and required field validation.     
         private List<string> ParseImagePaths(string? storedPaths)
         {
             if (string.IsNullOrWhiteSpace(storedPaths))

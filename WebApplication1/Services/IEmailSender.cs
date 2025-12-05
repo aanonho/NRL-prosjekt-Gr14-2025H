@@ -1,12 +1,12 @@
-﻿// Kontrakt for e-postutsendelser slik at vi kan bytte implementasjon ved behov
+﻿// Contract for email sending so we can swap implementations as needed.
 using System.Threading.Tasks;
 
 namespace WebApplication1.Services
 {
-    // Interface holder bare det som trengs for passordreset, ikke en full e-postklient
+    // The interface only includes what is needed for password reset, not a full email client.
     public interface IEmailSender
     {
-        // Sender en enkel tilbakestillings-epost med navn og link til mottakeren
+        // Sends a simple password reset email with name and link to the recipient.
         Task SendPasswordResetAsync(string recipientEmail, string recipientName, string resetLink);
     }
 }
