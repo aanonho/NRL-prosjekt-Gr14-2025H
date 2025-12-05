@@ -1,27 +1,27 @@
-// ViewModelen kapsler feltene som trengs når en bruker skal tilbakestille passordet sitt.
+// The ViewModel encapsulates the fields needed when a user is resetting their password.
 using System.ComponentModel.DataAnnotations;
 
 namespace WebApplication1.Models
 {
-    // Filformål: ViewModel som håndterer innsending av nytt passord gjennom tilsendt reset-lenke.
+    // File purpose: ViewModel that handles submission of a new password via a sent reset link.
     public class ResetPasswordViewModel
     {
-        // E-postadressen identifiserer hvilket konto passordet skal oppdateres for.
+        // E-mail address identifies which account the password is to be updated for.
         [Required]
         [EmailAddress]
         public string? Email { get; set; }
 
-        // Token følger lenken fra e-posten og brukes for å verifisere at forespørselen er gyldig.
+        // Token follows the link from the email and is used to verify that the request is valid.
         [Required]
         public string? Token { get; set; }
 
-        // Nytt passord må oppfylle lengdekrav og sendes som skjult felt fra skjemaet.
+        // New password must meet length requirements and is sent as a hidden field from the form.
         [Required(ErrorMessage = "Password is required")]
         [StringLength(30, MinimumLength = 8, ErrorMessage = "Password must be between 8 and 30 characters")]
         [DataType(DataType.Password)]
         public string? Password { get; set; }
 
-        // Bekrefter at bruker skriver samme passord to ganger før vi lagrer endringen.
+        // Confirms that the user enters the same password twice before saving the change.
         [Required(ErrorMessage = "Please confirm your password")]
         [DataType(DataType.Password)]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]

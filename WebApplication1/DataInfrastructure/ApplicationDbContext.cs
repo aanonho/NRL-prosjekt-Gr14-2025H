@@ -1,4 +1,4 @@
-﻿// DbContext som binder EF Core til database-tabellene vi bruker i appen
+﻿// DBContext that links EF Core to the database tables we use in the app.
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Models;
 using WebApplication1.Models.Entities;
@@ -7,13 +7,13 @@ namespace WebApplication1.DataInfrastructure
 {
     public class ApplicationDbContext : DbContext
     {
-        // Standard oppsett slik at DI kan gi oss riktige DbContextOptions
+        // Standard setup so that DI can provide us with the correct DbContextOptions.
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
 
         }
 
-        // Disse DbSet-ene speiler tabellene som finnes i databasen
+        // These DBSets reflect the tables that exist in the database.
         public DbSet<ObstacleData> Obstacles { get; set; }
         public DbSet<ReportItem> ReportItems { get; set; }
         public DbSet<Organization> Organizations { get; set; }
@@ -27,7 +27,7 @@ namespace WebApplication1.DataInfrastructure
         {
             base.OnModelCreating(modelBuilder);
 
-            // Hopper over hjelpeklasser/felter som ikke skal lagres direkte i databasen
+            // Skips helper classes/fields that should not be stored directly in the database.
             modelBuilder.Ignore<ValidatedObstacleData>();
             modelBuilder.Entity<ReportItem>().Ignore(r => r.Obstacle);
 
@@ -37,14 +37,14 @@ namespace WebApplication1.DataInfrastructure
                 .HasForeignKey<ObstacleData>(o => o.ReportID)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Organisasjoner styres i egen tabell med primærnøkkel OrganizationID
+            // Organizations are managed in a separate table with OrganizationID as primary key.
             modelBuilder.Entity<Organization>(e =>
             {
                 e.ToTable("Organization");
                 e.HasKey(o => o.OrganizationID);
             });
 
-            // Brukere lagres i UserData og får lenker til organisasjoner
+            // Users are stored in UserData and linked to organizations.
             modelBuilder.Entity<UserEntity>(e =>
             {
                 e.ToTable("UserData");
@@ -56,7 +56,7 @@ namespace WebApplication1.DataInfrastructure
                     .OnDelete(DeleteBehavior.SetNull);
             });
 
-            // Piloter arver UserID som nøkkel og følger brukeren én-til-én
+            // Pilots inherits UserID as key and follows one-to-one user relationship.
             modelBuilder.Entity<Pilot>(e =>
             {
                 e.ToTable("Pilot");
@@ -67,7 +67,7 @@ namespace WebApplication1.DataInfrastructure
                     .OnDelete(DeleteBehavior.Cascade);
             });
 
-            // Registratorer har samme mønster som piloter: én-til-én med bruker
+            // Registrars inherits UserID as key and follows one-to-one user relationship.
             modelBuilder.Entity<Registrar>(e =>
             {
                 e.ToTable("Registrar");
@@ -78,7 +78,7 @@ namespace WebApplication1.DataInfrastructure
                     .OnDelete(DeleteBehavior.Cascade);
             });
 
-            // Token-tabellen håndterer passordresett og sørger for unike token-hash
+            // The token table handles password resets and ensures unique token hashes.
             modelBuilder.Entity<PasswordResetToken>(e =>
             {
                 e.ToTable("PasswordResetTokens");
@@ -90,7 +90,7 @@ namespace WebApplication1.DataInfrastructure
                     .OnDelete(DeleteBehavior.Cascade);
             });
 
-            // Rapporter peker både til pilot og (valgfritt) organisasjon med restriktiv sletting
+            // Reports link to pilots and optionally organizations with restrictive deletion.
             modelBuilder.Entity<ReportItem>(e =>
             {
                 e.HasOne(r => r.Pilot)

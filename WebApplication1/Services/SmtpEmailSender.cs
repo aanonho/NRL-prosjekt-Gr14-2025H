@@ -1,4 +1,4 @@
-﻿// Sender passordreset-eposter via SMTP basert på konfigurasjon fra appsettings
+﻿// Sends password reset emails via SMTP based on configuration from appsettings.
 using System;
 using System.Net;
 using System.Net.Mail;
@@ -15,17 +15,17 @@ namespace WebApplication1.Services
 
         public SmtpEmailSender(IOptions<EmailOptions> options, ILogger<SmtpEmailSender> logger)
         {
-            // Henter SMTP-innstillinger fra DI og tar inn logger for feilsøking
+            // Gets SMTP settings from DI and takes in logger for troubleshooting.       
             _options = options.Value;
             _logger = logger;
         }
 
-        // Bygger e-post for passordreset og sender den via konfigurert SMTP-server
+        // Builds email for password reset and sends it via configured SMTP server.
         public async Task SendPasswordResetAsync(string recipientEmail, string recipientName, string resetLink)
         {
             ValidateConfiguration();
 
-            // Klienten settes opp med SSL og legitimasjon fra konfigurasjon
+            // The client is set up with SSL and credentials from configuration.
             using var client = new SmtpClient(_options.SmtpServer!, _options.SmtpPort)
             {
                 EnableSsl = _options.UseSSL,
@@ -33,7 +33,7 @@ namespace WebApplication1.Services
                 DeliveryMethod = SmtpDeliveryMethod.Network
             };
 
-            // Selve e-posten får enkel tekst, avsendernavn og personlig link
+            // The email itself contains plain text, sender name, and personal link.
             using var message = new MailMessage
             {
                 From = new MailAddress(_options.SenderEmail!, "NRL Support"),
@@ -46,7 +46,7 @@ namespace WebApplication1.Services
 
             try
             {
-                // Forsøker å sende e-posten; lar exception boble hvis det feiler
+                // Attempts to send the email; lets exceptions bubble up if it fails     .
                 await client.SendMailAsync(message);
             }
             catch (Exception ex)
@@ -58,7 +58,7 @@ namespace WebApplication1.Services
 
         private void ValidateConfiguration()
         {
-            // Stopper tidlig hvis påkrevde SMTP-felter ikke er satt
+            // Stops early if required SMTP fields are not set.
             if (string.IsNullOrWhiteSpace(_options.SmtpServer) ||
                 _options.SmtpPort <= 0 ||
                 string.IsNullOrWhiteSpace(_options.SenderEmail))

@@ -1,4 +1,4 @@
-﻿// Hjelpeklasse som samler navn på godkjente organisasjoner og tilbyr valideringsmetoder.
+﻿// Helper class that collects the names of approved organizations and provides validation methods.
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ namespace WebApplication1.Models
 {
     public static class OrganizationOptions
     {
-        // Fast liste over organisasjoner som har tilgang til systemet.
+        // Fixed list of organizations allowed access to the system.
         public static readonly IReadOnlyList<string> AllowedOrganizations = new List<string>
         {
             "Avinor",
@@ -18,7 +18,7 @@ namespace WebApplication1.Models
             "Kartverket"
         };
 
-        // Fjerner mellomrom og matcher med eksisterende navn uavhengig av små/store bokstaver.
+        // Removes whitespace and matches against existing names regardless of case.
         public static string? NormalizeName(string? value)
         {
             if (string.IsNullOrWhiteSpace(value))
@@ -30,7 +30,7 @@ namespace WebApplication1.Models
                 .FirstOrDefault(o => string.Equals(o, value.Trim(), StringComparison.OrdinalIgnoreCase));
         }
 
-        // Rask validering som gjenbruker normaliseringen for konsistens.
+        // Quick validation that reuses normalization for consistency.
         public static bool IsValid(string? value) => NormalizeName(value) != null;
     }
 }

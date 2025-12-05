@@ -1,12 +1,12 @@
-// ViewModel brukt i administrasjonsskjemaene for å opprette og oppdatere brukere.
+// ViewModel used in admin forms to create and update users.
 using System.ComponentModel.DataAnnotations;
 
 namespace WebApplication1.Models
 {
-    // Filformål: ViewModel for å samle inn og validere felter når en admin oppretter eller redigerer brukere.
+    // File purpose: ViewModel for collecting and validating fields when an admin creates or edits users.
     public class UserData
     {
-        // Kontaktinformasjon brukeren må fylle ut for å kunne identifiseres.
+        // Contact information the user must fill out to be identified.
         [Required(ErrorMessage = "Name is required")]
         [StringLength(45, ErrorMessage = "Name cannot exceed 45 characters")]
         public string? Name { get; set; }
@@ -14,6 +14,7 @@ namespace WebApplication1.Models
         [Required(ErrorMessage = "Email is required")]
         [EmailAddress(ErrorMessage = "Please enter valid email address")]
         [StringLength(45, ErrorMessage = "Email cannot exceed 45 characters")]
+        [RegularExpression(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", ErrorMessage = "Please enter a valid email address")]
         public string? Email { get; set; }
 
         [Required(ErrorMessage = "Phone is required")]
@@ -21,11 +22,11 @@ namespace WebApplication1.Models
         [RegularExpression(@"^(?=(?:\D*\d){8,15}\D*$)[\d\s\-\(\)\+]+$", ErrorMessage = "Please enter a valid phone number with 8 to 15 digits")]
         public string? Phone { get; set; }
 
-        // Valgfri adresseinformasjon som vises i brukerdetaljer.
+        // Optional adress information displayed in user details.
         [StringLength(200, ErrorMessage = "Address cannot exceed 200 characters")]
         public string? Address { get; set; }
 
-        // Roller og tilknytning styrer hvilke deler av systemet brukeren får tilgang til.
+        // Roles and affiliation determine which parts of the system the user can access.
         [Required(ErrorMessage = "Role is required")]
         [StringLength(45, ErrorMessage = "Role cannot exceed 45 characters")]
         public string? Role { get; set; }
@@ -34,7 +35,7 @@ namespace WebApplication1.Models
         [StringLength(45, ErrorMessage = "Organization name cannot exceed 45 characters")]
         public string? Organization { get; set; }
 
-        // Nye passordkrav for konto-opprettelse og bekreftelse før lagring.
+        // New password requirements for account creation and confirmation before saving.
         [Required(ErrorMessage = "Password is required")]
         [StringLength(30, MinimumLength = 8, ErrorMessage = "Password must be between 8 and 30 characters")]
         [DataType(DataType.Password)]
