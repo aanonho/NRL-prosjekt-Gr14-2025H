@@ -179,73 +179,34 @@ Sørg for at det finnes en bruker i databasen med en kjent e-postadresse
 5. Sett et nytt passord på siden som åpnes og lagre
 6. Prøv deretter å logge inn igjen med det nye passordet
 
-# Testplan for brukertesting
-## Testplan pilot
-Info fra testleder til testbruker:
-«Du er her for å hjelpe oss i utviklingen av en løsning for innmeldinger til Kartverket. Vi tester ikke deg og dine datakunnskaper, men dine tilbakemeldinger om systemet er viktige for oss i den videre utviklingen for at systemet skal oppleves som brukervennlig. Du blir bedt om løse noen oppgaver samtidig som du snakker høyt om hva du tenker om utformingen av det grafiske og hvordan det oppleves å navigere i systemet. Hvis du ikke får til å løse oppgaven så sier du i fra,
-det er også viktig informasjon for oss.» (Rania, 2025, s. 1  Testplan_kartverket doc på Canvas)
+## Brukertesting – Sammendrag
 
-### Innlogging og opprett bruker
-Oppgave 1: 
-Opprett en bruker via Create user knappen
-Spm: hva er førsteinntrykket av brukergrensesnittet?
+Under EXPO gjennomførte vi brukertester av systemet.  
+Totalt **5 brukere fikk fullført hele testen**, og **2 brukere fikk påbegynt testen**, men ble avbrutt på grunn av jurybesøk.
 
-### Obstacle registration form
-Spm: hva er førsteinntrykket av siden? Hva tror du knappene øverst på kartet er til?
-Oppgave 2: 
-Registrer et hinder i skjemaet. Velg mellom «point», «line» eller «area» på toppen av kartet og fyll inn feltene videre nedover slik du tolker skjemaet. Send inn skjema ved å trykke på enten Submit data eller Save draft knappen. Fortell underveis hvilke tanker du gjør deg om skjemaet.
+Her er hovedfunnene, i uspesifisert rekkefølge:
 
-### Reports
-Spm: Hva er første tanke om det som skjedde i det du klikket på knappen (Submit data/Save draft)? Si litt om hva du ser her på denne siden og hvilket inntrykk du får av brukergrensesnittet og løsningen?
-Hvis testperson valgte Save draft: 
-Oppgave 3:
-Klikk på Edit knappen og endre på rapporten du nettopp har fylt inn
-Hvis tid:
-Oppgave 4:
-Gå tilbake til obstacle registration form og fyll ut en rapport til, denne gangen velger du motsatt av i sted (av Submit data og Save draft), endre gjerne også på hvilket type hinder du legger inn mm.
-Til testleder: Hvis save draft her: hopp til oppgave 3 igjen.
+### Passord og brukeropplevelse
+- Brukerne ønsket en **“show password”**-knapp.
+- Passordet bør ikke slettes hvis valideringen feiler.
+- Behov for tydeligere krav (regex) til passordstyrke.
 
+### Registerførerens arbeidsflate
+- Ønske om en **"Behandlet"-tag** for ferdig vurderte rapporter.
+- Ikke behov for slettefunksjon – historikk ønskes bevart.
+- Ønske om å se hvilken **organisasjon** en bruker tilhører.
 
-### Sluttspørsmål:
-1.	Hvordan opplevde du å bruke dette systemet fra innlogging til ferdig innsendt rapport
-2.	Hvordan vil du rangere systemet på en skala fra 1 til 5 hvor 
-1 = veldig vanskelig å bruke, 3 = midt på treet, og 5 = veldig lett å bruke
-3.	Hvordan opplevde du flyten i systemet, fra ett klikk/vindu til et annet?
-4.	Er dette en løsning du kunne brukt under en ekte helikopterflyvning?
-5.	Kunne du anbefalt systemet til andre som registrerer luftfartshindre til NRL?
+### Tilpasning og responsivitet
+- Skjermbildet bør skaleres bedre mellom laptop og tablet.
 
+### Kart og obstacle-registrering
+- Brukerne ønsket tydeligere forskjell mellom:
+  - Pin som markerer valgt posisjon  
+  - Pin som viser brukerens egen posisjon  
+- Ønske om **default point** for raske registreringer.
+- Høyde-feltet bør ha høyere maksverdi.
+- Popup ved manglende input etterlyst.
+- Bedre håndtering av draft (inkl. redirect).
 
-## Testplan registerfører
-Info fra testleder til testbruker (samme info som til pilot):
-«Du er her for å hjelpe oss i utviklingen av en løsning for innmeldinger til Kartverket. Vi tester ikke deg og dine datakunnskaper, men dine tilbakemeldinger om systemet er viktige for oss i den videre utviklingen for at systemet skal oppleves som brukervennlig. Du blir bedt om løse noen oppgaver samtidig som du snakker høyt om hva du tenker om utformingen av det grafiske og hvordan det oppleves å navigere i systemet. Hvis du ikke får til å løse oppgaven så sier du i fra,
-det er også viktig informasjon for oss.» (Rania, 2025, s. 1  Testplan_kartverket doc på Canvas)
-
-### Innlogging og opprett bruker (likt som pilot)
-Oppgave 1: 
-Opprett en bruker via Create user knappen
-Spm hva er førsteinntrykket av brukergrensesnittet?
-
-### Reports
-Spm: Hva er førsteinntrykket av siden du kommer til her? Hvordan tolker du informasjonen som vises på siden om disse rapportene
-Oppgave 2:
-Test ut de ulike mulighetene du har til å gjøre ting på siden her: Filtrer rapporter basert på status eller dato
-Oppgave 3:
-Klikk på review-knappen på en av rapportene
-
-### Report overview
-Spm: hvilke tanker gjør du deg på denne siden?
-Oppgave 4:
-Se gjennom rapporten og oppdater statusen; velg mellom Approve, Reject eller Request more information, fyll også gjerne inn en melding til brukeren som har sendt inn rapporten
-
-Oppgave 5:
-Gå tilbake til reports-siden. Sjekk at rapporten du oppdatert fikk endret status.
-Spm 1: Hvilket inntrykk har du? Sett bort fra at du per i dag ikke får opp hindrene i en kartvisning, hvor nærme er dette en løsning du tenker kan virke for en registerfører i Kartverket, for å kunne godkjenne nye rapporter om luftfartshindre, på en skala fra 1 til 5 hvor
-1 = Ikke i nærheten engang, 2 = langt unna, 3 = er inne på noe, men må forbedres en del, 4 = nærmer seg en brukbar løsning, og 5 = med kartvisning av oversiktssiden over hinderrapporter kunne dette vært bra 
-Spm 2: Hva mener du skal til for at du skulle svart 5 på forrige spørsmål?
-
-### Sluttspørsmål:
-1.	Hvordan opplevde du å bruke dette systemet?
-2.	Hvordan vil du rangere systemet på en skala fra 1 til 5 hvor 
-1 = veldig vanskelig å bruke, 3 = midt på treet, og 5 = veldig lett å bruke
-3.	Hvordan opplevde du flyten i systemet, fra ett klikk/vindu til et annet?
-4.	Hva er totalinntrykket ditt av systemet?
+### Oppsummering
+Brukerne klarte å gjennomføre oppgavene, og opplevde systemet som nyttig, men ønsket forbedringer i tydelighet, validering og flyt.
