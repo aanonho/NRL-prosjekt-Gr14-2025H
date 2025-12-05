@@ -15,7 +15,7 @@ namespace WebApplication1.Models
         public new string? ObstacleName { get; set; }
 
         [Required(ErrorMessage = "Obstacle Height is required")]
-        [Range(0.0, 1000, ErrorMessage = "Height must be between 0 and 1000 meters")]
+        [Range(0.0, 1000.0, ErrorMessage = "Height must be between 0 and 1000 meters")]
         public new double? ObstacleHeight { get; set; }
 
         [Required(ErrorMessage = "Obstacle Description is required")]
