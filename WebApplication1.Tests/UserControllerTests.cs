@@ -45,7 +45,7 @@ namespace WebApplication1.Tests
                 Email = "test@example.com",
                 Phone = "123-456-7890",
                 Role = "Pilot",
-                Organization = "Test Org",
+                Organization = "Avinor",
                 Password = "Password123!",
                 ConfirmPassword = "Password123!"
             };
