@@ -66,6 +66,18 @@ namespace WebApplication1.Controllers
                 }
             }
 
+            if (string.IsNullOrWhiteSpace(userData.Email))
+            {
+                ModelState.AddModelError(nameof(userData.Email), "Email is required.");
+                return View(userData);
+            }
+            
+            if (string.IsNullOrWhiteSpace(userData.Role))
+            {
+                ModelState.AddModelError(nameof(userData.Role), "Role is required.");
+                return View(userData);
+            }
+
             var normalizedEmail = userData.Email!.Trim();
             var normalizedRole = userData.Role!.Trim();
             var isRegistrar = IsRegistrarRole(normalizedRole);
@@ -311,4 +323,3 @@ namespace WebApplication1.Controllers
 
     }
 }
-
