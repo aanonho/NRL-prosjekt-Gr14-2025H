@@ -7,8 +7,7 @@ namespace WebApplication1.Models.Entities
 {
     [Table("Pilot")]
     public class Pilot
-    {
-        //
+    {      
         // Primary key that also serves as foreign key to UserEntity according to the ER diagram.
         [Key, ForeignKey(nameof(User))]
         [Column("UserData_UserID")]
