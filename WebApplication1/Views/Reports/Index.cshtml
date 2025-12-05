@@ -27,11 +27,7 @@
         }
 
         @if (TempData["SuccessMessage"] != null)
-        {
-            @*  <div class="m-4 rounded-md border border-green-300 bg-green-50 p-3 text-center font-medium text-green-800 shadow-sm">
-                @TempData["SuccessMessage"]
-            </div>*@
-
+        {         
             <div class="status-confirmed p-4 rounded mb-6 mb-4">
                 <strong>✔ Saved:</strong> @TempData["SuccessMessage"]
             </div>
@@ -41,10 +37,7 @@
 
             <div class="status-critical p-4 rounded mb-4">
                 <strong>⚠ Critical:</strong> @TempData["ErrorMessage"]
-            </div>
-            @*  <div class="m-4 rounded-md border border-red-300 bg-red-50 p-3 text-center font-medium text-red-800 shadow-sm">
-                @TempData["ErrorMessage"]
-            </div> *@         
+            </div>              
         }
 
         <!-- Filters -->
@@ -83,8 +76,7 @@
 
             <div class="sm:col-span-2 button-group">
                 <button type="submit" class="button-dark-blue">Apply</button>
-                <button type="button" class="button-white-blue" onclick="location.href='@Url.Action("Index", "Reports")'">Reset</button>
-                @*  GAMMELKODE->  <a href="@Url.Action("Index", "Reports")" class="button-dark-yellow">Reset</a> *@
+                <button type="button" class="button-white-blue" onclick="location.href='@Url.Action("Index", "Reports")'">Reset</button>            
             </div>
         </form>
 
@@ -215,20 +207,11 @@
                                 {
                                     <td class="px-3 py-2 text-sm whitespace-nowrap text-gray-700">
                                         @{
-                                            // Sjekk om rapporten er Approved
+                                            // Checking if the report is Approved
                                             var isApproved = string.Equals(r.Status, "Approved", System.StringComparison.OrdinalIgnoreCase);
                                         }
 
-                                        @* PILOT: kan redigere så lenge rapporten IKKE er Approved 
-                                        @if (!isApproved && Model.IsPilotView)
-                                        {
-                                            <a href="@Url.Action("DataForm", "Obstacle", new { id = r.ReportID })"
-                                               class="inline-flex items-center space-x-4 py-1 rounded hover:text-green-600">
-                                                <img src="~/icons/editIcon.svg" alt="Edit" style="width: 30px; height: 30px;" />
-                                                <span>Edit</span>
-                                            </a>
-                                        }
-                                        *@
+                                        @* PILOT: can edit as long as the report is NOT Approved *@
 
                                         @if (Model.IsPilotView)
                                         {
@@ -247,7 +230,7 @@
                                                 </a>
                                             }
                                         }
-                                        @* REGISTRAR: kan alltid Review så lenge det ikke er draft *@
+                                        @* REGISTRAR: can always review as long as it is not draft *@
                                         @if (Model.IsRegistrarView && !r.IsDraft)
                                         {
                                             <a class="button-dark-blue inline-block px-3 py-2 text-xs"
@@ -255,15 +238,7 @@
                                                 Review
                                             </a>
                                         }
-                                    </td>
-
-                                    @*
-                                    <td class="px-3 py-2 text-sm whitespace-nowrap text-gray-700">
-                                        <a class="white inline-block px-3 py-2 text-xs" href="@Url.Action("DataForm", "Obstacle", new { id = r.ReportID })">
-                                            Edit
-                                        </a>
-                                    </td>
-                                    *@
+                                    </td>                                 
                                 }
                             </tr>
                         }

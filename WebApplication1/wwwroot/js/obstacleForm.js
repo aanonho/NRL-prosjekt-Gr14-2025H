@@ -359,10 +359,6 @@ function updatedFieldVisibility(type) {
     document.getElementById('latContainer').style.display = 'none';
     document.getElementById('lngContainer').style.display = 'none';
 
-    //const showLatLng = (type === 'point' || type === 'area');
-    //document.getElementById('latContainer').style.display = showLatLng ? 'block' : 'none';
-    //document.getElementById('lngContainer').style.display = showLatLng ? 'block' : 'none';
-
 }
 
 // Reset line coordinates to start a new drawing after deletion
