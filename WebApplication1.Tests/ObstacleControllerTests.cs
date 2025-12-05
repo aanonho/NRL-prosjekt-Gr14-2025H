@@ -72,7 +72,7 @@ namespace WebApplication1.Tests
                 ObstacleHasLight = true
             };
 
-            var result = await controller.DataForm(data, imageFile: null, submitType: "Submit");
+            var result = await controller.DataForm(data, imageFiles: null, submitType: "Submit");
 
             var redirect = Assert.IsType<RedirectToActionResult>(result);
             Assert.Equal("Index", redirect.ActionName);
@@ -110,7 +110,7 @@ namespace WebApplication1.Tests
                 ObstacleHasLight = false
             };
 
-            var result = await controller.DataForm(data, imageFile: null, submitType: "SaveDraft");
+            var result = await controller.DataForm(data, imageFiles: null, submitType: "SaveDraft");
 
             var redirect = Assert.IsType<RedirectToActionResult>(result);
             Assert.Equal("Index", redirect.ActionName);
@@ -169,10 +169,11 @@ namespace WebApplication1.Tests
                 ObstacleLongitude = 2,
                 ObstacleType = "line",
                 ObstacleRadius = 3,
-                ObstacleHasLight = true
+                ObstacleHasLight = true,
+                ObstacleLineCoordinates = "58.146,7.995;58.150,8.001"
             };
 
-            var result = await controller.DataForm(updatedData, imageFile: null, submitType: "Submit");
+            var result = await controller.DataForm(updatedData, imageFiles: null, submitType: "Submit");
 
             var redirect = Assert.IsType<RedirectToActionResult>(result);
             Assert.Equal("Index", redirect.ActionName);

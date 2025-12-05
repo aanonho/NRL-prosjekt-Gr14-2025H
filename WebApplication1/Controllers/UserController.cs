@@ -48,17 +48,50 @@ namespace WebApplication1.Controllers
                 userData.Organization = normalizedOrganization;
             }
 
-            if (!ModelState.IsValid)
+            var trimmedPhone = userData.Phone?.Trim();
+            if (!string.IsNullOrWhiteSpace(trimmedPhone))
             {
-                return View(userData);
+                var digitCount = trimmedPhone.Count(char.IsDigit);
+                if (digitCount < 8)
+                {
+                    ModelState.AddModelError(nameof(userData.Phone), "Please enter a phone number with at least 8 digits.");
+                }
+                else if (digitCount > 15)
+                {
+                    ModelState.AddModelError(nameof(userData.Phone), "Please enter a phone number with no more than 15 digits.");
+                }
+                else
+                {
+                    userData.Phone = trimmedPhone;
+                }
             }
 
             var normalizedEmail = userData.Email!.Trim();
             var normalizedRole = userData.Role!.Trim();
             var isRegistrar = IsRegistrarRole(normalizedRole);
             var isPilot = IsPilotRole(normalizedRole);
+            var normalizedEmailLower = normalizedEmail.ToLowerInvariant();
 
             var organization = await ResolveOrganizationAsync(normalizedOrganization!);
+
+            var duplicateEmailExists = await _context.Users
+                .AnyAsync(u => u.Email != null && u.Email.ToLower() == normalizedEmailLower);
+            if (duplicateEmailExists)
+            {
+                ModelState.AddModelError(nameof(userData.Email), "This email is already registered.");
+            }
+
+            var duplicatePhoneExists = await _context.Users
+                    .AnyAsync(u => u.Phone != null && u.Phone.Trim() == userData.Phone);
+            if (duplicatePhoneExists)
+            {
+                ModelState.AddModelError(nameof(userData.Phone), "This phone number is already registered.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(userData);
+            }
 
             var existingUser = await _context.Users
                 .Include(u => u.Organization)
@@ -70,12 +103,6 @@ namespace WebApplication1.Controllers
 
             if (existingUser != null)
             {
-                if (!string.Equals(existingUser.Role, normalizedRole, StringComparison.OrdinalIgnoreCase))
-                {
-                    ModelState.AddModelError("Role", "This email is already registered with another role.");
-                    return View(userData);
-                }
-
                 existingUser.Name = userData.Name?.Trim();
                 existingUser.Email = normalizedEmail;
                 existingUser.Phone = userData.Phone?.Trim();

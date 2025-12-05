@@ -18,7 +18,7 @@ namespace WebApplication1.Models
 
         [Required(ErrorMessage = "Phone is required")]
         [Phone(ErrorMessage = "Please enter a valid phone number")]
-        [StringLength(45, ErrorMessage = "Phone number cannot exceed 45 characters")]
+        [RegularExpression(@"^(?=(?:\D*\d){8,15}\D*$)[\d\s\-\(\)\+]+$", ErrorMessage = "Please enter a valid phone number with 8 to 15 digits")]
         public string? Phone { get; set; }
 
         // Valgfri adresseinformasjon som vises i brukerdetaljer.
