@@ -1,4 +1,4 @@
-﻿// Databasetabell for passwordreset-tokens that links the hash to the user and expiration time.
+﻿// Databasetable for passwordreset-tokens that links the hash to the user and expiration time.
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
